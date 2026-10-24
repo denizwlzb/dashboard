@@ -54,7 +54,7 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 
 /* Rappels */
 #rem{grid-area:rem}
-.rm{display:flex;align-items:center;gap:14px;padding:11px 0;border-top:1px solid var(--glass-b);cursor:pointer;
+.rm{display:flex;align-items:center;gap:14px;padding:11px 0;border-top:1px solid var(--glass-b);
   transition:opacity .5s var(--ease),transform .5s var(--ease),max-height .5s var(--ease);max-height:70px}
 .rm:first-child{border-top:0;padding-top:0}
 .dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--t3);flex:none;position:relative;
@@ -172,7 +172,6 @@ const CONFIG = {
   prenom: "Deniz",
   meteo: { lat: 45.19, lon: 5.72 },             // coordonnées (Open-Meteo, sans clé)
   icsWorker: "https://cal-k7x92mqp4v.deniz-walzberg.workers.dev/", // Worker Cloudflare qui lit tes calendriers iCloud
-  rappels: ["Sortir les poubelles", "Commander du filament PLA", "Appeler le dentiste"],
   lumieres: [                                    // webhook = URL appelée au toucher (Home Assistant, IFTTT, bridge Govee/Smart Life…)
     { nom: "Salon",   icone: "🛋️", webhook: "" },
     { nom: "Bureau",  icone: "🖥️", webhook: "" },
@@ -278,19 +277,26 @@ function renderCal(){
 const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 loadCal(); setInterval(loadCal, CONFIG.intervalle.calendrier*1000); setInterval(renderCal, 60000);
 
-/* ── Rappels ── */
+/* ── Rappels (synchronisés depuis l’app Rappels : Raccourci iPad → Worker) ── */
+let rappels = null, remErr = false;
 function renderRem(){
-  $("remBody").innerHTML = CONFIG.rappels.length
-    ? CONFIG.rappels.map((r,i) => `<div class="rm" data-i="${i}"><div class="dot"></div><div class="l">${esc(r)}</div></div>`).join("")
+  if (rappels === null){ $("remBody").innerHTML = `<div class="empty">${remErr ? "Rappels non connectés" : "Chargement…"}</div>`; return; }
+  $("remBody").innerHTML = rappels.length
+    ? rappels.map(r => `<div class="rm"><div class="dot"></div><div class="l">${esc(r)}</div></div>`).join("")
     : `<div class="empty">Tout est fait.</div>`;
 }
-$("remBody").addEventListener("click", e => {
-  const row = e.target.closest(".rm"); if (!row) return;
-  row.classList.add("done");
-  setTimeout(() => row.classList.add("gone"), 600);
-  setTimeout(() => { CONFIG.rappels.splice(CONFIG.rappels.indexOf(row.querySelector(".l").textContent),1); renderRem(); }, 1200);
-});
-renderRem();
+async function loadRem(){
+  if (!CONFIG.icsWorker){ rappels = ["Sortir les poubelles", "Commander du filament PLA", "Appeler le dentiste"]; return renderRem(); }
+  try {
+    const res = await fetch(CONFIG.icsWorker.replace(/\/?$/, "/rappels"));
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const l = await res.json();
+    if (!Array.isArray(l) || l.some(x => typeof x !== "string" || x.startsWith("BEGIN:VCALENDAR"))) throw new Error("Le Worker n’a pas encore la route /rappels");
+    remErr = false;
+    if (JSON.stringify(l) !== JSON.stringify(rappels)){ rappels = l; renderRem(); }
+  } catch(e){ console.warn("Rappels indisponibles :", e); remErr = true; if (rappels === null) renderRem(); }
+}
+renderRem(); loadRem(); setInterval(loadRem, 60000);
 
 /* ── Météo ── */
 const WX = {0:["☀️","Ensoleillé"],1:["🌤️","Plutôt dégagé"],2:["⛅","Partiellement nuageux"],3:["☁️","Couvert"],45:["🌫️","Brouillard"],48:["🌫️","Brouillard"],
