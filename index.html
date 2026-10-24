@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Dashboard Deniz</title>
+<style>
+:root{
+  --bg:#0b0f19; --glass:rgba(255,255,255,.06); --glass-b:rgba(255,255,255,.10);
+  --t1:#f5f5f7; --t2:rgba(235,235,245,.60); --t3:rgba(235,235,245,.32);
+  --blue:#0a84ff; --green:#30d158; --orange:#ff9f0a; --red:#ff453a; --yellow:#ffd60a;
+  --ease:cubic-bezier(.32,.72,0,1);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;
+  background:radial-gradient(900px 600px at 15% -10%,rgba(10,132,255,.14),transparent 60%),
+             radial-gradient(800px 500px at 100% 110%,rgba(94,92,230,.12),transparent 60%),var(--bg);
+}
+.app{height:100%;display:grid;gap:20px;padding:28px 32px;
+  grid-template-columns:1.15fr 1fr 1fr;grid-template-rows:auto 1fr auto;
+  grid-template-areas:"head head head" "cal rem side" "dyn dyn dyn"}
+.widget{
+  background:var(--glass);border:1px solid var(--glass-b);border-radius:20px;padding:22px 24px;
+  -webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);
+  box-shadow:0 8px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05);min-height:0;overflow:hidden;
+  display:flex;flex-direction:column}
+h2{font-size:15px;font-weight:600;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+h2 i{font-style:normal;font-size:16px}
+
+/* En-tête */
+header{grid-area:head;display:flex;justify-content:space-between;align-items:flex-end;padding:0 6px}
+#clock{font-size:96px;font-weight:300;letter-spacing:-3px;line-height:1;font-variant-numeric:tabular-nums}
+#date{font-size:22px;font-weight:500;color:var(--t2);margin-top:6px;text-transform:capitalize}
+#hello{font-size:34px;font-weight:600;letter-spacing:-.5px;text-align:right}
+
+/* Calendrier */
+#cal{grid-area:cal}
+.ev{display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--glass-b);
+  animation:in .6s var(--ease) both}
+.ev:first-child{border-top:0;padding-top:0}
+.ev .bar{width:4px;border-radius:2px;background:var(--blue);flex:none}
+.ev .t{font-size:13px;color:var(--t2);font-variant-numeric:tabular-nums}
+.ev .n{font-size:18px;font-weight:600;margin-top:2px}
+.ev.past{opacity:.38}
+.next-label{font-size:13px;color:var(--orange);font-weight:600;margin-bottom:10px}
+.empty{color:var(--t3);font-size:16px;margin:auto 0}
+
+/* Rappels */
+#rem{grid-area:rem}
+.rm{display:flex;align-items:center;gap:14px;padding:11px 0;border-top:1px solid var(--glass-b);cursor:pointer;
+  transition:opacity .5s var(--ease),transform .5s var(--ease),max-height .5s var(--ease);max-height:70px}
+.rm:first-child{border-top:0;padding-top:0}
+.dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--t3);flex:none;position:relative;
+  transition:background .3s var(--ease),border-color .3s var(--ease)}
+.rm.done .dot{background:var(--blue);border-color:var(--blue)}
+.rm.done .dot::after{content:"";position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid #fff;
+  border-width:0 2px 2px 0;transform:rotate(45deg)}
+.rm .l{font-size:18px}
+.rm.done .l{color:var(--t3);text-decoration:line-through}
+.rm.gone{opacity:0;transform:translateX(24px);max-height:0;padding:0}
+
+/* Colonne droite */
+#side{grid-area:side;display:grid;grid-template-rows:auto 1fr;gap:20px;min-height:0}
+#wx{flex-direction:row;align-items:center;justify-content:space-between}
+#wx .tmp{font-size:64px;font-weight:200;letter-spacing:-2px;line-height:1}
+#wx .d{font-size:16px;color:var(--t2);margin-top:6px}
+#wx .ic{font-size:64px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.4))}
+#wx .mm{font-size:13px;color:var(--t3);margin-top:4px}
+#lights .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
+.tile{border:0;border-radius:20px;background:rgba(255,255,255,.07);color:var(--t1);font:inherit;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:16px;text-align:left;
+  transition:background .35s var(--ease),color .35s var(--ease),transform .25s var(--ease);cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.tile:active{transform:scale(.94)}
+.tile .i{font-size:26px;filter:grayscale(1) opacity(.6);transition:filter .35s var(--ease)}
+.tile .n{font-size:15px;font-weight:600}
+.tile .s{font-size:12px;color:var(--t3);transition:color .35s var(--ease)}
+.tile.on{background:rgba(255,255,255,.92);color:#111}
+.tile.on .i{filter:none}.tile.on .s{color:rgba(0,0,0,.5)}
+
+/* Zone dynamique */
+#dyn{grid-area:dyn;display:flex;gap:20px;align-items:stretch;justify-content:center}
+.dynw{flex:1 1 0;max-width:100%;opacity:0;transform:scale(.9) translateY(30px);max-height:0;padding-top:0;padding-bottom:0;
+  border-width:0;margin:0;pointer-events:none;
+  transition:opacity .6s var(--ease),transform .7s var(--ease),max-height .7s var(--ease),
+             padding .7s var(--ease),flex-grow .7s var(--ease)}
+.dynw.show{opacity:1;transform:none;max-height:220px;padding:22px 24px;border-width:1px;pointer-events:auto}
+#sp{border-radius:36px;flex-direction:row;align-items:center;gap:20px;background:rgba(0,0,0,.55)}
+#sp.show{border-radius:36px}
+#sp .art{width:84px;height:84px;border-radius:18px;flex:none;background:linear-gradient(135deg,#1db954,#0a84ff);
+  background-size:cover;background-position:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+#sp .info{flex:1;min-width:0}
+#sp .tt{font-size:22px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sp .ar{font-size:16px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog{height:5px;border-radius:3px;background:rgba(255,255,255,.15);margin-top:16px;overflow:hidden}
+.prog b{display:block;height:100%;width:0;border-radius:3px;background:var(--t1);transition:width 1s linear}
+.eq{display:flex;gap:4px;align-items:flex-end;height:30px}
+.eq span{width:5px;background:var(--green);border-radius:3px;animation:eq 1s ease-in-out infinite}
+.eq span:nth-child(2){animation-delay:.2s}.eq span:nth-child(3){animation-delay:.4s}.eq span:nth-child(4){animation-delay:.1s}
+#bb{flex-direction:row;align-items:center;gap:28px}
+.ring{width:110px;height:110px;flex:none;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--green) calc(var(--p,0)*1%),rgba(255,255,255,.12) 0);transition:--p 1s linear}
+.ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:#12161f}
+.ring span{position:relative;font-size:28px;font-weight:600}
+#bb .info{flex:1;min-width:0}
+#bb .tt{font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bb .sub{font-size:15px;color:var(--t2);margin-top:4px}
+.temps{display:flex;gap:10px;margin-top:14px}
+.temps div{background:rgba(255,255,255,.07);border-radius:14px;padding:8px 14px;font-size:14px;color:var(--t2)}
+.temps b{display:block;font-size:20px;color:var(--t1);font-weight:600}
+
+/* Fond noir + bordures blanches */
+body{background:#000!important}
+.widget{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 30px rgba(0,0,0,.5)}
+.ring::before{background:#000}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes eq{0%,100%{height:6px}50%{height:28px}}
+@property --p{syntax:"<number>";inherits:true;initial-value:0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div><div id="clock">--:--</div><div id="date"></div></div>
+    <div id="hello">Bonjour Deniz</div>
+  </header>
+
+  <section class="widget" id="cal"><h2><i>📅</i>Calendrier</h2><div id="calBody"></div></section>
+  <section class="widget" id="rem"><h2><i>☑️</i>Rappels</h2><div id="remBody"></div></section>
+
+  <div id="side">
+    <section class="widget" id="wx"></section>
+    <section class="widget" id="lights"><h2><i>💡</i>Lumières</h2><div class="grid" id="lightGrid"></div></section>
+  </div>
+
+  <div id="dyn">
+    <section class="widget dynw" id="bb">
+      <div class="ring" id="bbRing"><span id="bbPct">0%</span></div>
+      <div class="info">
+        <h2 style="margin-bottom:6px"><i>🖨️</i>Bambu Lab A1</h2>
+        <div class="tt" id="bbName">—</div>
+        <div class="sub" id="bbEta">—</div>
+        <div class="temps"><div><b id="bbNozzle">—</b>Buse</div><div><b id="bbBed">—</b>Plateau</div></div>
+      </div>
+    </section>
+    <section class="widget dynw" id="sp">
+      <div class="art" id="spArt"></div>
+      <div class="info">
+        <div class="tt" id="spTitle">—</div><div class="ar" id="spArtist">—</div>
+        <div class="prog"><b id="spBar"></b></div>
+      </div>
+      <div class="eq"><span></span><span></span><span></span><span></span></div>
+    </section>
+  </div>
+</div>
+
+<script>
+/* ═══════════════ CONFIGURATION ═══════════════
+   Les intégrations externes (réseau) fonctionnent quand ce fichier est ouvert
+   depuis votre propre serveur / appareil. Sans configuration, le mode démo s’affiche.
+   Ajoutez #demo à l’adresse pour forcer l’affichage des widgets Bambu et Spotify. */
+const CONFIG = {
+  prenom: "Deniz",
+  meteo: { lat: 45.19, lon: 5.72 },             // coordonnées (Open-Meteo, sans clé)
+  icsUrl: "",                                    // lien ICS de votre calendrier (public/secret)
+  rappels: ["Sortir les poubelles", "Commander du filament PLA", "Appeler le dentiste"],
+  lumieres: [                                    // webhook = URL appelée au toucher (Home Assistant, IFTTT, bridge Govee/Smart Life…)
+    { nom: "Salon",   icone: "🛋️", webhook: "" },
+    { nom: "Bureau",  icone: "🖥️", webhook: "" },
+    { nom: "Chambre", icone: "🛏️", webhook: "" },
+    { nom: "LED Govee", icone: "✨", webhook: "" }
+  ],
+  bambuUrl: "",     // JSON local : {state,progress,remaining_min,nozzle,bed,name} (pont MQTT → HTTP)
+  spotifyToken: "", // jeton OAuth Spotify (scope user-read-currently-playing)
+  intervalle: { meteo: 600, calendrier: 300, bambu: 10, spotify: 5 } // secondes
+};
+const DEMO = location.hash.replace("#","") === "demo";
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,"0");
+
+/* ── Horloge ── */
+function tick(){
+  const d = new Date();
+  $("clock").textContent = pad(d.getHours()) + ":" + pad(d.getMinutes());
+  $("date").textContent = d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+}
+tick(); setInterval(tick, 1000);
+
+/* ── Salutation (texte uniquement) ── */
+function majSalut(){
+  const h = new Date().getHours();
+  $("hello").textContent = (h >= 5 && h < 18 ? "Bonjour" : h >= 18 && h < 22 ? "Bonsoir" : "Bonne nuit") + " " + CONFIG.prenom;
+}
+majSalut(); setInterval(majSalut, 60000);
+
+/* ── Calendrier ── */
+let events = [];
+function demoEvents(){
+  const n = new Date(), at = (dd,h,m) => { const d = new Date(n); d.setDate(d.getDate()+dd); d.setHours(h,m,0,0); return d; };
+  return [
+    {n:"Point équipe", s:at(0,9,30),  e:at(0,10,15)},
+    {n:"Déjeuner avec Léa", s:at(0,12,30), e:at(0,14,0)},
+    {n:"Impression pièce V2", s:at(0,17,0), e:at(0,17,30)},
+    {n:"Cinéma", s:at(1,20,45), e:at(1,23,0)}
+  ];
+}
+function parseICS(txt){
+  const out = [], blocks = txt.replace(/\r?\n[ \t]/g,"").split("BEGIN:VEVENT").slice(1);
+  const dt = s => { const m = s.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?/); if(!m) return null;
+    return m[7] ? new Date(Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5],+m[6])) : new Date(+m[1],m[2]-1,+m[3],+(m[4]||0),+(m[5]||0)); };
+  for (const b of blocks){
+    const g = k => (b.match(new RegExp("^"+k+"[^:\\n]*:(.*)$","m"))||[])[1];
+    const s = dt(g("DTSTART")||""), e = dt(g("DTEND")||"") || s;
+    if (s) out.push({n:(g("SUMMARY")||"Sans titre").trim(), s, e});
+  }
+  return out;
+}
+async function loadCal(){
+  try {
+    if (CONFIG.icsUrl) events = parseICS(await (await fetch(CONFIG.icsUrl)).text());
+    else events = demoEvents();
+  } catch(e){ events = demoEvents(); }
+  events.sort((a,b) => a.s - b.s);
+  renderCal();
+}
+function renderCal(){
+  const now = new Date(), sod = new Date(now.getFullYear(),now.getMonth(),now.getDate()), eod = new Date(+sod+864e5);
+  const today = events.filter(e => e.s < eod && e.e >= sod);
+  const live = today.filter(e => e.e > now);
+  const hm = d => pad(d.getHours())+":"+pad(d.getMinutes());
+  let html = "";
+  if (live.length){
+    html = today.map(e => `<div class="ev ${e.e<=now?"past":""}"><div class="bar"></div><div><div class="t">${hm(e.s)} – ${hm(e.e)}</div><div class="n">${esc(e.n)}</div></div></div>`).join("");
+  } else {
+    const nx = events.find(e => e.s >= eod);
+    html = nx ? `<div class="next-label">Prochain événement</div><div class="ev"><div class="bar" style="background:var(--orange)"></div><div><div class="t">${nx.s.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})} · ${hm(nx.s)}</div><div class="n">${esc(nx.n)}</div></div></div>`
+                : `<div class="empty">Rien de prévu prochainement.</div>`;
+  }
+  $("calBody").innerHTML = html;
+}
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+loadCal(); setInterval(loadCal, CONFIG.intervalle.calendrier*1000); setInterval(renderCal, 60000);
+
+/* ── Rappels ── */
+function renderRem(){
+  $("remBody").innerHTML = CONFIG.rappels.length
+    ? CONFIG.rappels.map((r,i) => `<div class="rm" data-i="${i}"><div class="dot"></div><div class="l">${esc(r)}</div></div>`).join("")
+    : `<div class="empty">Tout est fait.</div>`;
+}
+$("remBody").addEventListener("click", e => {
+  const row = e.target.closest(".rm"); if (!row) return;
+  row.classList.add("done");
+  setTimeout(() => row.classList.add("gone"), 600);
+  setTimeout(() => { CONFIG.rappels.splice(CONFIG.rappels.indexOf(row.querySelector(".l").textContent),1); renderRem(); }, 1200);
+});
+renderRem();
+
+/* ── Météo ── */
+const WX = {0:["☀️","Ensoleillé"],1:["🌤️","Plutôt dégagé"],2:["⛅","Partiellement nuageux"],3:["☁️","Couvert"],45:["🌫️","Brouillard"],48:["🌫️","Brouillard"],
+  51:["🌦️","Bruine"],53:["🌦️","Bruine"],55:["🌦️","Bruine"],61:["🌧️","Pluie"],63:["🌧️","Pluie"],65:["🌧️","Forte pluie"],
+  71:["🌨️","Neige"],73:["🌨️","Neige"],75:["❄️","Forte neige"],80:["🌦️","Averses"],81:["🌦️","Averses"],82:["⛈️","Fortes averses"],95:["⛈️","Orage"],96:["⛈️","Orage"],99:["⛈️","Orage"]};
+function renderWx(t,code,min,max){
+  const [ic,txt] = WX[code] || ["🌡️","—"];
+  $("wx").innerHTML = `<div><div class="tmp">${Math.round(t)}°</div><div class="d">${txt}</div><div class="mm">Min ${Math.round(min)}° · Max ${Math.round(max)}°</div></div><div class="ic">${ic}</div>`;
+}
+async function loadWx(){
+  try {
+    const {lat,lon} = CONFIG.meteo;
+    const r = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto`)).json();
+    renderWx(r.current.temperature_2m, r.current.weather_code, r.daily.temperature_2m_min[0], r.daily.temperature_2m_max[0]);
+  } catch(e){ renderWx(17,2,9,21); }
+}
+loadWx(); setInterval(loadWx, CONFIG.intervalle.meteo*1000);
+
+/* ── Lumières ── */
+$("lightGrid").innerHTML = CONFIG.lumieres.map((l,i) =>
+  `<button class="tile" data-i="${i}"><span class="i">${l.icone}</span><span><div class="n">${esc(l.nom)}</div><div class="s">Éteinte</div></span></button>`).join("");
+$("lightGrid").addEventListener("click", async e => {
+  const b = e.target.closest(".tile"); if (!b) return;
+  const on = b.classList.toggle("on");
+  b.querySelector(".s").textContent = on ? "Allumée" : "Éteinte";
+  const hook = CONFIG.lumieres[b.dataset.i].webhook;
+  if (hook) try { await fetch(hook + (hook.includes("?")?"&":"?") + "state=" + (on?"on":"off"), {mode:"no-cors"}); } catch(_){}
+});
+
+/* ── Zone dynamique : Bambu & Spotify ── */
+const show = (id,on) => $(id).classList.toggle("show", on);
+function renderBambu(d){
+  const on = d && /run|print/i.test(d.state||"");
+  show("bb", !!on); if (!on) return;
+  $("bbRing").style.setProperty("--p", d.progress);
+  $("bbPct").textContent = Math.round(d.progress) + "%";
+  $("bbName").textContent = d.name || "Impression en cours";
+  const m = d.remaining_min, h = Math.floor(m/60);
+  $("bbEta").textContent = "Reste " + (h ? h+" h "+pad(m%60)+" min" : m+" min");
+  $("bbNozzle").textContent = Math.round(d.nozzle) + "°";
+  $("bbBed").textContent = Math.round(d.bed) + "°";
+}
+async function loadBambu(){
+  if (DEMO) return renderBambu({state:"RUNNING",progress:64,remaining_min:87,nozzle:220,bed:60,name:"Support_casque_v3.3mf"});
+  if (!CONFIG.bambuUrl) return renderBambu(null);
+  try { renderBambu(await (await fetch(CONFIG.bambuUrl)).json()); } catch(e){ renderBambu(null); }
+}
+function renderSpotify(d){
+  const ok = d && d.is_playing && d.item;
+  show("sp", !!ok); if (!ok) return;
+  $("spTitle").textContent = d.item.name;
+  $("spArtist").textContent = d.item.artists.map(a => a.name).join(", ");
+  const img = d.item.album && d.item.album.images && d.item.album.images[0];
+  $("spArt").style.backgroundImage = img ? `url(${img.url})` : "";
+  $("spBar").style.width = (d.progress_ms / d.item.duration_ms * 100) + "%";
+}
+async function loadSpotify(){
+  if (DEMO) return renderSpotify({is_playing:true,progress_ms:95000,item:{name:"Midnight City",artists:[{name:"M83"}],duration_ms:243000,album:{images:[]}}});
+  if (!CONFIG.spotifyToken) return renderSpotify(null);
+  try {
+    const r = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {headers:{Authorization:"Bearer "+CONFIG.spotifyToken}});
+    renderSpotify(r.status === 200 ? await r.json() : null);
+  } catch(e){ renderSpotify(null); }
+}
+loadBambu(); loadSpotify();
+setInterval(loadBambu, CONFIG.intervalle.bambu*1000);
+setInterval(loadSpotify, CONFIG.intervalle.spotify*1000);
+addEventListener("hashchange", () => { loadBambu(); loadSpotify(); });
+
+/* Garde l’écran allumé quand c’est possible */
+try { navigator.wakeLock && navigator.wakeLock.request("screen"); } catch(_){}
+</script>
+</body>
+</html>
