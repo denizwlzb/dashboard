@@ -229,11 +229,41 @@ function parseICS(txt){
   return out;
 }
 async function loadCal(){
-  try {
-    if (CONFIG.icsUrl) events = parseICS(await (await fetch(CONFIG.icsUrl)).text());
-    else events = demoEvents();
-  } catch(e){ events = demoEvents(); }
-  events.sort((a,b) => a.s - b.s);
+  const urls = (CONFIG.icsUrls || []).filter(Boolean);
+
+  if (!urls.length){
+    events = demoEvents();
+  } else {
+    // Télécharge tous les calendriers en parallèle ; un échec n'empêche pas les autres
+    const results = await Promise.allSettled(
+      urls.map(async url => {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(url + " → HTTP " + res.status);
+        return parseICS(await res.text());
+      })
+    );
+
+    const merged = [];
+    results.forEach((r, i) => {
+      if (r.status === "fulfilled") merged.push(...r.value);
+      else console.warn("Calendrier ignoré :", urls[i], r.reason);
+    });
+
+    // Supprime les doublons (même titre + même début), utile si un événement
+    // apparaît dans plusieurs calendriers
+    const seen = new Set();
+    events = merged.filter(e => {
+      const k = e.n + "|" + e.s.getTime();
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+
+    // Si tous les téléchargements ont échoué, on affiche la démo plutôt qu'un écran vide
+    if (!events.length && results.every(r => r.status === "rejected")) events = demoEvents();
+  }
+
+  events.sort((a, b) => a.s - b.s);   // ordre chronologique
   renderCal();
 }
 function renderCal(){
