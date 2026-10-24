@@ -341,8 +341,9 @@ function renderBambu(d){
 }
 async function loadBambu(){
   if (DEMO) return renderBambu({state:"RUNNING",progress:64,remaining_min:87,nozzle:220,bed:60,name:"Support_casque_v3.3mf"});
-  if (!CONFIG.bambuUrl) return renderBambu(null);
-  try { renderBambu(await (await fetch(CONFIG.bambuUrl)).json()); } catch(e){ renderBambu(null); }
+  const u = CONFIG.bambuUrl || (CONFIG.icsWorker && CONFIG.icsWorker.replace(/\/?$/, "/bambu"));
+  if (!u) return renderBambu(null);
+  try { renderBambu(await (await fetch(u)).json()); } catch(e){ renderBambu(null); }
 }
 function renderSpotify(d){
   const ok = d && d.is_playing && d.item;
