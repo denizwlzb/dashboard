@@ -356,11 +356,9 @@ function renderSpotify(d){
 }
 async function loadSpotify(){
   if (DEMO) return renderSpotify({is_playing:true,progress_ms:95000,item:{name:"Midnight City",artists:[{name:"M83"}],duration_ms:243000,album:{images:[]}}});
-  if (!CONFIG.spotifyToken) return renderSpotify(null);
-  try {
-    const r = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {headers:{Authorization:"Bearer "+CONFIG.spotifyToken}});
-    renderSpotify(r.status === 200 ? await r.json() : null);
-  } catch(e){ renderSpotify(null); }
+  const u = CONFIG.spotifyUrl || (CONFIG.icsWorker && CONFIG.icsWorker.replace(/\/?$/, "/spotify"));
+  if (!u) return renderSpotify(null);
+  try { renderSpotify(await (await fetch(u)).json()); } catch(e){ renderSpotify(null); }
 }
 loadBambu(); loadSpotify();
 setInterval(loadBambu, CONFIG.intervalle.bambu*1000);
