@@ -162,6 +162,7 @@ body{background:#000!important}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.min.js"></script>
 <script>
 /* ═══════════════ CONFIGURATION ═══════════════
    Les intégrations externes (réseau) fonctionnent quand ce fichier est ouvert
@@ -170,13 +171,7 @@ body{background:#000!important}
 const CONFIG = {
   prenom: "Deniz",
   meteo: { lat: 45.19, lon: 5.72 },             // coordonnées (Open-Meteo, sans clé)
-  icsUrls: [
-    "https://p69-caldav.icloud.com/published/2/MjAyMDE3NjY1MjcyMDIwMSFiAFqO8v7EZZqAbL-tsch7zu35rIrS4e2cAT8tAQyL9XIJNjdTbq5euZgY9EM_agjjKIsdou_36DcmBen4M5A", //lien lycée
-    "https://p69-caldav.icloud.com/published/2/MjAyMDE3NjY1MjcyMDIwMSFiAFqO8v7EZZqAbL-tschd3XaZ6qYhpvPH9y0DpUNSkz0kP7VJJS2KaIbwhZpWH70zEWlgz3Re9AYLfu6qFlg", //lien CosyPrints
-    "https://p69-caldav.icloud.com/published/2/MjAyMDE3NjY1MjcyMDIwMSFiAFqO8v7EZZqAbL-tscgBs5ulWP37RlhVTb6YesUTTpMxK33Opk3utczN2Kujo1zDRXBWpyByknBw7QSbPK8", //lien Personnel
-    "https://p69-caldav.icloud.com/published/2/MjAyMDE3NjY1MjcyMDIwMSFiAFqO8v7EZZqAbL-tsciePXOYPgacyJmoJrXRRE3Qd1rqMUooB6HZ69NgoCxiW4b0X3xC7LuddodHzWm8f6I", //lien Santé/Sport
-    "https://p69-caldav.icloud.com/published/2/MjAyMDE3NjY1MjcyMDIwMSFiAFqO8v7EZZqAbL-tscjo4fCc92H7SrejT2kfjjrYcRNmsrTm4ix7o4NNyKzrup22eSvUMOCqYrfOcDkd9Mw", //lien Emploie du temps
-  ],
+  icsWorker: "https://cal-k7x92mqp4v.deniz-walzberg.workers.dev/", // Worker Cloudflare qui lit tes calendriers iCloud
   rappels: ["Sortir les poubelles", "Commander du filament PLA", "Appeler le dentiste"],
   lumieres: [                                    // webhook = URL appelée au toucher (Home Assistant, IFTTT, bridge Govee/Smart Life…)
     { nom: "Salon",   icone: "🛋️", webhook: "" },
@@ -218,58 +213,56 @@ function demoEvents(){
     {n:"Cinéma", s:at(1,20,45), e:at(1,23,0)}
   ];
 }
-function parseICS(txt){
-  const out = [], blocks = txt.replace(/\r?\n[ \t]/g,"").split("BEGIN:VEVENT").slice(1);
-  const dt = s => { const m = s.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?/); if(!m) return null;
-    return m[7] ? new Date(Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5],+m[6])) : new Date(+m[1],m[2]-1,+m[3],+(m[4]||0),+(m[5]||0)); };
-  for (const b of blocks){
-    const g = k => (b.match(new RegExp("^"+k+"[^:\\n]*:(.*)$","m"))||[])[1];
-    const s = dt(g("DTSTART")||""), e = dt(g("DTEND")||"") || s;
-    if (s) out.push({n:(g("SUMMARY")||"Sans titre").trim(), s, e});
+let calErr = false;
+function expandICS(txt, from, to){
+  const out = [], comp = new ICAL.Component(ICAL.parse(txt));
+  comp.getAllSubcomponents("vtimezone").forEach(tz => { try { ICAL.TimezoneService.register(tz); } catch(_){} });
+  const masters = new Map(), exc = [];
+  comp.getAllSubcomponents("vevent").forEach(v => {
+    const e = new ICAL.Event(v);
+    if (e.isRecurrenceException()) exc.push(e); else masters.set(e.uid, e);
+  });
+  exc.forEach(x => { const m = masters.get(x.uid); if (m) m.relateException(x); });
+  const skipBefore = new Date(+from - 2*864e5);
+  for (const e of masters.values()){
+    const titre = e.summary || "Sans titre";
+    if (e.isRecurring()){
+      const it = e.iterator(); let next, n = 0;
+      while ((next = it.next()) && n++ < 20000){
+        const sd = next.toJSDate();
+        if (sd > to) break;
+        if (sd < skipBefore) continue;
+        const d = e.getOccurrenceDetails(next);
+        const s = d.startDate.toJSDate(), en = d.endDate.toJSDate();
+        if (en >= from && s <= to) out.push({n: d.item.summary || titre, s, e: en});
+      }
+    } else {
+      const s = e.startDate.toJSDate(), en = e.endDate ? e.endDate.toJSDate() : s;
+      if (en >= from && s <= to) out.push({n: titre, s, e: en});
+    }
   }
   return out;
 }
 async function loadCal(){
-  const urls = (CONFIG.icsUrls || []).filter(Boolean);
-
-  if (!urls.length){
-    events = demoEvents();
-  } else {
-    // Télécharge tous les calendriers en parallèle ; un échec n'empêche pas les autres
-    const results = await Promise.allSettled(
-      urls.map(async url => {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(url + " → HTTP " + res.status);
-        return parseICS(await res.text());
-      })
-    );
-
-    const merged = [];
-    results.forEach((r, i) => {
-      if (r.status === "fulfilled") merged.push(...r.value);
-      else console.warn("Calendrier ignoré :", urls[i], r.reason);
-    });
-
-    // Supprime les doublons (même titre + même début), utile si un événement
-    // apparaît dans plusieurs calendriers
-    const seen = new Set();
-    events = merged.filter(e => {
-      const k = e.n + "|" + e.s.getTime();
-      if (seen.has(k)) return false;
-      seen.add(k);
-      return true;
-    });
-
-    // Si tous les téléchargements ont échoué, on affiche la démo plutôt qu'un écran vide
-    if (!events.length && results.every(r => r.status === "rejected")) events = demoEvents();
+  const from = new Date(Date.now() - 864e5), to = new Date(Date.now() + 60*864e5);
+  if (!CONFIG.icsWorker){ events = demoEvents(); }
+  else {
+    try {
+      const res = await fetch(CONFIG.icsWorker);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const cals = await res.json(), merged = [];
+      cals.forEach(txt => { try { merged.push(...expandICS(txt, from, to)); } catch(e){ console.warn("Calendrier ignoré :", e); } });
+      const seen = new Set();
+      events = merged.filter(e => { const k = e.n + "|" + e.s.getTime(); if (seen.has(k)) return false; seen.add(k); return true; });
+      calErr = false;
+    } catch(e){ console.warn("Calendrier indisponible :", e); calErr = true; }
   }
-
-  events.sort((a, b) => a.s - b.s);   // ordre chronologique
+  events.sort((a, b) => a.s - b.s);
   renderCal();
 }
 function renderCal(){
   const now = new Date(), sod = new Date(now.getFullYear(),now.getMonth(),now.getDate()), eod = new Date(+sod+864e5);
-  const today = events.filter(e => e.s < eod && e.e >= sod);
+  const today = events.filter(e => e.s < eod && e.e > sod);
   const live = today.filter(e => e.e > now);
   const hm = d => pad(d.getHours())+":"+pad(d.getMinutes());
   let html = "";
@@ -278,7 +271,7 @@ function renderCal(){
   } else {
     const nx = events.find(e => e.s >= eod);
     html = nx ? `<div class="next-label">Prochain événement</div><div class="ev"><div class="bar" style="background:var(--orange)"></div><div><div class="t">${nx.s.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})} · ${hm(nx.s)}</div><div class="n">${esc(nx.n)}</div></div></div>`
-                : `<div class="empty">Rien de prévu prochainement.</div>`;
+                : `<div class="empty">${calErr ? "Calendrier indisponible, nouvelle tentative…" : "Rien de prévu prochainement."}</div>`;
   }
   $("calBody").innerHTML = html;
 }
