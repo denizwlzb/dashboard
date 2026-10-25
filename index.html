@@ -24,8 +24,8 @@ body{
              radial-gradient(800px 500px at 100% 110%,rgba(94,92,230,.12),transparent 60%),var(--bg);
 }
 .app{height:100%;display:grid;gap:20px;padding:28px 32px;
-  grid-template-columns:1.2fr 1fr;grid-template-rows:auto 1fr auto;
-  grid-template-areas:"head head" "cal rem" "dyn dyn"}
+  grid-template-columns:1.15fr 1fr .85fr;grid-template-rows:auto 1fr auto;
+  grid-template-areas:"head head head" "cal rem gym" "dyn dyn dyn"}
 .widget{
   background:var(--glass);border:1px solid var(--glass-b);border-radius:20px;padding:22px 24px;
   -webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);
@@ -67,6 +67,19 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 .rm.gone{opacity:0;transform:translateX(24px);max-height:0;padding:0}
 
 #wx{font-size:21px;font-weight:500;color:var(--t2);margin-top:10px;letter-spacing:-.2px}
+
+/* Salle */
+#gym .gcount{font-size:72px;font-weight:300;letter-spacing:-2px;line-height:1}
+#gym .gcount small{font-size:28px;color:var(--t3);margin-left:4px;letter-spacing:0}
+#gym .glabel{color:var(--t2);font-size:15px;margin-top:6px}
+#gym .gdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:22px 0 18px}
+#gym .gd{aspect-ratio:1;max-width:30px;border-radius:50%;border:1.5px solid var(--t3);display:grid;place-items:center;font-size:12px;color:var(--t3);
+  transition:background .5s var(--ease),border-color .5s var(--ease),color .5s var(--ease)}
+#gym .gd.on{background:var(--green);border-color:var(--green);color:#000;font-weight:700}
+#gym .gd.today{border-color:var(--t1);color:var(--t1)}
+#gym .gd.on.today{border-color:var(--green);color:#000}
+#gym .gmsg{font-size:17px;font-weight:600;line-height:1.35}
+#gym .gfoot{margin-top:auto;font-size:14px;color:var(--t2);line-height:1.7}
 
 /* Zone dynamique */
 #dyn{grid-area:dyn;display:flex;gap:20px;align-items:stretch;justify-content:center}
@@ -120,6 +133,7 @@ body{background:#000!important}
 
   <section class="widget" id="cal"><h2><i>📅</i>Calendrier</h2><div id="calBody"></div></section>
   <section class="widget" id="rem"><h2><i>☑️</i>Rappels</h2><div id="remBody"></div></section>
+  <section class="widget" id="gym" style="grid-area:gym"><h2><i>🏋️</i>Salle</h2><div id="gymBody" style="display:flex;flex-direction:column;flex:1;min-height:0"></div></section>
 
 
   <div id="dyn">
@@ -287,6 +301,36 @@ async function loadRem(){
   } catch(e){ console.warn("Rappels indisponibles :", e); remErr = true; if (rappels === null) renderRem(); }
 }
 renderRem(); loadRem(); setInterval(loadRem, 60000);
+
+/* ── Salle (séances envoyées par le Raccourci iPhone → Worker) ── */
+function renderGym(g){
+  const L = ["L","M","M","J","V","S","D"];
+  if (!g){ $("gymBody").innerHTML = `<div class="empty">Salle non connectée</div>`; return; }
+  const reste = g.objectif - g.count, dispo = 6 - g.today + (g.jours[g.today] ? 0 : 1);
+  const s = n => n > 1 ? "s" : "";
+  const msg = reste <= 0 ? "Objectif atteint 🎉"
+    : dispo < reste ? "Objectif difficile cette semaine"
+    : dispo === reste ? "Chaque jour compte : il faut y aller !"
+    : `Plus que ${reste} séance${s(reste)} · ${dispo} jour${s(dispo)} pour y arriver`;
+  let der = "Aucune séance enregistrée";
+  if (g.derniere){
+    const j = Math.round((new Date(new Date().toLocaleDateString("fr-CA")) - new Date(g.derniere)) / 864e5);
+    der = "Dernière séance : " + (j <= 0 ? "aujourd’hui" : j === 1 ? "hier" : "il y a " + j + " jours");
+  }
+  $("gymBody").innerHTML =
+    `<div class="gcount">${g.count}<small>/${g.objectif}</small></div><div class="glabel">séances cette semaine</div>` +
+    `<div class="gdays">${g.jours.map((on,i) => `<span class="gd ${on ? "on" : ""} ${i === g.today ? "today" : ""}">${L[i]}</span>`).join("")}</div>` +
+    `<div class="gmsg">${msg}</div>` +
+    `<div class="gfoot">${g.streak > 0 ? `🔥 ${g.streak} semaine${s(g.streak)} d’affilée<br>` : ""}${der}</div>`;
+}
+async function loadGym(){
+  if (!CONFIG.icsWorker) return renderGym(null);
+  try {
+    const g = await (await fetch(CONFIG.icsWorker.replace(/\/?$/, "/salle"))).json();
+    renderGym(g && typeof g.objectif === "number" && Array.isArray(g.jours) ? g : null);
+  } catch(e){ console.warn("Salle indisponible :", e); }
+}
+renderGym(null); loadGym(); setInterval(loadGym, 60000);
 
 /* ── Météo ── */
 const WX = {0:["☀️","Ensoleillé"],1:["🌤️","Plutôt dégagé"],2:["⛅","Partiellement nuageux"],3:["☁️","Couvert"],45:["🌫️","Brouillard"],48:["🌫️","Brouillard"],
