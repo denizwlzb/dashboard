@@ -79,6 +79,18 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 #gym .gm{font-size:15px;color:var(--t2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #gym .gs{font-size:14px;color:var(--t3);white-space:nowrap}
 
+/* Skincare (sous la météo) */
+#skin{display:flex;justify-content:flex-end;align-items:center;gap:14px;margin-top:14px;font-size:16px}
+#skin:empty{display:none}
+#skin .st{font-weight:600;color:var(--t2)}
+#skin .sdots{display:flex;gap:6px}
+#skin .sdots i{width:13px;height:13px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,255,255,.16);transition:background .6s var(--ease),border-color .6s var(--ease)}
+#skin .sdots i.on{background:var(--green);border-color:var(--green)}
+#skin .sdots i.miss{background:rgba(255,69,58,.45);border-color:rgba(255,69,58,.7)}
+#skin .sdots i.now{border-color:var(--t1)}
+#skin .sx{color:var(--t2);white-space:nowrap}
+#skin .sx.warn{color:var(--orange);font-weight:600}
+
 /* Zone dynamique */
 #dyn{grid-area:dyn;display:flex;gap:20px;align-items:stretch;justify-content:center}
 .dynw{flex:1 1 0;max-width:100%;opacity:0;transform:scale(.9) translateY(30px);max-height:0;padding-top:0;padding-bottom:0;
@@ -126,7 +138,7 @@ body{background:#000!important}
 <div class="app">
   <header>
     <div><div id="clock">--:--</div><div id="date"></div></div>
-    <div id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div></div>
+    <div id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div><div id="skin"></div></div>
   </header>
 
   <section class="widget" id="cal"><h2><i>📅</i>Calendrier</h2><div id="calBody"></div></section>
@@ -299,6 +311,27 @@ async function loadRem(){
   } catch(e){ console.warn("Rappels indisponibles :", e); remErr = true; if (rappels === null) renderRem(); }
 }
 renderRem(); loadRem(); setInterval(loadRem, 60000);
+
+/* ── Skincare (routine envoyée par le Raccourci NFC → Worker) ── */
+function renderSkin(s){
+  if (!s){ $("skin").innerHTML = ""; return; }
+  const n = s.jours.length;
+  const dots = s.jours.map((v, i) => `<i class="${v === 1 ? "on" : i === n - 1 ? "now" : v === 0 ? "miss" : ""}"></i>`).join("");
+  let txt, cls = "";
+  if (s.fait) txt = s.streak > 1 ? `🔥 ${s.streak} jours d’affilée` : "✅ Routine faite";
+  else if (s.sans === null) { txt = "Aucune routine enregistrée"; cls = "warn"; }
+  else if (s.sans >= 2) { txt = `${s.sans} jours sans routine`; cls = "warn"; }
+  else txt = "À faire aujourd’hui" + (s.streak > 0 ? ` · 🔥 ${s.streak}` : "");
+  $("skin").innerHTML = `<span class="st">🧴 Skincare</span><div class="sdots">${dots}</div><span class="sx ${cls}">${txt}</span>`;
+}
+async function loadSkin(){
+  if (!CONFIG.icsWorker) return renderSkin(null);
+  try {
+    const s = await (await fetch(CONFIG.icsWorker.replace(/\/?$/, "/skincare"))).json();
+    renderSkin(s && Array.isArray(s.jours) && typeof s.streak === "number" ? s : null);
+  } catch(e){ console.warn("Skincare indisponible :", e); }
+}
+loadSkin(); setInterval(loadSkin, 60000);
 
 /* ── Salle (séances envoyées par le Raccourci iPhone → Worker) ── */
 function renderGym(g){
