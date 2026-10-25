@@ -116,6 +116,8 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 .temps div{background:rgba(255,255,255,.07);border-radius:14px;padding:8px 14px;font-size:14px;color:var(--t2)}
 .temps b{display:block;font-size:20px;color:var(--t1);font-weight:600}
 
+#calBody{flex:1;min-height:0;overflow-y:auto}
+.dense .ev{padding:7px 0}.dense .ev .n{font-size:15px}.dense .ev .t{font-size:12px}
 /* Fond noir + bordures blanches */
 body{background:#000!important}
 .widget{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 30px rgba(0,0,0,.5)}
@@ -260,18 +262,33 @@ async function loadCal(){
   renderCal();
 }
 function renderCal(){
-  const now = new Date(), sod = new Date(now.getFullYear(),now.getMonth(),now.getDate()), eod = new Date(+sod+864e5);
-  const today = events.filter(e => e.s < eod && e.e > sod);
-  const live = today.filter(e => e.e > now);
-  const hm = d => pad(d.getHours())+":"+pad(d.getMinutes());
-  let html = "";
-  if (live.length){
-    html = today.map(e => `<div class="ev ${e.e<=now?"past":""}"><div class="bar"></div><div><div class="t">${hm(e.s)} – ${hm(e.e)}</div><div class="n">${esc(e.n)}</div></div></div>`).join("");
+  const now = new Date(), sod = new Date(now.getFullYear(), now.getMonth(), now.getDate()), eod = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const hm = d => pad(d.getHours()) + ":" + pad(d.getMinutes());
+  const duJour = (a, b) => events.filter(e => e.s < b && e.e > a);
+  const horaire = e => (e.e - e.s >= 864e5 - 36e5 && e.s.getHours() === 0 && e.s.getMinutes() === 0) ? "Toute la journée" : hm(e.s) + " – " + hm(e.e);
+  const ligne = (e, past, orange) => `<div class="ev ${past ? "past" : ""}"><div class="bar"${orange ? ' style="background:var(--orange)"' : ""}></div><div><div class="t">${horaire(e)}</div><div class="n">${esc(e.n)}</div></div></div>`;
+  const today = duJour(sod, eod);
+  let liste = [], html = "";
+  if (today.some(e => e.e > now)){
+    // Il reste des événements aujourd'hui : on affiche toute la journée
+    liste = today;
+    html = today.map(e => ligne(e, e.e <= now, false)).join("");
   } else {
+    // Rien (ou journée finie) : tous les événements du prochain jour qui en a
     const nx = events.find(e => e.s >= eod);
-    html = nx ? `<div class="next-label">Prochain événement</div><div class="ev"><div class="bar" style="background:var(--orange)"></div><div><div class="t">${nx.s.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})} · ${hm(nx.s)}</div><div class="n">${esc(nx.n)}</div></div></div>`
-                : `<div class="empty">${calErr ? "Calendrier indisponible, nouvelle tentative…" : "Rien de prévu prochainement."}</div>`;
+    if (nx){
+      const d0 = new Date(nx.s.getFullYear(), nx.s.getMonth(), nx.s.getDate()), d1 = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() + 1);
+      const demain = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      let label = d0.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long"});
+      label = label.charAt(0).toUpperCase() + label.slice(1);
+      if (+d0 === +demain) label = "Demain · " + label;
+      liste = duJour(d0, d1);
+      html = `<div class="next-label">${label}</div>` + liste.map(e => ligne(e, false, true)).join("");
+    } else {
+      html = `<div class="empty">${calErr ? "Calendrier indisponible, nouvelle tentative…" : "Rien de prévu prochainement."}</div>`;
+    }
   }
+  $("calBody").classList.toggle("dense", liste.length > 6);
   $("calBody").innerHTML = html;
 }
 const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
