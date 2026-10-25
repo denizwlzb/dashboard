@@ -24,8 +24,8 @@ body{
              radial-gradient(800px 500px at 100% 110%,rgba(94,92,230,.12),transparent 60%),var(--bg);
 }
 .app{height:100%;display:grid;gap:20px;padding:28px 32px;
-  grid-template-columns:1.15fr 1fr 1fr;grid-template-rows:auto 1fr auto;
-  grid-template-areas:"head head head" "cal rem side" "dyn dyn dyn"}
+  grid-template-columns:1.2fr 1fr;grid-template-rows:auto 1fr auto;
+  grid-template-areas:"head head" "cal rem" "dyn dyn"}
 .widget{
   background:var(--glass);border:1px solid var(--glass-b);border-radius:20px;padding:22px 24px;
   -webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);
@@ -66,24 +66,7 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 .rm.done .l{color:var(--t3);text-decoration:line-through}
 .rm.gone{opacity:0;transform:translateX(24px);max-height:0;padding:0}
 
-/* Colonne droite */
-#side{grid-area:side;display:grid;grid-template-rows:auto 1fr;gap:20px;min-height:0}
-#wx{flex-direction:row;align-items:center;justify-content:space-between}
-#wx .tmp{font-size:64px;font-weight:200;letter-spacing:-2px;line-height:1}
-#wx .d{font-size:16px;color:var(--t2);margin-top:6px}
-#wx .ic{font-size:64px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.4))}
-#wx .mm{font-size:13px;color:var(--t3);margin-top:4px}
-#lights .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
-.tile{border:0;border-radius:20px;background:rgba(255,255,255,.07);color:var(--t1);font:inherit;
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:16px;text-align:left;
-  transition:background .35s var(--ease),color .35s var(--ease),transform .25s var(--ease);cursor:pointer;
-  -webkit-tap-highlight-color:transparent}
-.tile:active{transform:scale(.94)}
-.tile .i{font-size:26px;filter:grayscale(1) opacity(.6);transition:filter .35s var(--ease)}
-.tile .n{font-size:15px;font-weight:600}
-.tile .s{font-size:12px;color:var(--t3);transition:color .35s var(--ease)}
-.tile.on{background:rgba(255,255,255,.92);color:#111}
-.tile.on .i{filter:none}.tile.on .s{color:rgba(0,0,0,.5)}
+#wx{font-size:21px;font-weight:500;color:var(--t2);margin-top:10px;letter-spacing:-.2px}
 
 /* Zone dynamique */
 #dyn{grid-area:dyn;display:flex;gap:20px;align-items:stretch;justify-content:center}
@@ -132,16 +115,12 @@ body{background:#000!important}
 <div class="app">
   <header>
     <div><div id="clock">--:--</div><div id="date"></div></div>
-    <div id="hello">Bonjour Deniz</div>
+    <div id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div></div>
   </header>
 
   <section class="widget" id="cal"><h2><i>📅</i>Calendrier</h2><div id="calBody"></div></section>
   <section class="widget" id="rem"><h2><i>☑️</i>Rappels</h2><div id="remBody"></div></section>
 
-  <div id="side">
-    <section class="widget" id="wx"></section>
-    <section class="widget" id="lights"><h2><i>💡</i>Lumières</h2><div class="grid" id="lightGrid"></div></section>
-  </div>
 
   <div id="dyn">
     <section class="widget dynw" id="bb">
@@ -172,14 +151,8 @@ body{background:#000!important}
    Ajoutez #demo à l’adresse pour forcer l’affichage des widgets Bambu et Spotify. */
 const CONFIG = {
   prenom: "Deniz",
-  meteo: { lat: 45.19, lon: 5.72 },             // coordonnées (Open-Meteo, sans clé)
+  meteo: { lat: 45.19, lon: 5.72, ville: "Grenoble" },             // coordonnées (Open-Meteo, sans clé)
   icsWorker: "https://cal-k7x92mqp4v.deniz-walzberg.workers.dev/", // Worker Cloudflare qui lit tes calendriers iCloud
-  lumieres: [                                    // webhook = URL appelée au toucher (Home Assistant, IFTTT, bridge Govee/Smart Life…)
-    { nom: "Salon",   icone: "🛋️", webhook: "" },
-    { nom: "Bureau",  icone: "🖥️", webhook: "" },
-    { nom: "Chambre", icone: "🛏️", webhook: "" },
-    { nom: "LED Govee", icone: "✨", webhook: "" }
-  ],
   bambuUrl: "",     // JSON local : {state,progress,remaining_min,nozzle,bed,name} (pont MQTT → HTTP)
   spotifyToken: "", // jeton OAuth Spotify (scope user-read-currently-playing)
   intervalle: { meteo: 600, calendrier: 300, bambu: 10, spotify: 5 } // secondes
@@ -199,7 +172,7 @@ tick(); setInterval(tick, 1000);
 /* ── Salutation (texte uniquement) ── */
 function majSalut(){
   const h = new Date().getHours();
-  $("hello").textContent = (h >= 5 && h < 18 ? "Bonjour" : h >= 18 && h < 22 ? "Bonsoir" : "Bonne nuit") + " " + CONFIG.prenom;
+  $("hi").textContent = (h >= 5 && h < 18 ? "Bonjour" : h >= 18 && h < 22 ? "Bonsoir" : "Bonne nuit") + " " + CONFIG.prenom;
 }
 majSalut(); setInterval(majSalut, 60000);
 
@@ -319,29 +292,18 @@ renderRem(); loadRem(); setInterval(loadRem, 60000);
 const WX = {0:["☀️","Ensoleillé"],1:["🌤️","Plutôt dégagé"],2:["⛅","Partiellement nuageux"],3:["☁️","Couvert"],45:["🌫️","Brouillard"],48:["🌫️","Brouillard"],
   51:["🌦️","Bruine"],53:["🌦️","Bruine"],55:["🌦️","Bruine"],61:["🌧️","Pluie"],63:["🌧️","Pluie"],65:["🌧️","Forte pluie"],
   71:["🌨️","Neige"],73:["🌨️","Neige"],75:["❄️","Forte neige"],80:["🌦️","Averses"],81:["🌦️","Averses"],82:["⛈️","Fortes averses"],95:["⛈️","Orage"],96:["⛈️","Orage"],99:["⛈️","Orage"]};
-function renderWx(t,code,min,max){
-  const [ic,txt] = WX[code] || ["🌡️","—"];
-  $("wx").innerHTML = `<div><div class="tmp">${Math.round(t)}°</div><div class="d">${txt}</div><div class="mm">Min ${Math.round(min)}° · Max ${Math.round(max)}°</div></div><div class="ic">${ic}</div>`;
+function renderWx(t, code){
+  const [ic, txt] = WX[code] || ["🌡️", "—"];
+  $("wx").textContent = ic + " " + Math.round(t) + "° · " + txt + " · " + CONFIG.meteo.ville;
 }
 async function loadWx(){
   try {
     const {lat,lon} = CONFIG.meteo;
     const r = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto`)).json();
-    renderWx(r.current.temperature_2m, r.current.weather_code, r.daily.temperature_2m_min[0], r.daily.temperature_2m_max[0]);
-  } catch(e){ renderWx(17,2,9,21); }
+    renderWx(r.current.temperature_2m, r.current.weather_code);
+  } catch(e){ console.warn("Météo indisponible :", e); }
 }
 loadWx(); setInterval(loadWx, CONFIG.intervalle.meteo*1000);
-
-/* ── Lumières ── */
-$("lightGrid").innerHTML = CONFIG.lumieres.map((l,i) =>
-  `<button class="tile" data-i="${i}"><span class="i">${l.icone}</span><span><div class="n">${esc(l.nom)}</div><div class="s">Éteinte</div></span></button>`).join("");
-$("lightGrid").addEventListener("click", async e => {
-  const b = e.target.closest(".tile"); if (!b) return;
-  const on = b.classList.toggle("on");
-  b.querySelector(".s").textContent = on ? "Allumée" : "Éteinte";
-  const hook = CONFIG.lumieres[b.dataset.i].webhook;
-  if (hook) try { await fetch(hook + (hook.includes("?")?"&":"?") + "state=" + (on?"on":"off"), {mode:"no-cors"}); } catch(_){}
-});
 
 /* ── Zone dynamique : Bambu & Spotify ── */
 const show = (id,on) => $(id).classList.toggle("show", on);
