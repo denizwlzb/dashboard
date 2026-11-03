@@ -8,123 +8,122 @@
 <title>Dashboard Deniz</title>
 <style>
 :root{
-  --t1:#fff; --t2:rgba(255,255,255,.80); --t3:rgba(255,255,255,.52); --line:rgba(255,255,255,.20);
+  --t1:#fff; --t2:rgba(255,255,255,.82); --t3:rgba(255,255,255,.54); --line:rgba(255,255,255,.20);
   --red:#c81e12; --orange:#ffe9b0; --green:#c8ffdd;
   --ease:cubic-bezier(.32,.72,0,1);
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
-html,body{height:100%;overflow:hidden;background:#e8620f}
+html,body{height:100%;overflow:hidden;background:#b84a0b}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",system-ui,sans-serif;
   font-weight:500;font-size:16px;letter-spacing:-.011em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;
-  text-shadow:0 1px 2px rgba(120,40,0,.22);
-  background:radial-gradient(900px 700px at 10% 6%,#ffb760 0%,transparent 62%),radial-gradient(800px 640px at 94% 10%,#ff7a18 0%,transparent 62%),
-             radial-gradient(900px 700px at 82% 104%,#e8590c 0%,transparent 64%),radial-gradient(800px 600px at 6% 98%,#ff9f43 0%,transparent 62%),
-             linear-gradient(160deg,#ff8c24 0%,#f26a10 52%,#c9440e 100%)}
-.app{position:relative;z-index:1;height:100%;display:grid;gap:28px;padding:36px 44px;grid-template-columns:1.2fr 1fr;grid-template-rows:auto 1fr auto auto;
-  grid-template-areas:"head head" "cal rem" "gym gym" "dyn dyn"}
+  text-shadow:0 1px 2px rgba(90,25,0,.25);
+  background:radial-gradient(900px 700px at 10% 6%,#f08a24 0%,transparent 62%),radial-gradient(800px 640px at 94% 10%,#e0640f 0%,transparent 62%),
+             radial-gradient(900px 700px at 82% 104%,#b9400a 0%,transparent 64%),radial-gradient(800px 600px at 6% 98%,#e07a1c 0%,transparent 62%),
+             linear-gradient(160deg,#e0701a 0%,#c85410 52%,#9e360b 100%)}
+
+/* Disposition : 3 colonnes, chaque carte ne prend que la place de son contenu */
+.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:36px 44px;align-items:start}
+.col{display:flex;flex-direction:column;min-height:0;max-height:100%}
+.col>.widget{flex:0 1 auto;margin-bottom:22px}
+.col>.widget:last-child{margin-bottom:0}
 
 /* Verre liquide, sobre */
 .widget{position:relative;
-  background:linear-gradient(145deg,rgba(255,255,255,.26),rgba(255,255,255,.07)),rgba(130,45,0,.20);
+  background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.06)),rgba(110,35,0,.24);
   -webkit-backdrop-filter:blur(24px) saturate(170%);backdrop-filter:blur(24px) saturate(170%);
-  border:1px solid rgba(255,255,255,.30);border-radius:28px;padding:28px 32px;min-height:0;overflow:hidden;display:flex;flex-direction:column;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 30px rgba(120,40,0,.18)}
-h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:18px}
+  border:1px solid rgba(255,255,255,.28);border-radius:26px;padding:20px 24px;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.40),0 10px 28px rgba(80,22,0,.22)}
+h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:12px}
 
-/* En-tête */
-header{grid-area:head;display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
-#clockw{padding:24px 34px 22px}
-#clock{display:flex;align-items:baseline;font-size:104px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+/* Heure, salutation, skincare */
+#clock{display:flex;align-items:baseline;font-size:84px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
 #clock .dg{display:inline-block;min-width:.58em;text-align:center}
 #clock .sep{opacity:.55;margin:0 .03em;transform:translateY(-.05em)}
 #clock .chg{animation:dgIn .7s var(--ease) both}
 #clock .chgH{animation:dgHour 1s var(--ease) both}
-#date{font-size:16px;font-weight:500;color:var(--t2);margin-top:8px;text-transform:capitalize}
-#side2{display:flex;flex-direction:column;align-items:flex-end;gap:14px}
-#hello{text-align:right;padding:18px 28px}
-#hi{font-size:26px;font-weight:600;letter-spacing:-.02em}
-#wx{font-size:15px;font-weight:500;color:var(--t2);margin-top:6px}
-#skin{flex-direction:row;align-items:center;gap:14px;padding:12px 22px;border-radius:999px;font-size:13px}
+#date{font-size:15px;font-weight:500;color:var(--t2);margin-top:6px;text-transform:capitalize}
+#hi{font-size:22px;font-weight:600;letter-spacing:-.02em}
+#wx{font-size:14px;font-weight:500;color:var(--t2);margin-top:4px}
+#skin{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px 12px;padding:16px 24px;font-size:13px}
 #skin:empty{display:none}
-#skin .st{font-weight:600;color:var(--t2)}
-#skin .sdots{display:flex;gap:5px;align-items:center}
-#skin .sdots i{width:5px;height:16px;border-radius:3px;background:rgba(255,255,255,.22);transition:background .6s var(--ease)}
+#skin .st{grid-column:1;grid-row:1;font-weight:600;color:var(--t2)}
+#skin .sx{grid-column:2;grid-row:1;color:#fff;white-space:nowrap;font-weight:600}
+#skin .sx.warn{background:var(--red);padding:3px 10px;border-radius:99px;text-shadow:none}
+#skin .sdots{grid-column:1/-1;grid-row:2;display:flex;gap:4px}
+#skin .sdots i{flex:1;height:14px;border-radius:3px;background:rgba(255,255,255,.22);transition:background .6s var(--ease)}
 #skin .sdots i.on{background:#fff}
 #skin .sdots i.miss{background:var(--red)}
 #skin .sdots i.now{background:transparent;box-shadow:inset 0 0 0 1.5px #fff}
-#skin .sx{color:#fff;white-space:nowrap;font-weight:600}
-#skin .sx.warn{background:var(--red);padding:3px 10px;border-radius:99px;text-shadow:none}
 
 /* Calendrier */
-#cal{grid-area:cal}
-#calBody{flex:1;min-height:0;overflow-y:auto}
-.ev{display:flex;gap:16px;padding:14px 0;border-top:1px solid var(--line);animation:in .6s var(--ease) both}
+#cal{min-height:0}
+#calBody{flex:0 1 auto;min-height:0;overflow-y:auto}
+.ev{display:flex;gap:14px;padding:11px 0;border-top:1px solid var(--line);animation:in .6s var(--ease) both}
 .ev:first-child{border-top:0;padding-top:0}
 .ev .bar{width:3px;align-self:stretch;border-radius:2px;background:#fff;flex:none}
-.ev .t{font-size:13px;color:var(--t2);font-variant-numeric:tabular-nums}
-.ev .n{font-size:18px;font-weight:600;margin-top:2px;line-height:1.2;letter-spacing:-.02em}
+.ev .t{font-size:12px;color:var(--t2);font-variant-numeric:tabular-nums}
+.ev .n{font-size:16px;font-weight:600;margin-top:1px;line-height:1.2;letter-spacing:-.02em}
 .ev.past{opacity:.45}
-.dense .ev{padding:9px 0}.dense .ev .n{font-size:16px}.dense .ev .t{font-size:12px}
-.next-label{font-size:13px;font-weight:600;color:var(--orange);margin-bottom:14px}
-.empty{color:var(--t3);font-size:16px;margin:auto 0}
+.dense .ev{padding:8px 0}.dense .ev .n{font-size:15px}.dense .ev .t{font-size:11px}
+.next-label{font-size:13px;font-weight:600;color:var(--orange);margin-bottom:12px}
+.empty{color:var(--t3);font-size:15px}
 
 /* Rappels */
-#rem{grid-area:rem}
-.rm{display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid var(--line)}
+.rm{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
 .rm:first-child{border-top:0;padding-top:0}
-.dot{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.85);flex:none}
-.rm .l{font-size:18px;font-weight:500;letter-spacing:-.02em}
+.dot{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(255,255,255,.85);flex:none}
+.rm .l{font-size:16px;font-weight:500;letter-spacing:-.02em}
 
 /* Salle */
-#gym{grid-area:gym;padding:18px 32px}
-#gymBody{display:flex;align-items:center;gap:28px;width:100%}
-#gym .gt{font-size:13px;font-weight:600;color:var(--t2);white-space:nowrap}
-#gym .gbar{display:flex;gap:8px;flex:none}
-#gym .gbar i{width:34px;height:8px;border-radius:4px;background:rgba(255,255,255,.28);transition:background .7s var(--ease)}
+#gym{padding:18px 24px}
+#gymBody{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px 12px}
+#gym .gt{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2)}
+#gym .gn{grid-column:2;grid-row:1;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+#gym .gbar{grid-column:1/-1;grid-row:2;display:flex;gap:6px}
+#gym .gbar i{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.28);transition:background .7s var(--ease)}
 #gym .gbar i.on{background:#fff}
-#gym .gn{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-#gym .gm{font-size:15px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#gym .gs{font-size:13px;color:var(--t2);white-space:nowrap}
+#gym .gm{grid-column:1/-1;grid-row:3;font-size:14px}
+#gym .gs{grid-column:1/-1;grid-row:4;font-size:12px;color:var(--t2)}
 
-/* Zone dynamique */
-#dyn{grid-area:dyn;display:flex;gap:28px;align-items:stretch;justify-content:center}
-.dynw{flex:1 1 0;max-width:100%;opacity:0;transform:scale(.94) translateY(24px);max-height:0;padding-top:0;padding-bottom:0;border-width:0;
-  pointer-events:none;transition:opacity .6s var(--ease),transform .7s var(--ease),max-height .7s var(--ease),padding .7s var(--ease)}
-.dynw.show{opacity:1;transform:none;max-height:150px;padding:22px 32px;border-width:1px;pointer-events:auto}
-#bb{flex-direction:row;align-items:center;gap:32px}
-.ring{position:relative;width:180px;flex:none;display:flex;flex-direction:column;transition:--p 1s linear}
-.ring span{order:1;font-size:38px;font-weight:600;line-height:1;margin-bottom:12px;font-variant-numeric:tabular-nums}
+/* Cartes qui apparaissent seulement quand il y a quelque chose (Bambu, Spotify) */
+.dynw{opacity:0;transform:scale(.94) translateY(20px);max-height:0;margin-bottom:0!important;padding-top:0;padding-bottom:0;border-width:0;
+  pointer-events:none;transition:opacity .6s var(--ease),transform .7s var(--ease),max-height .7s var(--ease),padding .7s var(--ease),margin .7s var(--ease)}
+.dynw.show{opacity:1;transform:none;max-height:300px;margin-bottom:22px!important;padding:18px 24px;border-width:1px;pointer-events:auto}
+.col>.dynw.show:last-child{margin-bottom:0!important}
+#bb{gap:14px}
+.ring{position:relative;width:100%;display:flex;flex-direction:column;transition:--p 1s linear}
+.ring span{order:1;font-size:34px;font-weight:600;line-height:1;margin-bottom:10px;font-variant-numeric:tabular-nums}
 .ring::before,.ring::after{content:"";height:6px;border-radius:3px}
 .ring::before{order:2;background:rgba(255,255,255,.28)}
 .ring::after{position:absolute;left:0;bottom:0;width:calc(var(--p,0)*1%);background:#fff}
-#bb .info{flex:1;min-width:0}
-#bb .tt{font-size:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#bb .sub{font-size:14px;color:var(--t2);margin-top:2px}
-.temps{display:flex;gap:10px;margin-top:10px}
-.temps div{background:rgba(255,255,255,.18);border-radius:14px;padding:6px 14px;font-size:12px;color:var(--t2)}
-.temps b{display:block;font-size:17px;color:#fff;font-weight:600}
-#sp{flex-direction:row;align-items:center;gap:24px}
-#sp .art{width:76px;height:76px;border-radius:18px;flex:none;background:rgba(255,255,255,.25) center/cover;box-shadow:0 6px 18px rgba(110,35,0,.25)}
+#bb h2{margin-bottom:4px}
+#bb .tt{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bb .sub{font-size:13px;color:var(--t2);margin-top:2px}
+.temps{display:flex;gap:8px;margin-top:10px}
+.temps div{flex:1;background:rgba(255,255,255,.18);border-radius:12px;padding:6px 12px;font-size:12px;color:var(--t2)}
+.temps b{display:block;font-size:16px;color:#fff;font-weight:600}
+#sp{flex-direction:row;align-items:center;gap:16px}
+#sp .art{width:60px;height:60px;border-radius:14px;flex:none;background:rgba(255,255,255,.25) center/cover;box-shadow:0 6px 16px rgba(80,22,0,.25)}
 #sp .info{flex:1;min-width:0}
-#sp .tt{font-size:19px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#sp .ar{font-size:14px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prog{height:4px;border-radius:2px;margin-top:14px;background:rgba(255,255,255,.28);overflow:hidden}
+#sp .tt{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sp .ar{font-size:13px;color:var(--t2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog{height:4px;border-radius:2px;margin-top:10px;background:rgba(255,255,255,.28);overflow:hidden}
 .prog b{display:block;height:100%;width:0;border-radius:2px;background:#fff;transition:width 1s linear}
-.eq{display:flex;gap:4px;align-items:flex-end;height:24px}
-.eq span{width:4px;background:#fff;border-radius:2px;animation:eq 1s ease-in-out infinite}
+.eq{display:flex;gap:3px;align-items:flex-end;height:20px}
+.eq span{width:3px;background:#fff;border-radius:2px;animation:eq 1s ease-in-out infinite}
 .eq span:nth-child(2){animation-delay:.2s}.eq span:nth-child(3){animation-delay:.4s}.eq span:nth-child(4){animation-delay:.1s}
 
 /* Fond et effets occasionnels */
-#glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,transparent 45%,rgba(90,22,0,.22) 100%)}
-#sweep{position:fixed;top:0;bottom:0;left:0;width:34vw;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.20),transparent)}
+#glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,transparent 45%,rgba(70,16,0,.30) 100%)}
+#sweep{position:fixed;top:0;bottom:0;left:0;width:34vw;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
 body.fx-sweep #sweep{animation:sweep 2.8s var(--ease)}
 body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 @keyframes sweep{0%{opacity:0;transform:translateX(-40vw)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(110vw)}}
 @keyframes lift{0%,100%{transform:none}40%{transform:translateY(-6px)}}
 @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes eq{0%,100%{height:5px}50%{height:22px}}
+@keyframes eq{0%,100%{height:4px}50%{height:19px}}
 @keyframes dgIn{0%{opacity:0;transform:translateY(.32em);filter:blur(6px)}100%{opacity:1;transform:none;filter:blur(0)}}
 @keyframes dgHour{0%{opacity:0;transform:translateY(.5em) scale(.9);filter:blur(10px)}100%{opacity:1;transform:none;filter:blur(0)}}
 @property --p{syntax:"<number>";inherits:true;initial-value:0}
@@ -134,20 +133,17 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 <body>
 <div id="glow"></div><div id="sweep"></div>
 <div class="app">
-  <header>
+  <div class="col">
     <div class="widget" id="clockw"><div id="clock"></div><div id="date"></div></div>
-    <div id="side2">
-      <div class="widget" id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div></div>
-      <div class="widget" id="skin"></div>
-    </div>
-  </header>
-
-  <section class="widget" id="cal"><h2>Calendrier</h2><div id="calBody"></div></section>
-  <section class="widget" id="rem"><h2>Rappels</h2><div id="remBody"></div></section>
-  <section class="widget" id="gym"><div id="gymBody"></div></section>
-
-
-  <div id="dyn">
+    <div class="widget" id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div></div>
+    <div class="widget" id="skin"></div>
+  </div>
+  <div class="col">
+    <section class="widget" id="cal"><h2>Calendrier</h2><div id="calBody"></div></section>
+    <section class="widget" id="rem"><h2>Rappels</h2><div id="remBody"></div></section>
+  </div>
+  <div class="col">
+    <section class="widget" id="gym"><div id="gymBody"></div></section>
     <section class="widget dynw" id="bb">
       <div class="ring" id="bbRing"><span id="bbPct">0%</span></div>
       <div class="info">
