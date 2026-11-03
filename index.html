@@ -58,18 +58,28 @@ h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:12px}
 #skin .sdots i.now{background:transparent;box-shadow:inset 0 0 0 1.5px #fff}
 
 /* Hydratation */
-#eau{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px 12px;padding:18px 24px}
+#eau{display:flex;flex-direction:column;gap:12px;padding:20px 24px}
 #eau:empty{display:none}
-#eau .et{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2)}
-#eau .en{grid-column:2;grid-row:1;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+#eau .eh{display:flex;justify-content:space-between;align-items:baseline}
+#eau .et{font-size:13px;font-weight:600;color:var(--t2)}
+#eau .en{font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
 #eau .en small{font-size:13px;font-weight:500;color:var(--t2)}
-#eau .ebar{grid-column:1/-1;grid-row:2;height:8px;border-radius:4px;background:rgba(255,255,255,.28);overflow:hidden}
-#eau .ebar b{display:block;height:100%;border-radius:4px;background:#fff;transition:width .9s var(--ease)}
+#eau .ebar{position:relative;height:10px;border-radius:5px;background:rgba(255,255,255,.28)}
+#eau .ebar b{display:block;height:100%;border-radius:5px;background:#fff;transition:width .9s var(--ease)}
 #eau .ebar b.ok{background:var(--green)}
-#eau .ew{grid-column:1/-1;grid-row:3;display:flex;align-items:flex-end;gap:6px;height:30px}
-#eau .ew i{flex:1;border-radius:3px;background:rgba(255,255,255,.32);min-height:3px;transition:height .8s var(--ease)}
-#eau .ew i.t{background:#fff}
-#eau .em{grid-column:1/-1;grid-row:4;font-size:13px;color:var(--t2)}
+#eau .ebar u{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:1px;background:rgba(255,255,255,.95);text-decoration:none}
+#eau .chip{align-self:flex-start;font-size:12px;font-weight:600;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.22)}
+#eau .chip.ok{background:var(--green);color:#0b3d22;text-shadow:none}
+#eau .chip.late{background:var(--red);color:#fff;text-shadow:none}
+#eau .er{font-size:15px;font-weight:600}
+#eau .ew{display:flex;align-items:flex-end;gap:7px;height:52px;border-top:1px dashed rgba(255,255,255,.5)}
+#eau .ew i{flex:1;border-radius:3px 3px 0 0;background:rgba(255,255,255,.38);transition:height .8s var(--ease)}
+#eau .ew i.ok{background:var(--green)}
+#eau .ew i.t:not(.ok){background:#fff}
+#eau .el{display:flex;gap:7px;margin-top:-6px}
+#eau .el span{flex:1;text-align:center;font-size:11px;color:var(--t2)}
+#eau .el span.t{color:#fff;font-weight:700}
+#eau .es{font-size:13px;color:var(--t2)}
 
 /* Calendrier */
 #cal{min-height:0}
@@ -366,12 +376,28 @@ loadSkin(); setInterval(loadSkin, 60000);
 function renderEau(e){
   if (!e){ $("eau").innerHTML = ""; return; }
   const L = ml => (ml / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 2 });
-  const reste = e.objectif - e.total, max = Math.max(e.objectif, ...e.jours);
-  const pct = Math.min(100, Math.round(e.total / e.objectif * 100));
-  const bars = e.jours.map((v, i) => `<i class="${i === e.jours.length - 1 ? "t" : ""}" style="height:${Math.max(10, Math.round(v / max * 100))}%"></i>`).join("");
-  const msg = reste <= 0 ? "Objectif atteint" : `Il reste ${L(reste)} L` + (e.dernier ? ` · dernier : ${e.dernier} ml` : "");
-  $("eau").innerHTML = `<span class="et">Hydratation</span><span class="en">${L(e.total)} <small>/ ${L(e.objectif)} L</small></span>` +
-    `<div class="ebar"><b class="${reste <= 0 ? "ok" : ""}" style="width:${pct}%"></b></div><div class="ew">${bars}</div><div class="em">${msg}</div>`;
+  const s = n => n > 1 ? "s" : "";
+  const obj = e.objectif, reste = obj - e.total, n = e.jours.length;
+  const maintenant = new Date(), h = maintenant.getHours() + maintenant.getMinutes() / 60;
+  const attendu = Math.round(obj * Math.min(1, Math.max(0, (h - 8) / 14)));   // rythme : de 8 h à 22 h
+  let statut, cls;
+  if (reste <= 0){ statut = "Objectif atteint"; cls = "ok"; }
+  else if (h >= 22){ statut = "Objectif non atteint aujourd’hui"; cls = "late"; }
+  else if (e.total >= attendu - 125){ statut = "Dans les temps"; cls = "ok"; }
+  else { statut = `En retard de ${Math.round((attendu - e.total) / 50) * 50} ml`; cls = "late"; }
+  const verres = Math.ceil(reste / 250);
+  const restant = reste <= 0 ? `+${L(-reste)} L au-dessus de l’objectif` : `Encore ${verres} verre${s(verres)} de 250 ml`;
+  const pct = Math.min(100, Math.round(e.total / obj * 100));
+  const repere = reste > 0 && attendu > 0 ? `<u style="left:${Math.round(attendu / obj * 100)}%"></u>` : "";
+  const bars = e.jours.map((v, i) => `<i class="${v >= obj ? "ok" : ""} ${i === n - 1 ? "t" : ""}" style="height:${Math.max(6, Math.min(100, Math.round(v / obj * 100)))}%"></i>`).join("");
+  const jours = e.jours.map((v, i) => `<span class="${i === n - 1 ? "t" : ""}">${new Date(Date.now() - (n - 1 - i) * 864e5).toLocaleDateString("fr-FR", { weekday: "narrow" }).toUpperCase()}</span>`).join("");
+  const atteints = e.jours.filter(v => v >= obj).length, moy = e.jours.reduce((a, b) => a + b, 0) / n;
+  $("eau").innerHTML =
+    `<div class="eh"><span class="et">Hydratation</span><span class="en">${L(e.total)} <small>/ ${L(obj)} L</small></span></div>` +
+    `<div class="ebar"><b class="${reste <= 0 ? "ok" : ""}" style="width:${pct}%"></b>${repere}</div>` +
+    `<span class="chip ${cls}">${statut}</span><div class="er">${restant}</div>` +
+    `<div class="ew">${bars}</div><div class="el">${jours}</div>` +
+    `<div class="es">Semaine : ${atteints} jour${s(atteints)} sur ${n} à l’objectif · moyenne ${L(moy)} L</div>`;
 }
 async function loadEau(){
   if (!CONFIG.icsWorker) return renderEau(null);
