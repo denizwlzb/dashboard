@@ -12,17 +12,17 @@
 <style>
 :root{
   --bg:#000; --line:#2c2c2c; --t1:#fff; --t2:#a3a3a3; --t3:#5c5c5c;
-  --red:#ff3b2f; --orange:#ff3b2f; --green:#fff; --blue:#fff;
+  --red:#ff3b2f; --orange:#ff9f0a; --green:#34d27b; --blue:#fff;
   --ease:cubic-bezier(.32,.72,0,1);
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html,body{height:100%;overflow:hidden;background:#000}
-body{background:radial-gradient(760px 520px at 90% -10%,rgba(255,59,47,.30),transparent 65%),radial-gradient(640px 480px at -8% 110%,rgba(255,59,47,.18),transparent 65%),radial-gradient(560px 440px at 58% 115%,rgba(70,100,255,.14),transparent 70%),radial-gradient(rgba(255,255,255,.10) 1px,transparent 1.4px) 0 0/22px 22px,#000}
+body{background:radial-gradient(rgba(255,255,255,.10) 1px,transparent 1.4px) 0 0/22px 22px,#000}
 body{font-family:"Doto","DotGothic16",ui-monospace,Menlo,monospace;font-weight:600;font-size:15px;letter-spacing:.02em;
   color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
-.app{height:100%;display:grid;gap:30px;padding:34px 48px;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr auto auto;
+.app{position:relative;z-index:1;height:100%;display:grid;gap:30px;padding:34px 48px;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr auto auto;
   grid-template-areas:"head head" "cal rem" "gym gym" "dyn dyn"}
 
 /* Cartes style Nothing : noir, fin contour, trame de points */
@@ -43,30 +43,31 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 #skin .st{font-weight:700;color:var(--t2)}
 #skin .sdots{display:flex;gap:7px}
 #skin .sdots i{width:10px;height:10px;border-radius:50%;border:1.5px solid #3a3a3a;transition:background .6s var(--ease),border-color .6s var(--ease)}
-#skin .sdots i.on{background:#fff;border-color:#fff}
+#skin .sdots i.on{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(52,210,123,.55)}
 #skin .sdots i.miss{background:var(--red);border-color:var(--red)}
 #skin .sdots i.now{border-color:#fff}
 #skin .sx{color:var(--t2);white-space:nowrap}
 #skin .sx.warn{color:var(--red);font-weight:700}
+#skin .sx.ok{color:var(--green);font-weight:700}
 
 /* Calendrier */
 #cal{grid-area:cal}
 #calBody{flex:1;min-height:0;overflow-y:auto}
 .ev{display:flex;gap:16px;padding:13px 0;border-top:2px dotted var(--line);animation:in .6s var(--ease) both}
 .ev:first-child{border-top:0;padding-top:0}
-.ev .bar{width:8px;height:8px;border-radius:50%;background:#fff;flex:none;margin-top:6px}
+.ev .bar{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:none;margin-top:6px}
 .ev .t{font-size:12px;color:var(--t2);letter-spacing:.08em;font-variant-numeric:tabular-nums}
 .ev .n{font-size:17px;font-weight:700;margin-top:3px;line-height:1.2}
 .ev.past{opacity:.35}
 .dense .ev{padding:7px 0}.dense .ev .n{font-size:15px}.dense .ev .t{font-size:11px}
-.next-label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.next-label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
 .empty{color:var(--t3);font-size:15px;margin:auto 0}
 
 /* Rappels */
 #rem{grid-area:rem}
 .rm{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:2px dotted var(--line)}
 .rm:first-child{border-top:0;padding-top:0}
-.dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--t2);flex:none}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--orange);flex:none}
 .rm .l{font-size:17px;font-weight:700}
 
 /* Salle (barre de points) */
@@ -76,7 +77,7 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 #gym .gt::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--red)}
 #gym .gbar{display:flex;gap:10px;flex:none}
 #gym .gbar i{width:16px;height:16px;border-radius:50%;border:2px solid #4a4a4a;transition:background .7s var(--ease),border-color .7s var(--ease)}
-#gym .gbar i.on{background:#fff;border-color:#fff}
+#gym .gbar i.on{background:var(--green);border-color:var(--green);box-shadow:0 0 10px rgba(52,210,123,.55)}
 #gym .gn{font-size:21px;font-weight:800;white-space:nowrap}
 #gym .gm{font-size:14px;color:var(--t1);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #gym .gs{font-size:11px;color:var(--t2);white-space:nowrap;letter-spacing:.06em}
@@ -98,7 +99,7 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 #bb .sub{font-size:12px;color:var(--t2);margin-top:4px;letter-spacing:.08em}
 .temps{display:flex;gap:10px;margin-top:10px}
 .temps div{border:1.5px dotted #444;border-radius:16px;padding:5px 13px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t2)}
-.temps b{display:block;font-size:17px;color:#fff;font-weight:800;letter-spacing:.02em}
+.temps b{display:block;font-size:17px;color:var(--orange);font-weight:800;letter-spacing:.02em}
 #sp{flex-direction:row;align-items:center;gap:26px}
 #sp .art{position:relative;width:76px;height:76px;border-radius:18px;flex:none;background:#222 center/cover;filter:grayscale(1) contrast(1.15)}
 #sp .art::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(rgba(0,0,0,.6) 1.4px,transparent 1.8px) 0 0/5px 5px}
@@ -106,10 +107,40 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 #sp .tt{font-size:19px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #sp .ar{font-size:13px;color:var(--t2);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.06em}
 .prog{height:8px;margin-top:14px;background:radial-gradient(circle at 4px 4px,#3a3a3a 2.4px,transparent 3px) 0 0/10px 8px repeat-x}
-.prog b{display:block;height:100%;width:0;background:radial-gradient(circle at 4px 4px,#fff 2.8px,transparent 3.4px) 0 0/10px 8px repeat-x;transition:width 1s linear}
+.prog b{display:block;height:100%;width:0;background:radial-gradient(circle at 4px 4px,var(--green) 2.8px,transparent 3.4px) 0 0/10px 8px repeat-x;transition:width 1s linear}
 .eq{display:flex;gap:5px;align-items:flex-end;height:26px}
-.eq span{width:5px;background:#fff;border-radius:3px;animation:eq 1s ease-in-out infinite}
+.eq span{width:5px;background:var(--green);border-radius:3px;animation:eq 1s ease-in-out infinite}
 .eq span:nth-child(2){animation-delay:.2s}.eq span:nth-child(3){animation-delay:.4s}.eq span:nth-child(4){animation-delay:.1s}
+
+/* Halos de couleur (rouge dominant, orange et vert en touches) */
+#glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(760px 520px at 90% -10%,rgba(255,59,47,.32),transparent 65%),
+             radial-gradient(420px 320px at 4% -6%,rgba(255,59,47,.14),transparent 70%),
+             radial-gradient(640px 480px at -8% 112%,rgba(255,159,10,.22),transparent 65%),
+             radial-gradient(560px 420px at 62% 116%,rgba(52,210,123,.16),transparent 70%);
+  animation:breathe 14s ease-in-out infinite alternate}
+@keyframes breathe{from{opacity:.78;transform:scale(1)}to{opacity:1;transform:scale(1.06)}}
+#sweep{position:fixed;top:0;bottom:0;left:0;width:32vw;z-index:2;pointer-events:none;opacity:0;
+  background:linear-gradient(90deg,transparent,rgba(255,59,47,.16),rgba(255,159,10,.10),transparent)}
+
+/* Horloge : animation à chaque changement de chiffre */
+#clock .dg{display:inline-block}
+#clock .sep{display:inline-block;color:var(--red);margin:0 .02em;animation:blink 2s steps(1) infinite}
+#clock .chg{animation:dgIn .9s var(--ease) both}
+#clock .chgH{animation:dgHour 1.3s var(--ease) both}
+@keyframes dgIn{0%{opacity:0;transform:translateY(-.22em);filter:blur(5px);color:var(--red)}55%{color:var(--red)}100%{opacity:1;transform:none;filter:blur(0);color:#fff}}
+@keyframes dgHour{0%{opacity:0;transform:scale(.7);filter:blur(8px);color:var(--orange)}50%{color:var(--orange)}100%{opacity:1;transform:none;filter:blur(0);color:#fff}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* Effets occasionnels (déclenchés au hasard toutes les 25 à 60 s) */
+body.fx-sweep #sweep{animation:sweep 2.6s var(--ease)}
+@keyframes sweep{0%{opacity:0;transform:translateX(-40vw)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(110vw)}}
+body.fx-glitch #clock{animation:glitch .9s steps(1)}
+@keyframes glitch{0%{transform:none;opacity:1}10%{transform:translateX(-6px);opacity:.6}20%{transform:translateX(5px);opacity:1}30%{opacity:.3}40%{transform:translateX(-3px);opacity:1}55%{opacity:.5}70%{transform:translateX(2px);opacity:1}100%{transform:none;opacity:1}}
+body.fx-pulse h2::before,body.fx-pulse #gym .gt::before{animation:pulse 1.4s ease-out}
+@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,59,47,.8)}60%{transform:scale(1.7);box-shadow:0 0 0 12px rgba(255,59,47,0)}100%{transform:none;box-shadow:0 0 0 0 rgba(255,59,47,0)}}
+body.fx-hue #glow{animation:hue 5s ease-in-out,breathe 14s ease-in-out infinite alternate}
+@keyframes hue{0%,100%{filter:hue-rotate(0)}50%{filter:hue-rotate(40deg) saturate(1.3)}}
 
 @keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes eq{0%,100%{height:6px}50%{height:24px}}
@@ -118,9 +149,10 @@ header{grid-area:head;display:flex;justify-content:space-between;align-items:fle
 </style>
 </head>
 <body>
+<div id="glow"></div><div id="sweep"></div>
 <div class="app">
   <header>
-    <div><div id="clock">--:--</div><div id="date"></div></div>
+    <div><div id="clock"></div><div id="date"></div></div>
     <div id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div><div id="skin"></div></div>
   </header>
 
@@ -170,11 +202,27 @@ const pad = n => String(n).padStart(2,"0");
 
 /* ── Horloge ── */
 function tick(){
-  const d = new Date();
-  $("clock").textContent = pad(d.getHours()) + ":" + pad(d.getMinutes());
+  const d = new Date(), t = pad(d.getHours()) + ":" + pad(d.getMinutes()), el = $("clock");
+  if (!el.querySelector(".sep")) el.innerHTML = [...t].map(c => c === ":" ? '<span class="sep">:</span>' : '<span class="dg"></span>').join("");
+  [...el.children].forEach((s, i) => {
+    if (s.className === "sep" || s.textContent === t[i]) return;
+    const premier = s.textContent === "";
+    s.textContent = t[i];
+    if (!premier){ s.classList.remove("chg", "chgH"); void s.offsetWidth; s.classList.add(i < 2 ? "chgH" : "chg"); }
+  });
   $("date").textContent = d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
 }
 tick(); setInterval(tick, 1000);
+
+/* Petits effets occasionnels */
+const EFFETS = [["sweep", 2700], ["glitch", 950], ["pulse", 1500], ["hue", 5200]];
+function effetAuHasard(){
+  const [nom, ms] = EFFETS[Math.floor(Math.random() * EFFETS.length)];
+  document.body.classList.add("fx-" + nom);
+  setTimeout(() => document.body.classList.remove("fx-" + nom), ms);
+  setTimeout(effetAuHasard, 25000 + Math.random() * 35000);
+}
+setTimeout(effetAuHasard, 12000);
 
 /* ── Salutation (texte uniquement) ── */
 function majSalut(){
@@ -300,7 +348,7 @@ function renderSkin(s){
   if (!s){ $("skin").innerHTML = ""; return; }
   const n = s.jours.length;
   const dots = s.jours.map((v, i) => `<i class="${v === 1 ? "on" : i === n - 1 ? "now" : v === 0 ? "miss" : ""}"></i>`).join("");
-  let txt, cls = "";
+  let txt, cls = s.fait ? "ok" : "";
   if (s.fait) txt = s.streak > 1 ? `${s.streak} jours d’affilée` : "Routine faite";
   else if (s.sans === null) { txt = "Aucune routine enregistrée"; cls = "warn"; }
   else if (s.sans >= 2) { txt = `${s.sans} jours sans routine`; cls = "warn"; }
