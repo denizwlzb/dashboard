@@ -57,6 +57,20 @@ h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:12px}
 #skin .sdots i.miss{background:var(--red)}
 #skin .sdots i.now{background:transparent;box-shadow:inset 0 0 0 1.5px #fff}
 
+/* Hydratation */
+#eau{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px 12px;padding:18px 24px}
+#eau:empty{display:none}
+#eau .et{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2)}
+#eau .en{grid-column:2;grid-row:1;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+#eau .en small{font-size:13px;font-weight:500;color:var(--t2)}
+#eau .ebar{grid-column:1/-1;grid-row:2;height:8px;border-radius:4px;background:rgba(255,255,255,.28);overflow:hidden}
+#eau .ebar b{display:block;height:100%;border-radius:4px;background:#fff;transition:width .9s var(--ease)}
+#eau .ebar b.ok{background:var(--green)}
+#eau .ew{grid-column:1/-1;grid-row:3;display:flex;align-items:flex-end;gap:6px;height:30px}
+#eau .ew i{flex:1;border-radius:3px;background:rgba(255,255,255,.32);min-height:3px;transition:height .8s var(--ease)}
+#eau .ew i.t{background:#fff}
+#eau .em{grid-column:1/-1;grid-row:4;font-size:13px;color:var(--t2)}
+
 /* Calendrier */
 #cal{min-height:0}
 #calBody{flex:0 1 auto;min-height:0;overflow-y:auto}
@@ -137,6 +151,7 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
     <div class="widget" id="clockw"><div id="clock"></div><div id="date"></div></div>
     <div class="widget" id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div></div>
     <div class="widget" id="skin"></div>
+    <div class="widget" id="eau"></div>
   </div>
   <div class="col">
     <section class="widget" id="cal"><h2>Calendrier</h2><div id="calBody"></div></section>
@@ -346,6 +361,26 @@ async function loadSkin(){
   } catch(e){ console.warn("Skincare indisponible :", e); }
 }
 loadSkin(); setInterval(loadSkin, 60000);
+
+/* ── Hydratation (Raccourci iPhone / Apple Watch / Siri → Worker) ── */
+function renderEau(e){
+  if (!e){ $("eau").innerHTML = ""; return; }
+  const L = ml => (ml / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 2 });
+  const reste = e.objectif - e.total, max = Math.max(e.objectif, ...e.jours);
+  const pct = Math.min(100, Math.round(e.total / e.objectif * 100));
+  const bars = e.jours.map((v, i) => `<i class="${i === e.jours.length - 1 ? "t" : ""}" style="height:${Math.max(10, Math.round(v / max * 100))}%"></i>`).join("");
+  const msg = reste <= 0 ? "Objectif atteint" : `Il reste ${L(reste)} L` + (e.dernier ? ` · dernier : ${e.dernier} ml` : "");
+  $("eau").innerHTML = `<span class="et">Hydratation</span><span class="en">${L(e.total)} <small>/ ${L(e.objectif)} L</small></span>` +
+    `<div class="ebar"><b class="${reste <= 0 ? "ok" : ""}" style="width:${pct}%"></b></div><div class="ew">${bars}</div><div class="em">${msg}</div>`;
+}
+async function loadEau(){
+  if (!CONFIG.icsWorker) return renderEau(null);
+  try {
+    const e = await (await fetch(CONFIG.icsWorker.replace(/\/?$/, "/eau"))).json();
+    renderEau(e && typeof e.objectif === "number" && Array.isArray(e.jours) ? e : null);
+  } catch(err){ console.warn("Eau indisponible :", err); }
+}
+loadEau(); setInterval(loadEau, 60000);
 
 /* ── Salle (séances envoyées par le Raccourci iPhone → Worker) ── */
 function renderGym(g){
