@@ -6,130 +6,112 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Dashboard Deniz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=DotGothic16&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b0f19; --glass:rgba(255,255,255,.06); --glass-b:rgba(255,255,255,.10);
-  --t1:#f5f5f7; --t2:rgba(235,235,245,.60); --t3:rgba(235,235,245,.32);
-  --blue:#0a84ff; --green:#30d158; --orange:#ff9f0a; --red:#ff453a; --yellow:#ffd60a;
+  --bg:#000; --line:#2c2c2c; --t1:#fff; --t2:#a3a3a3; --t3:#5c5c5c;
+  --red:#ff3b2f; --orange:#ff3b2f; --green:#fff; --blue:#fff;
   --ease:cubic-bezier(.32,.72,0,1);
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
-html,body{height:100%;overflow:hidden;background:var(--bg)}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
-  color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;
-  background:radial-gradient(900px 600px at 15% -10%,rgba(10,132,255,.14),transparent 60%),
-             radial-gradient(800px 500px at 100% 110%,rgba(94,92,230,.12),transparent 60%),var(--bg);
-}
-.app{height:100%;display:grid;gap:20px;padding:28px 32px;
-  grid-template-columns:1.2fr 1fr;grid-template-rows:auto 1fr auto auto;
+html,body{height:100%;overflow:hidden;background:#000}
+body{font-family:"Doto","DotGothic16",ui-monospace,Menlo,monospace;font-weight:600;font-size:18px;letter-spacing:.02em;
+  color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
+.app{height:100%;display:grid;gap:30px;padding:34px 48px;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr auto auto;
   grid-template-areas:"head head" "cal rem" "gym gym" "dyn dyn"}
-.widget{
-  background:var(--glass);border:1px solid var(--glass-b);border-radius:20px;padding:22px 24px;
-  -webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);
-  box-shadow:0 8px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05);min-height:0;overflow:hidden;
-  display:flex;flex-direction:column}
-h2{font-size:15px;font-weight:600;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-h2 i{font-style:normal;font-size:16px}
+
+/* Cartes style Nothing : noir, fin contour, trame de points */
+.widget{background-color:#050505;background-image:radial-gradient(rgba(255,255,255,.075) 1px,transparent 1.4px);background-size:16px 16px;
+  border:1.5px solid var(--line);border-radius:32px;padding:30px 34px;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+h2{font-size:14px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--t2);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+h2::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--red);flex:none}
 
 /* En-tête */
-header{grid-area:head;display:flex;justify-content:space-between;align-items:flex-end;padding:0 6px}
-#clock{font-size:96px;font-weight:300;letter-spacing:-3px;line-height:1;font-variant-numeric:tabular-nums}
-#date{font-size:22px;font-weight:500;color:var(--t2);margin-top:6px;text-transform:capitalize}
-#hello{font-size:34px;font-weight:600;letter-spacing:-.5px;text-align:right}
+header{grid-area:head;display:flex;justify-content:space-between;align-items:flex-end;padding:0 8px}
+#clock{font-size:132px;font-weight:800;letter-spacing:.01em;line-height:.85;font-variant-numeric:tabular-nums}
+#date{font-size:18px;font-weight:700;color:var(--t2);margin-top:18px;letter-spacing:.2em;text-transform:uppercase}
+#hello{text-align:right}
+#hi{font-size:30px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+#wx{font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t2);margin-top:12px}
+#skin{display:flex;justify-content:flex-end;align-items:center;gap:16px;margin-top:16px;font-size:14px;letter-spacing:.1em;text-transform:uppercase}
+#skin:empty{display:none}
+#skin .st{font-weight:700;color:var(--t2)}
+#skin .sdots{display:flex;gap:7px}
+#skin .sdots i{width:13px;height:13px;border-radius:50%;border:1.5px solid #3a3a3a;transition:background .6s var(--ease),border-color .6s var(--ease)}
+#skin .sdots i.on{background:#fff;border-color:#fff}
+#skin .sdots i.miss{background:var(--red);border-color:var(--red)}
+#skin .sdots i.now{border-color:#fff}
+#skin .sx{color:var(--t2);white-space:nowrap}
+#skin .sx.warn{color:var(--red);font-weight:700}
 
 /* Calendrier */
 #cal{grid-area:cal}
-.ev{display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--glass-b);
-  animation:in .6s var(--ease) both}
+#calBody{flex:1;min-height:0;overflow-y:auto}
+.ev{display:flex;gap:18px;padding:16px 0;border-top:2px dotted var(--line);animation:in .6s var(--ease) both}
 .ev:first-child{border-top:0;padding-top:0}
-.ev .bar{width:4px;border-radius:2px;background:var(--blue);flex:none}
-.ev .t{font-size:13px;color:var(--t2);font-variant-numeric:tabular-nums}
-.ev .n{font-size:18px;font-weight:600;margin-top:2px}
-.ev.past{opacity:.38}
-.next-label{font-size:13px;color:var(--orange);font-weight:600;margin-bottom:10px}
-.empty{color:var(--t3);font-size:16px;margin:auto 0}
+.ev .bar{width:10px;height:10px;border-radius:50%;background:#fff;flex:none;margin-top:9px}
+.ev .t{font-size:15px;color:var(--t2);letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.ev .n{font-size:22px;font-weight:700;margin-top:4px;line-height:1.2}
+.ev.past{opacity:.35}
+.dense .ev{padding:9px 0}.dense .ev .n{font-size:18px}.dense .ev .t{font-size:13px}
+.next-label{font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:16px}
+.empty{color:var(--t3);font-size:18px;margin:auto 0}
 
 /* Rappels */
 #rem{grid-area:rem}
-.rm{display:flex;align-items:center;gap:14px;padding:11px 0;border-top:1px solid var(--glass-b);
-  transition:opacity .5s var(--ease),transform .5s var(--ease),max-height .5s var(--ease);max-height:70px}
+.rm{display:flex;align-items:center;gap:18px;padding:15px 0;border-top:2px dotted var(--line)}
 .rm:first-child{border-top:0;padding-top:0}
-.dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--t3);flex:none;position:relative;
-  transition:background .3s var(--ease),border-color .3s var(--ease)}
-.rm.done .dot{background:var(--blue);border-color:var(--blue)}
-.rm.done .dot::after{content:"";position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid #fff;
-  border-width:0 2px 2px 0;transform:rotate(45deg)}
-.rm .l{font-size:18px}
-.rm.done .l{color:var(--t3);text-decoration:line-through}
-.rm.gone{opacity:0;transform:translateX(24px);max-height:0;padding:0}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--t2);flex:none}
+.rm .l{font-size:21px;font-weight:700}
 
-#wx{font-size:21px;font-weight:500;color:var(--t2);margin-top:10px;letter-spacing:-.2px}
-
-/* Salle (barre compacte) */
-#gym{grid-area:gym;padding:14px 24px}
-#gymBody{display:flex;align-items:center;gap:22px;width:100%}
-#gym .gt{font-size:15px;font-weight:600;color:var(--t2);white-space:nowrap}
-#gym .gbar{display:flex;gap:6px;flex:0 0 220px}
-#gym .gbar i{flex:1;height:10px;border-radius:5px;background:rgba(255,255,255,.14);transition:background .7s var(--ease)}
-#gym .gbar i.on{background:var(--green)}
-#gym .gn{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-#gym .gm{font-size:15px;color:var(--t2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#gym .gs{font-size:14px;color:var(--t3);white-space:nowrap}
-
-/* Skincare (sous la météo) */
-#skin{display:flex;justify-content:flex-end;align-items:center;gap:14px;margin-top:14px;font-size:16px}
-#skin:empty{display:none}
-#skin .st{font-weight:600;color:var(--t2)}
-#skin .sdots{display:flex;gap:6px}
-#skin .sdots i{width:13px;height:13px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,255,255,.16);transition:background .6s var(--ease),border-color .6s var(--ease)}
-#skin .sdots i.on{background:var(--green);border-color:var(--green)}
-#skin .sdots i.miss{background:rgba(255,69,58,.45);border-color:rgba(255,69,58,.7)}
-#skin .sdots i.now{border-color:var(--t1)}
-#skin .sx{color:var(--t2);white-space:nowrap}
-#skin .sx.warn{color:var(--orange);font-weight:600}
+/* Salle (barre de points) */
+#gym{grid-area:gym;padding:22px 34px}
+#gymBody{display:flex;align-items:center;gap:30px;width:100%}
+#gym .gt{font-size:14px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--t2);white-space:nowrap;display:flex;align-items:center;gap:12px}
+#gym .gt::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--red)}
+#gym .gbar{display:flex;gap:12px;flex:none}
+#gym .gbar i{width:22px;height:22px;border-radius:50%;border:2px solid #4a4a4a;transition:background .7s var(--ease),border-color .7s var(--ease)}
+#gym .gbar i.on{background:#fff;border-color:#fff}
+#gym .gn{font-size:28px;font-weight:800;white-space:nowrap}
+#gym .gm{font-size:17px;color:var(--t1);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#gym .gs{font-size:14px;color:var(--t2);white-space:nowrap;letter-spacing:.06em}
 
 /* Zone dynamique */
-#dyn{grid-area:dyn;display:flex;gap:20px;align-items:stretch;justify-content:center}
-.dynw{flex:1 1 0;max-width:100%;opacity:0;transform:scale(.9) translateY(30px);max-height:0;padding-top:0;padding-bottom:0;
-  border-width:0;margin:0;pointer-events:none;
-  transition:opacity .6s var(--ease),transform .7s var(--ease),max-height .7s var(--ease),
-             padding .7s var(--ease),flex-grow .7s var(--ease)}
-.dynw.show{opacity:1;transform:none;max-height:220px;padding:22px 24px;border-width:1px;pointer-events:auto}
-#sp{border-radius:36px;flex-direction:row;align-items:center;gap:20px;background:rgba(0,0,0,.55)}
-#sp.show{border-radius:36px}
-#sp .art{width:84px;height:84px;border-radius:18px;flex:none;background:linear-gradient(135deg,#1db954,#0a84ff);
-  background-size:cover;background-position:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-#sp .info{flex:1;min-width:0}
-#sp .tt{font-size:22px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#sp .ar{font-size:16px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prog{height:5px;border-radius:3px;background:rgba(255,255,255,.15);margin-top:16px;overflow:hidden}
-.prog b{display:block;height:100%;width:0;border-radius:3px;background:var(--t1);transition:width 1s linear}
-.eq{display:flex;gap:4px;align-items:flex-end;height:30px}
-.eq span{width:5px;background:var(--green);border-radius:3px;animation:eq 1s ease-in-out infinite}
-.eq span:nth-child(2){animation-delay:.2s}.eq span:nth-child(3){animation-delay:.4s}.eq span:nth-child(4){animation-delay:.1s}
-#bb{flex-direction:row;align-items:center;gap:28px}
-.ring{width:110px;height:110px;flex:none;border-radius:50%;display:grid;place-items:center;position:relative;
-  background:conic-gradient(var(--green) calc(var(--p,0)*1%),rgba(255,255,255,.12) 0);transition:--p 1s linear}
-.ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:#12161f}
-.ring span{position:relative;font-size:28px;font-weight:600}
+#dyn{grid-area:dyn;display:flex;gap:30px;align-items:stretch;justify-content:center}
+.dynw{flex:1 1 0;max-width:100%;opacity:0;transform:scale(.92) translateY(30px);max-height:0;padding-top:0;padding-bottom:0;border-width:0;
+  pointer-events:none;transition:opacity .6s var(--ease),transform .7s var(--ease),max-height .7s var(--ease),padding .7s var(--ease)}
+.dynw.show{opacity:1;transform:none;max-height:170px;padding:24px 34px;border-width:1.5px;pointer-events:auto}
+#bb{flex-direction:row;align-items:center;gap:34px}
+.ring{position:relative;width:230px;flex:none;display:flex;flex-direction:column}
+.ring span{order:1;font-size:48px;font-weight:800;line-height:1;margin-bottom:14px}
+.ring::before,.ring::after{content:"";height:12px;background:radial-gradient(circle at 6px 6px,#3a3a3a 3px,transparent 3.6px) 0 0/12px 12px repeat-x}
+.ring::before{order:2}
+.ring::after{position:absolute;left:0;right:0;bottom:0;background:radial-gradient(circle at 6px 6px,var(--red) 3.4px,transparent 4px) 0 0/12px 12px repeat-x;
+  -webkit-mask-image:linear-gradient(90deg,#000 calc(var(--p,0)*1%),transparent 0);mask-image:linear-gradient(90deg,#000 calc(var(--p,0)*1%),transparent 0)}
 #bb .info{flex:1;min-width:0}
-#bb .tt{font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#bb .sub{font-size:15px;color:var(--t2);margin-top:4px}
-.temps{display:flex;gap:10px;margin-top:14px}
-.temps div{background:rgba(255,255,255,.07);border-radius:14px;padding:8px 14px;font-size:14px;color:var(--t2)}
-.temps b{display:block;font-size:20px;color:var(--t1);font-weight:600}
+#bb .tt{font-size:22px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bb .sub{font-size:15px;color:var(--t2);margin-top:4px;letter-spacing:.08em}
+.temps{display:flex;gap:12px;margin-top:14px}
+.temps div{border:1.5px dotted #444;border-radius:16px;padding:6px 16px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--t2)}
+.temps b{display:block;font-size:22px;color:#fff;font-weight:800;letter-spacing:.02em}
+#sp{flex-direction:row;align-items:center;gap:26px}
+#sp .art{position:relative;width:96px;height:96px;border-radius:22px;flex:none;background:#222 center/cover;filter:grayscale(1) contrast(1.15)}
+#sp .art::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(rgba(0,0,0,.6) 1.4px,transparent 1.8px) 0 0/5px 5px}
+#sp .info{flex:1;min-width:0}
+#sp .tt{font-size:24px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sp .ar{font-size:16px;color:var(--t2);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.06em}
+.prog{height:8px;margin-top:18px;background:radial-gradient(circle at 4px 4px,#3a3a3a 2.4px,transparent 3px) 0 0/10px 8px repeat-x}
+.prog b{display:block;height:100%;width:0;background:radial-gradient(circle at 4px 4px,#fff 2.8px,transparent 3.4px) 0 0/10px 8px repeat-x;transition:width 1s linear}
+.eq{display:flex;gap:5px;align-items:flex-end;height:32px}
+.eq span{width:6px;background:#fff;border-radius:3px;animation:eq 1s ease-in-out infinite}
+.eq span:nth-child(2){animation-delay:.2s}.eq span:nth-child(3){animation-delay:.4s}.eq span:nth-child(4){animation-delay:.1s}
 
-#calBody{flex:1;min-height:0;overflow-y:auto}
-.dense .ev{padding:7px 0}.dense .ev .n{font-size:15px}.dense .ev .t{font-size:12px}
-/* Fond noir + bordures blanches */
-body{background:#000!important}
-.widget{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 30px rgba(0,0,0,.5)}
-.ring::before{background:#000}
 @keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes eq{0%,100%{height:6px}50%{height:28px}}
+@keyframes eq{0%,100%{height:6px}50%{height:30px}}
 @property --p{syntax:"<number>";inherits:true;initial-value:0}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
 </style>
@@ -141,8 +123,8 @@ body{background:#000!important}
     <div id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div><div id="skin"></div></div>
   </header>
 
-  <section class="widget" id="cal"><h2><i>📅</i>Calendrier</h2><div id="calBody"></div></section>
-  <section class="widget" id="rem"><h2><i>☑️</i>Rappels</h2><div id="remBody"></div></section>
+  <section class="widget" id="cal"><h2>Calendrier</h2><div id="calBody"></div></section>
+  <section class="widget" id="rem"><h2>Rappels</h2><div id="remBody"></div></section>
   <section class="widget" id="gym"><div id="gymBody"></div></section>
 
 
@@ -150,7 +132,7 @@ body{background:#000!important}
     <section class="widget dynw" id="bb">
       <div class="ring" id="bbRing"><span id="bbPct">0%</span></div>
       <div class="info">
-        <h2 style="margin-bottom:6px"><i>🖨️</i>Bambu Lab A1</h2>
+        <h2 style="margin-bottom:6px">Bambu Lab A1</h2>
         <div class="tt" id="bbName">—</div>
         <div class="sub" id="bbEta">—</div>
         <div class="temps"><div><b id="bbNozzle">—</b>Buse</div><div><b id="bbBed">—</b>Plateau</div></div>
@@ -318,11 +300,11 @@ function renderSkin(s){
   const n = s.jours.length;
   const dots = s.jours.map((v, i) => `<i class="${v === 1 ? "on" : i === n - 1 ? "now" : v === 0 ? "miss" : ""}"></i>`).join("");
   let txt, cls = "";
-  if (s.fait) txt = s.streak > 1 ? `🔥 ${s.streak} jours d’affilée` : "✅ Routine faite";
+  if (s.fait) txt = s.streak > 1 ? `${s.streak} jours d’affilée` : "Routine faite";
   else if (s.sans === null) { txt = "Aucune routine enregistrée"; cls = "warn"; }
   else if (s.sans >= 2) { txt = `${s.sans} jours sans routine`; cls = "warn"; }
-  else txt = "À faire aujourd’hui" + (s.streak > 0 ? ` · 🔥 ${s.streak}` : "");
-  $("skin").innerHTML = `<span class="st">🧴 Skincare</span><div class="sdots">${dots}</div><span class="sx ${cls}">${txt}</span>`;
+  else txt = "À faire aujourd’hui" + (s.streak > 0 ? ` · série ${s.streak}` : "");
+  $("skin").innerHTML = `<span class="st">Skincare</span><div class="sdots">${dots}</div><span class="sx ${cls}">${txt}</span>`;
 }
 async function loadSkin(){
   if (!CONFIG.icsWorker) return renderSkin(null);
@@ -335,10 +317,10 @@ loadSkin(); setInterval(loadSkin, 60000);
 
 /* ── Salle (séances envoyées par le Raccourci iPhone → Worker) ── */
 function renderGym(g){
-  if (!g){ $("gymBody").innerHTML = `<span class="gt">🏋️ Salle</span><span class="gm">Salle non connectée</span>`; return; }
+  if (!g){ $("gymBody").innerHTML = `<span class="gt">Salle</span><span class="gm">Salle non connectée</span>`; return; }
   const reste = g.objectif - g.count, dispo = 6 - g.today + (g.jours[g.today] ? 0 : 1);
   const s = n => n > 1 ? "s" : "";
-  const msg = reste <= 0 ? "Objectif atteint 🎉"
+  const msg = reste <= 0 ? "Objectif atteint"
     : dispo < reste ? "Objectif difficile cette semaine"
     : dispo === reste ? "Chaque jour compte : il faut y aller !"
     : `Plus que ${reste} séance${s(reste)} cette semaine`;
@@ -349,9 +331,9 @@ function renderGym(g){
   }
   const segs = Array.from({length: g.objectif}, (_, i) => `<i class="${i < g.count ? "on" : ""}"></i>`).join("");
   $("gymBody").innerHTML =
-    `<span class="gt">🏋️ Salle</span><div class="gbar">${segs}</div><span class="gn">${g.count}/${g.objectif}</span>` +
+    `<span class="gt">Salle</span><div class="gbar">${segs}</div><span class="gn">${g.count}/${g.objectif}</span>` +
     `<span class="gm">${msg}</span>` +
-    `<span class="gs">${g.streak > 0 ? `🔥 ${g.streak} semaine${s(g.streak)} d’affilée · ` : ""}${der}</span>`;
+    `<span class="gs">${g.streak > 0 ? `${g.streak} semaine${s(g.streak)} d’affilée · ` : ""}${der}</span>`;
 }
 async function loadGym(){
   if (!CONFIG.icsWorker) return renderGym(null);
@@ -368,7 +350,7 @@ const WX = {0:["☀️","Ensoleillé"],1:["🌤️","Plutôt dégagé"],2:["⛅"
   71:["🌨️","Neige"],73:["🌨️","Neige"],75:["❄️","Forte neige"],80:["🌦️","Averses"],81:["🌦️","Averses"],82:["⛈️","Fortes averses"],95:["⛈️","Orage"],96:["⛈️","Orage"],99:["⛈️","Orage"]};
 function renderWx(t, code){
   const [ic, txt] = WX[code] || ["🌡️", "—"];
-  $("wx").textContent = ic + " " + Math.round(t) + "° · " + txt + " · " + CONFIG.meteo.ville;
+  $("wx").textContent = Math.round(t) + "° · " + txt + " · " + CONFIG.meteo.ville;
 }
 async function loadWx(){
   try {
