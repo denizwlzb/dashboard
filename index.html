@@ -9,7 +9,7 @@
 <style>
 /* Palette 60 / 30 / 10 : crème (fond), bleu foncé (cartes), rouge (accents) */
 :root{
-  --cream:#F1E7D3; --navy:#112240; --red:#D7263D; --redt:#FF6B7B;
+  --cream:#E3D3B8; --navy:#112240; --red:#D7263D; --redt:#FF6B7B;
   --t1:#F6EEDC; --t2:rgba(246,238,220,.74); --t3:rgba(246,238,220,.48); --line:rgba(246,238,220,.16);
   --orange:var(--redt); --green:#F6EEDC;
   --ease:cubic-bezier(.32,.72,0,1);
@@ -17,10 +17,10 @@
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
-html,body{height:100%;overflow:hidden;background:#F1E7D3}
+html,body{height:100%;overflow:hidden;background:#E3D3B8}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",system-ui,sans-serif;
   font-weight:500;font-size:16px;letter-spacing:-.011em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;
-  background:linear-gradient(160deg,#F8F1E1 0%,#F1E7D3 55%,#E9DCC1 100%)}
+  background:linear-gradient(160deg,#EBDDC4 0%,#E3D3B8 55%,#D8C5A5 100%)}
 
 /* Disposition : 3 colonnes, chaque carte ne prend que la place de son contenu */
 .app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:36px 44px;align-items:start}
@@ -139,7 +139,7 @@ h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:12px}
 .eq span:nth-child(2){animation-delay:.2s}.eq span:nth-child(3){animation-delay:.4s}.eq span:nth-child(4){animation-delay:.1s}
 
 /* Fond et effets occasionnels */
-#glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(120,95,50,.10) 100%)}
+#glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(110,80,40,.14) 100%)}
 #sweep{position:fixed;top:0;bottom:0;left:0;width:34vw;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent)}
 body.fx-sweep #sweep{animation:sweep 2.8s var(--ease)}
 body.fx-lift .widget{animation:lift 1.6s var(--ease)}
