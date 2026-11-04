@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dashboard">
+<meta name="theme-color" content="#E3D3B8">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Dashboard Deniz</title>
 <style>
@@ -168,7 +171,7 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
   </div>
   <div class="col">
     <section class="widget" id="gym"><div id="gymBody"></div></section>
-    <section class="widget dynw" id="bb">
+    <section class="widget" id="bb">
       <div class="ring" id="bbRing"><span id="bbPct">0%</span></div>
       <div class="info">
         <h2 style="margin-bottom:6px">Bambu Lab A1</h2>
@@ -456,15 +459,22 @@ loadWx(); setInterval(loadWx, CONFIG.intervalle.meteo*1000);
 /* ── Zone dynamique : Bambu & Spotify ── */
 const show = (id,on) => $(id).classList.toggle("show", on);
 function renderBambu(d){
-  const on = d && /run|print/i.test(d.state||"");
-  show("bb", !!on); if (!on) return;
-  $("bbRing").style.setProperty("--p", d.progress);
-  $("bbPct").textContent = Math.round(d.progress) + "%";
-  $("bbName").textContent = d.name || "Impression en cours";
-  const m = d.remaining_min, h = Math.floor(m/60);
-  $("bbEta").textContent = "Reste " + (h ? h+" h "+pad(m%60)+" min" : m+" min");
-  $("bbNozzle").textContent = Math.round(d.nozzle) + "°";
-  $("bbBed").textContent = Math.round(d.bed) + "°";
+  const st = d && d.state ? String(d.state).toUpperCase() : "";
+  const libelles = { RUNNING: "En cours", PREPARE: "Préparation", SLICING: "Préparation", PAUSE: "En pause", FINISH: "Terminée", FAILED: "Échec", IDLE: "Au repos" };
+  const joignable = !!d && st !== "" && !["OFFLINE", "ERROR", "AUTH_ERROR"].includes(st);
+  const actif = joignable && ["RUNNING", "PREPARE", "PAUSE"].includes(st) && typeof d.progress === "number";
+  const prog = actif ? Math.min(100, Math.max(0, d.progress)) : (joignable && st === "FINISH" ? 100 : 0);
+  $("bbRing").style.setProperty("--p", prog);
+  $("bbPct").textContent = actif ? Math.round(prog) + "%" : (joignable ? (libelles[st] || "Au repos") : "Hors ligne");
+  $("bbName").textContent = joignable && d.name ? d.name : "—";
+  const m = d && d.remaining_min;
+  const reste = m > 0 ? "Reste " + (m >= 60 ? Math.floor(m / 60) + " h " + pad(m % 60) + " min" : m + " min") : "Presque fini";
+  $("bbEta").textContent = !joignable ? "Imprimante injoignable"
+    : actif ? (st === "PAUSE" ? "En pause · " : "") + reste
+    : st === "FINISH" ? "Dernière impression terminée"
+    : st === "FAILED" ? "Dernière impression échouée" : "Prête à imprimer";
+  $("bbNozzle").textContent = joignable && typeof d.nozzle === "number" ? Math.round(d.nozzle) + "°" : "—";
+  $("bbBed").textContent = joignable && typeof d.bed === "number" ? Math.round(d.bed) + "°" : "—";
 }
 async function loadBambu(){
   if (DEMO) return renderBambu({state:"RUNNING",progress:64,remaining_min:87,nozzle:220,bed:60,name:"Support_casque_v3.3mf"});
@@ -491,6 +501,14 @@ loadBambu(); loadSpotify();
 setInterval(loadBambu, CONFIG.intervalle.bambu*1000);
 setInterval(loadSpotify, CONFIG.intervalle.spotify*1000);
 addEventListener("hashchange", () => { loadBambu(); loadSpotify(); });
+
+/* Plein écran : au premier toucher dans Safari (inutile une fois ajouté à l’écran d’accueil) */
+document.addEventListener("pointerdown", () => {
+  try {
+    const el = document.documentElement, f = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (f && !navigator.standalone && !document.fullscreenElement && !document.webkitFullscreenElement){ const p = f.call(el); if (p && p.catch) p.catch(() => {}); }
+  } catch(_){}
+}, { once: true });
 
 /* Garde l’écran allumé quand c’est possible */
 try { navigator.wakeLock && navigator.wakeLock.request("screen"); } catch(_){}
