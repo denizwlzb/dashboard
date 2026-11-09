@@ -6,150 +6,158 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Dashboard">
-<meta name="theme-color" content="#E3D3B8">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Dashboard Deniz</title>
 <style>
-/* Palette 60 / 30 / 10 : crème (fond), bleu foncé (cartes), rouge (accents) */
 :root{
-  --cream:#E3D3B8; --navy:#112240; --red:#D7263D; --redt:#FF6B7B;
-  --t1:#F6EEDC; --t2:rgba(246,238,220,.74); --t3:rgba(246,238,220,.48); --line:rgba(246,238,220,.16);
-  --orange:var(--redt); --green:#F6EEDC;
+  --t1:#fff; --t2:rgba(255,255,255,.68); --t3:rgba(255,255,255,.44); --line:rgba(255,255,255,.14);
+  --red:#ff453a; --orange:#ff9f0a; --green:#30d158;
   --ease:cubic-bezier(.32,.72,0,1);
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
-html,body{height:100%;overflow:hidden;background:#E3D3B8}
+html,body{height:100%;overflow:hidden;background:#000}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",system-ui,sans-serif;
-  font-weight:500;font-size:16px;letter-spacing:-.011em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;
-  background:linear-gradient(160deg,#EBDDC4 0%,#E3D3B8 55%,#D8C5A5 100%)}
+  font-weight:500;font-size:20px;letter-spacing:-.012em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
 
-/* Disposition : 3 colonnes, chaque carte ne prend que la place de son contenu */
-.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:36px 44px;align-items:start}
-.col{display:flex;flex-direction:column;min-height:0;max-height:100%}
-.col>.widget{flex:0 1 auto;margin-bottom:22px}
-.col>.widget:last-child{margin-bottom:0}
+/* Disposition : en-tête, calendrier | rappels, salle | imprimante */
+.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:1.15fr 1fr;grid-template-rows:auto minmax(0,1fr) auto;gap:24px;padding:28px 32px}
+header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+.widget{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.03)),rgba(18,20,28,.80);
+  border:1px solid rgba(255,255,255,.13);border-radius:30px;padding:26px 30px;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+h2{font-size:16px;font-weight:600;color:var(--t2);margin-bottom:14px}
 
-/* Verre liquide bleu foncé */
-.widget{position:relative;
-  background:radial-gradient(130% 90% at 0% 0%,rgba(255,255,255,.20),rgba(255,255,255,0) 50%),linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02)),rgba(17,34,64,.90);
-  -webkit-backdrop-filter:blur(24px) saturate(150%);backdrop-filter:blur(24px) saturate(150%);
-  border:1px solid rgba(255,255,255,.16);border-radius:26px;padding:20px 24px;min-height:0;overflow:hidden;display:flex;flex-direction:column;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 12px 30px rgba(17,34,64,.22)}
-h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:12px}
-
-/* Heure, salutation, skincare */
-#clock{display:flex;align-items:baseline;font-size:84px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+/* Heure et salutation */
+#clockw{flex:0 0 auto;padding:22px 30px 20px}
+#clock{display:flex;align-items:baseline;font-size:108px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
 #clock .dg{display:inline-block;min-width:.58em;text-align:center}
-#clock .sep{color:var(--redt);margin:0 .03em;transform:translateY(-.05em)}
+#clock .sep{color:var(--red);margin:0 .03em;transform:translateY(-.05em)}
 #clock .chg{animation:dgIn .7s var(--ease) both}
 #clock .chgH{animation:dgHour 1s var(--ease) both}
-#date{font-size:15px;font-weight:500;color:var(--t2);margin-top:6px;text-transform:capitalize}
-#hi{font-size:22px;font-weight:600;letter-spacing:-.02em}
-#wx{font-size:14px;font-weight:500;color:var(--t2);margin-top:4px}
-#skin{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px 12px;padding:16px 24px;font-size:13px}
-#skin:empty{display:none}
-#skin .st{grid-column:1;grid-row:1;font-weight:600;color:var(--t2)}
-#skin .sx{grid-column:2;grid-row:1;color:var(--t1);white-space:nowrap;font-weight:600}
-#skin .sx.warn{background:var(--red);color:#fff;padding:3px 10px;border-radius:99px}
-#skin .sdots{grid-column:1/-1;grid-row:2;display:flex;gap:4px}
-#skin .sdots i{flex:1;height:14px;border-radius:3px;background:rgba(246,238,220,.18);transition:background .6s var(--ease)}
-#skin .sdots i.on{background:var(--t1)}
-#skin .sdots i.miss{background:var(--red)}
-#skin .sdots i.now{background:transparent;box-shadow:inset 0 0 0 1.5px var(--t1)}
-
-/* Hydratation */
-#eau{display:flex;flex-direction:column;gap:12px;padding:20px 24px}
-#eau:empty{display:none}
-#eau .eh{display:flex;justify-content:space-between;align-items:baseline}
-#eau .et{font-size:13px;font-weight:600;color:var(--t2)}
-#eau .en{font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
-#eau .en small{font-size:13px;font-weight:500;color:var(--t2)}
-#eau .ebar{position:relative;height:10px;border-radius:5px;background:rgba(246,238,220,.18)}
-#eau .ebar b{display:block;height:100%;border-radius:5px;background:var(--red);transition:width .9s var(--ease)}
-#eau .ebar b.ok{background:var(--t1)}
-#eau .ebar u{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:1px;background:var(--t1);text-decoration:none}
-#eau .chip{align-self:flex-start;font-size:12px;font-weight:600;padding:4px 12px;border-radius:99px;background:rgba(246,238,220,.14)}
-#eau .chip.ok{background:var(--t1);color:var(--navy)}
-#eau .chip.late{background:var(--red);color:#fff}
-#eau .er{font-size:15px;font-weight:600}
-#eau .ew{display:flex;align-items:flex-end;gap:7px;height:52px;border-top:1px dashed rgba(246,238,220,.4)}
-#eau .ew i{flex:1;border-radius:3px 3px 0 0;background:rgba(246,238,220,.32);transition:height .8s var(--ease)}
-#eau .ew i.ok{background:var(--red)}
-#eau .ew i.t:not(.ok){background:var(--t1)}
-#eau .el{display:flex;gap:7px;margin-top:-6px}
-#eau .el span{flex:1;text-align:center;font-size:11px;color:var(--t2)}
-#eau .el span.t{color:var(--t1);font-weight:700}
-#eau .es{font-size:13px;color:var(--t2)}
+#date{font-size:20px;font-weight:500;color:var(--t2);margin-top:8px;text-transform:capitalize}
+#hello{flex:0 0 auto;min-width:290px;padding:24px 30px;text-align:right}
+#hi{font-size:32px;font-weight:600;letter-spacing:-.02em}
+#wx{font-size:19px;font-weight:500;color:var(--t2);margin-top:8px}
 
 /* Calendrier */
-#cal{min-height:0}
-#calBody{flex:0 1 auto;min-height:0;overflow-y:auto}
-.ev{display:flex;gap:14px;padding:11px 0;border-top:1px solid var(--line);animation:in .6s var(--ease) both}
+#cal{grid-column:1;grid-row:2}
+#calBody{flex:1;min-height:0;overflow-y:auto}
+.ev{display:flex;gap:18px;padding:16px 0;border-top:1px solid var(--line);animation:in .6s var(--ease) both}
 .ev:first-child{border-top:0;padding-top:0}
-.ev .bar{width:3px;align-self:stretch;border-radius:2px;background:var(--t1);flex:none}
-.ev .t{font-size:12px;color:var(--t2);font-variant-numeric:tabular-nums}
-.ev .n{font-size:16px;font-weight:600;margin-top:1px;line-height:1.2;letter-spacing:-.02em}
-.ev.past{opacity:.45}
-.dense .ev{padding:8px 0}.dense .ev .n{font-size:15px}.dense .ev .t{font-size:11px}
-.next-label{font-size:13px;font-weight:600;color:var(--redt);margin-bottom:12px}
-.empty{color:var(--t3);font-size:15px}
+.ev .bar{width:4px;align-self:stretch;border-radius:2px;background:#fff;flex:none}
+.ev .t{font-size:16px;color:var(--t2);font-variant-numeric:tabular-nums}
+.ev .n{font-size:24px;font-weight:600;margin-top:2px;line-height:1.2;letter-spacing:-.02em}
+.ev.past{opacity:.4}
+.dense .ev{padding:10px 0}.dense .ev .n{font-size:20px}.dense .ev .t{font-size:14px}
+.next-label{font-size:16px;font-weight:600;color:var(--orange);margin-bottom:14px}
+.empty{color:var(--t3);font-size:20px}
 
 /* Rappels */
-.rm{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+#rem{grid-column:2;grid-row:2}
+#remBody{flex:1;min-height:0;overflow:hidden}
+.rm{display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--line)}
 .rm:first-child{border-top:0;padding-top:0}
-.dot{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(246,238,220,.8);flex:none}
-.rm .l{font-size:16px;font-weight:500;letter-spacing:-.02em}
+.dot{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.7);flex:none}
+.rm .l{font-size:22px;font-weight:500;letter-spacing:-.02em;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Salle */
-#gym{padding:18px 24px}
-#gymBody{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px 12px}
-#gym .gt{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2)}
-#gym .gn{grid-column:2;grid-row:1;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
-#gym .gbar{grid-column:1/-1;grid-row:2;display:flex;gap:6px}
-#gym .gbar i{flex:1;height:8px;border-radius:4px;background:rgba(246,238,220,.2);transition:background .7s var(--ease)}
+#gym{grid-column:1;grid-row:3}
+#gymBody{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px 14px}
+#gym .gt{grid-column:1;grid-row:1;font-size:16px;font-weight:600;color:var(--t2)}
+#gym .gn{grid-column:2;grid-row:1;font-size:30px;font-weight:600;font-variant-numeric:tabular-nums}
+#gym .gbar{grid-column:1/-1;grid-row:2;display:flex;gap:10px}
+#gym .gbar i{flex:1;height:12px;border-radius:6px;background:rgba(255,255,255,.18);transition:background .7s var(--ease)}
 #gym .gbar i.on{background:var(--red)}
-#gym .gm{grid-column:1/-1;grid-row:3;font-size:14px}
-#gym .gs{grid-column:1/-1;grid-row:4;font-size:12px;color:var(--t2)}
+#gym .gm{grid-column:1/-1;grid-row:3;font-size:19px}
+#gym .gs{grid-column:1/-1;grid-row:4;font-size:15px;color:var(--t2)}
 
-/* Cartes qui apparaissent seulement quand il y a quelque chose (Bambu, Spotify) */
-.dynw{opacity:0;transform:scale(.94) translateY(20px);max-height:0;margin-bottom:0!important;padding-top:0;padding-bottom:0;border-width:0;
-  pointer-events:none;transition:opacity .6s var(--ease),transform .7s var(--ease),max-height .7s var(--ease),padding .7s var(--ease),margin .7s var(--ease)}
-.dynw.show{opacity:1;transform:none;max-height:300px;margin-bottom:22px!important;padding:18px 24px;border-width:1px;pointer-events:auto}
-.col>.dynw.show:last-child{margin-bottom:0!important}
-#bb{gap:14px}
-.ring{position:relative;width:100%;display:flex;flex-direction:column;transition:--p 1s linear}
-.ring span{order:1;font-size:34px;font-weight:600;line-height:1;margin-bottom:10px;font-variant-numeric:tabular-nums}
-.ring::before,.ring::after{content:"";height:6px;border-radius:3px}
-.ring::before{order:2;background:rgba(246,238,220,.2)}
+/* Imprimante Bambu Lab */
+#bb{grid-column:2;grid-row:3;flex-direction:row;align-items:center;gap:26px}
+.ring{position:relative;width:160px;flex:none;display:flex;flex-direction:column;transition:--p 1s linear}
+.ring span{order:1;font-size:40px;font-weight:600;line-height:1;margin-bottom:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ring::before,.ring::after{content:"";height:8px;border-radius:4px}
+.ring::before{order:2;background:rgba(255,255,255,.18)}
 .ring::after{position:absolute;left:0;bottom:0;width:calc(var(--p,0)*1%);background:var(--red)}
-#bb h2{margin-bottom:4px}
-#bb .tt{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#bb .sub{font-size:13px;color:var(--t2);margin-top:2px}
-.temps{display:flex;gap:8px;margin-top:10px}
-.temps div{flex:1;background:rgba(246,238,220,.10);border-radius:12px;padding:6px 12px;font-size:12px;color:var(--t2)}
-.temps b{display:block;font-size:16px;color:var(--t1);font-weight:600}
-#sp{flex-direction:row;align-items:center;gap:16px}
-#sp .art{width:60px;height:60px;border-radius:14px;flex:none;background:rgba(246,238,220,.15) center/cover;box-shadow:0 6px 16px rgba(0,0,0,.3)}
-#sp .info{flex:1;min-width:0}
-#sp .tt{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#sp .ar{font-size:13px;color:var(--t2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prog{height:4px;border-radius:2px;margin-top:10px;background:rgba(246,238,220,.2);overflow:hidden}
-.prog b{display:block;height:100%;width:0;border-radius:2px;background:var(--red);transition:width 1s linear}
-.eq{display:flex;gap:3px;align-items:flex-end;height:20px}
-.eq span{width:3px;background:var(--red);border-radius:2px;animation:eq 1s ease-in-out infinite}
-.eq span:nth-child(2){animation-delay:.2s}.eq span:nth-child(3){animation-delay:.4s}.eq span:nth-child(4){animation-delay:.1s}
+#bb .info{flex:1;min-width:0}
+#bb h2{margin-bottom:4px;font-size:15px}
+#bb .tt{font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bb .sub{font-size:16px;color:var(--t2);margin-top:2px}
+.temps{display:flex;gap:10px;margin-top:10px}
+.temps div{background:rgba(255,255,255,.10);border-radius:14px;padding:6px 14px;font-size:13px;color:var(--t2)}
+.temps b{display:block;font-size:19px;color:var(--t1);font-weight:600}
 
-/* Fond et effets occasionnels */
-#glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(110,80,40,.14) 100%)}
-#sweep{position:fixed;top:0;bottom:0;left:0;width:34vw;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent)}
+/* Île dynamique */
+#island{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:60;width:150px;height:46px;background:#000;border:1px solid rgba(255,255,255,.16);border-radius:999px;overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.7);transition:width .55s cubic-bezier(.32,1.25,.4,1),height .55s cubic-bezier(.32,1.25,.4,1)}
+#island.music{width:300px;height:64px;cursor:pointer}
+#island.print{width:250px;height:56px}
+#island>div{position:absolute;inset:0;display:flex;align-items:center;opacity:0;pointer-events:none;transition:opacity .25s}
+#island.idle .i-idle,#island.music .i-music,#island.print .i-print{opacity:1;transition-delay:.12s}
+.i-idle{justify-content:center}
+.i-idle i{width:10px;height:10px;border-radius:50%;background:var(--red)}
+.i-music{gap:12px;padding:0 14px}
+#iArt{width:44px;height:44px;border-radius:12px;flex:none;background:#222 center/cover}
+.itx{flex:1;min-width:0}
+#iTitle{display:block;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#iArtist{display:block;font-size:13px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ieq{display:flex;gap:3px;align-items:flex-end;height:22px}
+.ieq span{width:3px;background:var(--red);border-radius:2px;animation:eq 1s ease-in-out infinite}
+.ieq span:nth-child(2){animation-delay:.2s}.ieq span:nth-child(3){animation-delay:.4s}.ieq span:nth-child(4){animation-delay:.1s}
+#island.paused .ieq span{animation:none;height:5px}
+.i-print{gap:12px;padding:0 18px}
+#iPct{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.ibar{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}
+.ibar i{display:block;height:100%;width:0;border-radius:3px;background:var(--red);transition:width .8s var(--ease)}
+#iEta{font-size:14px;color:var(--t2);white-space:nowrap}
+
+/* Lecteur Spotify plein écran */
+#player{position:fixed;inset:0;z-index:100;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;
+  transform:scale(.28) translateY(-38vh);transform-origin:50% 0;border-radius:60px;overflow:hidden;
+  transition:transform .6s cubic-bezier(.32,.72,0,1),opacity .35s ease,border-radius .6s cubic-bezier(.32,.72,0,1)}
+#player.open{opacity:1;pointer-events:auto;transform:none;border-radius:0}
+#pbg{position:absolute;inset:-80px;background:center/cover;filter:blur(70px) brightness(.45) saturate(1.5)}
+#player:not(.open) #pbg{display:none}
+#pclose{position:absolute;top:26px;right:30px;z-index:2;width:52px;height:52px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:24px;line-height:1;cursor:pointer}
+.pmain{position:relative;display:flex;align-items:center;gap:56px;width:100%;max-width:1040px;padding:40px}
+.pmedia{position:relative;flex:none;width:440px;height:440px;border-radius:28px;overflow:hidden;background:#111;box-shadow:0 30px 80px rgba(0,0,0,.6);transition:width .5s var(--ease),height .5s var(--ease)}
+#player.vid .pmedia{width:560px;height:315px}
+#pcover{position:absolute;inset:0;background:center/cover}
+#player.vid #pcover{display:none}
+#pvideo{position:absolute;inset:0;display:none}
+#player.vid #pvideo{display:block}
+#pvideo iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none}
+#pmsg{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:15px;color:var(--t2)}
+.pinfo{flex:1;min-width:0}
+.pdev{font-size:16px;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.pdev:empty{display:none}
+.pdev::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green)}
+#pTitle{font-size:38px;font-weight:700;line-height:1.15;letter-spacing:-.02em}
+#pArtist{font-size:24px;color:var(--t2);margin-top:6px}
+.pprog{margin-top:30px}
+.pbar{height:8px;border-radius:4px;background:rgba(255,255,255,.22);overflow:hidden;cursor:pointer}
+.pbar b{display:block;height:100%;width:0;background:#fff;border-radius:4px}
+.ptimes{display:flex;justify-content:space-between;font-size:14px;color:var(--t2);margin-top:8px;font-variant-numeric:tabular-nums}
+.pctl{display:flex;align-items:center;justify-content:center;gap:34px;margin-top:26px}
+.pctl button{border:0;background:transparent;color:#fff;width:72px;height:72px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+.pctl button svg{width:34px;height:34px;fill:currentColor}
+#pPlay{background:#fff!important;color:#000!important;width:88px!important;height:88px!important}
+#pPlay svg{width:40px;height:40px}
+#pPlay .i-pause{display:none}#pPlay.on .i-play{display:none}#pPlay.on .i-pause{display:block}
+.pseg{display:flex;gap:6px;background:rgba(255,255,255,.14);border-radius:99px;padding:5px;width:max-content;margin:28px auto 0}
+.pseg button{border:0;background:transparent;color:var(--t2);font:inherit;font-size:16px;font-weight:600;padding:8px 22px;border-radius:99px;cursor:pointer}
+.pseg button.on{background:#fff;color:#000}
+
+/* Effets occasionnels */
+#sweep{position:fixed;top:0;bottom:0;left:0;width:34vw;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
 body.fx-sweep #sweep{animation:sweep 2.8s var(--ease)}
 body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 @keyframes sweep{0%{opacity:0;transform:translateX(-40vw)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(110vw)}}
 @keyframes lift{0%,100%{transform:none}40%{transform:translateY(-6px)}}
 @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes eq{0%,100%{height:4px}50%{height:19px}}
+@keyframes eq{0%,100%{height:4px}50%{height:20px}}
 @keyframes dgIn{0%{opacity:0;transform:translateY(.32em);filter:blur(6px)}100%{opacity:1;transform:none;filter:blur(0)}}
 @keyframes dgHour{0%{opacity:0;transform:translateY(.5em) scale(.9);filter:blur(10px)}100%{opacity:1;transform:none;filter:blur(0)}}
 @property --p{syntax:"<number>";inherits:true;initial-value:0}
@@ -157,21 +165,39 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 </style>
 </head>
 <body>
-<div id="glow"></div><div id="sweep"></div>
+<div id="sweep"></div>
+<div id="island" class="idle">
+  <div class="i-idle"><i></i></div>
+  <div class="i-music"><div id="iArt"></div><div class="itx"><b id="iTitle"></b><span id="iArtist"></span></div><div class="ieq"><span></span><span></span><span></span><span></span></div></div>
+  <div class="i-print"><b id="iPct">0%</b><div class="ibar"><i id="iFill"></i></div><span id="iEta"></span></div>
+</div>
+<div id="player" aria-hidden="true">
+  <div id="pbg"></div>
+  <button id="pclose" aria-label="Fermer">✕</button>
+  <div class="pmain">
+    <div class="pmedia"><div id="pcover"></div><div id="pvideo"><div id="ytp"></div></div><div id="pmsg"></div></div>
+    <div class="pinfo">
+      <div class="pdev" id="pdev"></div>
+      <div id="pTitle">—</div><div id="pArtist"></div>
+      <div class="pprog"><div class="pbar" id="pbar"><b id="pFill"></b></div><div class="ptimes"><span id="pCur">0:00</span><span id="pTot">0:00</span></div></div>
+      <div class="pctl">
+        <button id="pPrev" aria-label="Précédent"><svg viewBox="0 0 24 24"><path d="M18 6l-9 6 9 6zM5 6h2v12H5z"/></svg></button>
+        <button id="pPlay" aria-label="Lecture / pause"><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+        <button id="pNext" aria-label="Suivant"><svg viewBox="0 0 24 24"><path d="M6 6l9 6-9 6zM17 6h2v12h-2z"/></svg></button>
+      </div>
+      <div class="pseg"><button id="segCover" class="on">Pochette</button><button id="segVideo">Vidéo</button></div>
+    </div>
+  </div>
+</div>
 <div class="app">
-  <div class="col">
+  <header>
     <div class="widget" id="clockw"><div id="clock"></div><div id="date"></div></div>
     <div class="widget" id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div></div>
-    <div class="widget" id="skin"></div>
-    <div class="widget" id="eau"></div>
-  </div>
-  <div class="col">
-    <section class="widget" id="cal"><h2>Calendrier</h2><div id="calBody"></div></section>
-    <section class="widget" id="rem"><h2>Rappels</h2><div id="remBody"></div></section>
-  </div>
-  <div class="col">
-    <section class="widget" id="gym"><div id="gymBody"></div></section>
-    <section class="widget" id="bb">
+  </header>
+  <section class="widget" id="cal"><h2>Calendrier</h2><div id="calBody"></div></section>
+  <section class="widget" id="rem"><h2>Rappels</h2><div id="remBody"></div></section>
+  <section class="widget" id="gym"><div id="gymBody"></div></section>
+  <section class="widget" id="bb">
       <div class="ring" id="bbRing"><span id="bbPct">0%</span></div>
       <div class="info">
         <h2 style="margin-bottom:6px">Bambu Lab A1</h2>
@@ -180,18 +206,7 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
         <div class="temps"><div><b id="bbNozzle">—</b>Buse</div><div><b id="bbBed">—</b>Plateau</div></div>
       </div>
     </section>
-    <section class="widget dynw" id="sp">
-      <div class="art" id="spArt"></div>
-      <div class="info">
-        <div class="tt" id="spTitle">—</div><div class="ar" id="spArtist">—</div>
-        <div class="prog"><b id="spBar"></b></div>
-      </div>
-      <div class="eq"><span></span><span></span><span></span><span></span></div>
-    </section>
-  </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.min.js"></script>
 <script>
 /* ═══════════════ CONFIGURATION ═══════════════
    Les intégrations externes (réseau) fonctionnent quand ce fichier est ouvert
@@ -353,63 +368,6 @@ async function loadRem(){
 }
 renderRem(); loadRem(); setInterval(loadRem, 60000);
 
-/* ── Skincare (routine envoyée par le Raccourci NFC → Worker) ── */
-function renderSkin(s){
-  if (!s){ $("skin").innerHTML = ""; return; }
-  const n = s.jours.length;
-  const dots = s.jours.map((v, i) => `<i class="${v === 1 ? "on" : i === n - 1 ? "now" : v === 0 ? "miss" : ""}"></i>`).join("");
-  let txt, cls = s.fait ? "ok" : "";
-  if (s.fait) txt = s.streak > 1 ? `${s.streak} jours d’affilée` : "Routine faite";
-  else if (s.sans === null) { txt = "Aucune routine enregistrée"; cls = "warn"; }
-  else if (s.sans >= 2) { txt = `${s.sans} jours sans routine`; cls = "warn"; }
-  else txt = "À faire aujourd’hui" + (s.streak > 0 ? ` · série ${s.streak}` : "");
-  $("skin").innerHTML = `<span class="st">Skincare</span><div class="sdots">${dots}</div><span class="sx ${cls}">${txt}</span>`;
-}
-async function loadSkin(){
-  if (!CONFIG.icsWorker) return renderSkin(null);
-  try {
-    const s = await (await fetch(CONFIG.icsWorker.replace(/\/?$/, "/skincare"))).json();
-    renderSkin(s && Array.isArray(s.jours) && typeof s.streak === "number" ? s : null);
-  } catch(e){ console.warn("Skincare indisponible :", e); }
-}
-loadSkin(); setInterval(loadSkin, 60000);
-
-/* ── Hydratation (Raccourci iPhone / Apple Watch / Siri → Worker) ── */
-function renderEau(e){
-  if (!e){ $("eau").innerHTML = ""; return; }
-  const L = ml => (ml / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 2 });
-  const s = n => n > 1 ? "s" : "";
-  const obj = e.objectif, reste = obj - e.total, n = e.jours.length;
-  const maintenant = new Date(), h = maintenant.getHours() + maintenant.getMinutes() / 60;
-  const attendu = Math.round(obj * Math.min(1, Math.max(0, (h - 8) / 14)));   // rythme : de 8 h à 22 h
-  let statut, cls;
-  if (reste <= 0){ statut = "Objectif atteint"; cls = "ok"; }
-  else if (h >= 22){ statut = "Objectif non atteint aujourd’hui"; cls = "late"; }
-  else if (e.total >= attendu - 125){ statut = "Dans les temps"; cls = "ok"; }
-  else { statut = `En retard de ${Math.round((attendu - e.total) / 50) * 50} ml`; cls = "late"; }
-  const verres = Math.ceil(reste / 250);
-  const restant = reste <= 0 ? `+${L(-reste)} L au-dessus de l’objectif` : `Encore ${verres} verre${s(verres)} de 250 ml`;
-  const pct = Math.min(100, Math.round(e.total / obj * 100));
-  const repere = reste > 0 && attendu > 0 ? `<u style="left:${Math.round(attendu / obj * 100)}%"></u>` : "";
-  const bars = e.jours.map((v, i) => `<i class="${v >= obj ? "ok" : ""} ${i === n - 1 ? "t" : ""}" style="height:${Math.max(6, Math.min(100, Math.round(v / obj * 100)))}%"></i>`).join("");
-  const jours = e.jours.map((v, i) => `<span class="${i === n - 1 ? "t" : ""}">${new Date(Date.now() - (n - 1 - i) * 864e5).toLocaleDateString("fr-FR", { weekday: "narrow" }).toUpperCase()}</span>`).join("");
-  const atteints = e.jours.filter(v => v >= obj).length, moy = e.jours.reduce((a, b) => a + b, 0) / n;
-  $("eau").innerHTML =
-    `<div class="eh"><span class="et">Hydratation</span><span class="en">${L(e.total)} <small>/ ${L(obj)} L</small></span></div>` +
-    `<div class="ebar"><b class="${reste <= 0 ? "ok" : ""}" style="width:${pct}%"></b>${repere}</div>` +
-    `<span class="chip ${cls}">${statut}</span><div class="er">${restant}</div>` +
-    `<div class="ew">${bars}</div><div class="el">${jours}</div>` +
-    `<div class="es">Semaine : ${atteints} jour${s(atteints)} sur ${n} à l’objectif · moyenne ${L(moy)} L</div>`;
-}
-async function loadEau(){
-  if (!CONFIG.icsWorker) return renderEau(null);
-  try {
-    const e = await (await fetch(CONFIG.icsWorker.replace(/\/?$/, "/eau"))).json();
-    renderEau(e && typeof e.objectif === "number" && Array.isArray(e.jours) ? e : null);
-  } catch(err){ console.warn("Eau indisponible :", err); }
-}
-loadEau(); setInterval(loadEau, 60000);
-
 /* ── Salle (séances envoyées par le Raccourci iPhone → Worker) ── */
 function renderGym(g){
   if (!g){ $("gymBody").innerHTML = `<span class="gt">Salle</span><span class="gm">Salle non connectée</span>`; return; }
@@ -456,6 +414,132 @@ async function loadWx(){
 }
 loadWx(); setInterval(loadWx, CONFIG.intervalle.meteo*1000);
 
+/* ── Spotify : île dynamique + lecteur plein écran (commande tous les appareils : iPhone, Echo…) ── */
+const WK = CONFIG.icsWorker ? CONFIG.icsWorker.replace(/\/?$/, "") : "";
+let sp = null, spVu = 0, spBase = null, spMode = "cover", spOuvert = false, spTick = 0, spSync = 0;
+let ytp = null, ytPour = "", ytIds = [], ytIdx = 0, ilePrint = null;
+const fmtT = ms => { const s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ":" + pad(s % 60); };
+const musiqueActive = () => !!(sp && sp.item && (sp.is_playing || Date.now() - spVu < 300000));
+const imgDe = it => (it && it.album && it.album.images && it.album.images[0] && it.album.images[0].url) || "";
+const positionSpotify = () => spBase ? spBase.ms + (sp && sp.is_playing ? Date.now() - spBase.t : 0) : 0;
+
+function majIle(){
+  const el = $("island"), m = musiqueActive();
+  el.className = m ? "music" : ilePrint ? "print" : "idle";
+  if (m){
+    $("iTitle").textContent = sp.item.name;
+    $("iArtist").textContent = sp.item.artists.map(a => a.name).join(", ");
+    const u = imgDe(sp.item); $("iArt").style.backgroundImage = u ? `url(${u})` : "";
+    el.classList.toggle("paused", !sp.is_playing);
+  } else if (ilePrint){
+    $("iPct").textContent = ilePrint.p + "%"; $("iFill").style.width = ilePrint.p + "%"; $("iEta").textContent = ilePrint.eta;
+  }
+}
+function tickPlayer(){
+  if (!sp || !spBase) return;
+  const dur = sp.item.duration_ms, cur = Math.min(dur, positionSpotify());
+  $("pFill").style.width = (dur ? cur / dur * 100 : 0) + "%"; $("pCur").textContent = fmtT(cur); $("pTot").textContent = fmtT(dur);
+}
+function majPlayer(){
+  if (!sp) return;
+  const it = sp.item, u = imgDe(it);
+  $("pTitle").textContent = it.name; $("pArtist").textContent = it.artists.map(a => a.name).join(", ");
+  $("pcover").style.backgroundImage = u ? `url(${u})` : ""; $("pbg").style.backgroundImage = u ? `url(${u})` : "";
+  $("pdev").textContent = sp.device ? "Lecture sur " + sp.device.name : "";
+  $("pPlay").classList.toggle("on", !!sp.is_playing);
+  tickPlayer();
+  if (spMode === "video"){ if (it.id !== ytPour) chargerVideo(); else syncVideo(false); }
+}
+function renderSpotify(d){
+  if (d && d.item){ sp = d; if (d.is_playing) spVu = Date.now(); spBase = { ms: d.progress_ms || 0, t: Date.now() }; }
+  else sp = null;
+  majIle();
+  if (spOuvert){ if (sp) majPlayer(); else fermerPlayer(); }
+}
+async function loadSpotify(){
+  if (DEMO) return renderSpotify({ is_playing: true, progress_ms: 95000, device: { name: "Echo de Deniz" }, item: { id: "demo", name: "Midnight City", artists: [{ name: "M83" }], duration_ms: 243000, album: { images: [] } } });
+  if (!WK) return renderSpotify(null);
+  try { renderSpotify(await (await fetch(WK + "/spotify")).json()); } catch(e){}
+}
+function ouvrirPlayer(){ if (!sp) return; spOuvert = true; $("player").classList.add("open"); $("player").setAttribute("aria-hidden", "false"); majPlayer(); loadSpotify(); }
+function fermerPlayer(){ spOuvert = false; $("player").classList.remove("open"); $("player").setAttribute("aria-hidden", "true"); try { ytp && ytp.pauseVideo(); } catch(_){} }
+function setMode(m){
+  spMode = m; $("player").classList.toggle("vid", m === "video");
+  $("segCover").classList.toggle("on", m === "cover"); $("segVideo").classList.toggle("on", m === "video");
+  if (m === "video") chargerVideo(); else { try { ytp && ytp.pauseVideo(); } catch(_){} $("pmsg").textContent = ""; }
+}
+function chargerYT(){
+  return new Promise(ok => {
+    if (window.YT && YT.Player) return ok();
+    window.onYouTubeIframeAPIReady = ok;
+    const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; document.head.appendChild(s);
+  });
+}
+function videoIndisponible(){ $("pmsg").textContent = "Pas de vidéo disponible pour ce titre"; setTimeout(() => { if (spMode === "video") setMode("cover"); }, 2500); }
+async function chargerVideo(){
+  const it = sp && sp.item; if (!it) return;
+  if (ytPour === it.id && ytp){ syncVideo(true); return; }
+  ytPour = it.id; ytIds = []; ytIdx = 0;
+  $("pmsg").textContent = "Recherche de la vidéo…";
+  try {
+    const q = it.name + " " + it.artists[0].name + " clip officiel";
+    ytIds = (await (await fetch(WK + "/video?q=" + encodeURIComponent(q))).json()).ids || [];
+    if (!ytIds.length) throw 0;
+    await chargerYT(); lancerVideo();
+  } catch(e){ videoIndisponible(); }
+}
+function lancerVideo(){
+  const pos = Math.floor(positionSpotify() / 1000);
+  if (ytp && ytp.loadVideoById) ytp.loadVideoById({ videoId: ytIds[ytIdx], startSeconds: pos });
+  else ytp = new YT.Player("ytp", { videoId: ytIds[ytIdx], playerVars: { autoplay: 1, mute: 1, controls: 0, playsinline: 1, rel: 0, modestbranding: 1, disablekb: 1, iv_load_policy: 3, start: pos },
+    events: { onReady: e => { e.target.mute(); e.target.playVideo(); $("pmsg").textContent = ""; },
+              onError: () => { ytIdx++; if (ytIdx < ytIds.length) lancerVideo(); else videoIndisponible(); } } });
+  spSync = Date.now(); $("pmsg").textContent = "";
+}
+function syncVideo(force){
+  if (!ytp || !ytp.getCurrentTime || spMode !== "video") return;
+  try {
+    const pos = positionSpotify() / 1000;
+    if ((force || Date.now() - spSync > 20000) && Math.abs(ytp.getCurrentTime() - pos) > 4){ ytp.seekTo(pos, true); spSync = Date.now(); }
+    if (sp && sp.is_playing) ytp.playVideo(); else ytp.pauseVideo();
+  } catch(_){}
+}
+async function controle(action, extra){
+  try { await fetch(WK + "/spotify/control", { method: "POST", body: JSON.stringify(Object.assign({ action }, extra || {})) }); } catch(_){}
+  setTimeout(loadSpotify, 700);
+}
+$("island").onclick = () => { if (musiqueActive()) ouvrirPlayer(); };
+$("pclose").onclick = fermerPlayer;
+$("segCover").onclick = () => setMode("cover");
+$("segVideo").onclick = () => setMode("video");
+$("pPrev").onclick = () => controle("previous");
+$("pNext").onclick = () => controle("next");
+$("pPlay").onclick = () => {
+  if (!sp) return;
+  const veut = !sp.is_playing, pos = positionSpotify();
+  sp.is_playing = veut; spBase = { ms: pos, t: Date.now() }; if (veut) spVu = Date.now();
+  majPlayer(); majIle(); controle(veut ? "play" : "pause");
+};
+$("pbar").onclick = e => {
+  if (!sp) return;
+  const r = e.currentTarget.getBoundingClientRect(), ms = Math.round((e.clientX - r.left) / r.width * sp.item.duration_ms);
+  spBase = { ms, t: Date.now() }; tickPlayer(); controle("seek", { ms });
+};
+document.addEventListener("keydown", e => { if (e.key === "Escape") fermerPlayer(); });
+setInterval(() => { if (spOuvert || ++spTick % 3 === 0) loadSpotify(); }, 2000);
+setInterval(() => { if (spOuvert) tickPlayer(); }, 500);
+
+/* L’imprimante alimente aussi l’île quand elle imprime */
+const _renderBambu = renderBambu;
+renderBambu = function(d){
+  _renderBambu(d);
+  const st = d && d.state ? String(d.state).toUpperCase() : "", m = d && d.remaining_min;
+  ilePrint = ["RUNNING", "PREPARE"].includes(st) && typeof d.progress === "number"
+    ? { p: Math.round(d.progress), eta: m > 0 ? (m >= 60 ? Math.floor(m / 60) + " h " + pad(m % 60) : m + " min") : "" } : null;
+  majIle();
+};
+majIle();
+
 /* ── Zone dynamique : Bambu & Spotify ── */
 const show = (id,on) => $(id).classList.toggle("show", on);
 function renderBambu(d){
@@ -482,24 +566,9 @@ async function loadBambu(){
   if (!u) return renderBambu(null);
   try { renderBambu(await (await fetch(u)).json()); } catch(e){ renderBambu(null); }
 }
-function renderSpotify(d){
-  const ok = d && d.is_playing && d.item;
-  show("sp", !!ok); if (!ok) return;
-  $("spTitle").textContent = d.item.name;
-  $("spArtist").textContent = d.item.artists.map(a => a.name).join(", ");
-  const img = d.item.album && d.item.album.images && d.item.album.images[0];
-  $("spArt").style.backgroundImage = img ? `url(${img.url})` : "";
-  $("spBar").style.width = (d.progress_ms / d.item.duration_ms * 100) + "%";
-}
-async function loadSpotify(){
-  if (DEMO) return renderSpotify({is_playing:true,progress_ms:95000,item:{name:"Midnight City",artists:[{name:"M83"}],duration_ms:243000,album:{images:[]}}});
-  const u = CONFIG.spotifyUrl || (CONFIG.icsWorker && CONFIG.icsWorker.replace(/\/?$/, "/spotify"));
-  if (!u) return renderSpotify(null);
-  try { renderSpotify(await (await fetch(u)).json()); } catch(e){ renderSpotify(null); }
-}
 loadBambu(); loadSpotify();
 setInterval(loadBambu, CONFIG.intervalle.bambu*1000);
-setInterval(loadSpotify, CONFIG.intervalle.spotify*1000);
+
 addEventListener("hashchange", () => { loadBambu(); loadSpotify(); });
 
 /* Plein écran : au premier toucher dans Safari (inutile une fois ajouté à l’écran d’accueil) */
