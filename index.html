@@ -20,82 +20,82 @@
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html,body{height:100%;overflow:hidden;background:#000}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",system-ui,sans-serif;
-  font-weight:500;font-size:20px;letter-spacing:-.012em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
+  font-weight:500;font-size:18px;letter-spacing:-.012em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
 
 /* Disposition : en-tête, calendrier | rappels, salle | imprimante */
-.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:1.15fr 1fr;grid-template-rows:auto minmax(0,1fr) auto;gap:24px;padding:28px 32px}
+.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:1.15fr 1fr;grid-template-rows:auto minmax(0,1fr) auto;gap:20px;padding:24px 28px;align-items:start}
 header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
 .widget{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.03)),rgba(18,20,28,.80);
-  border:1px solid rgba(255,255,255,.13);border-radius:30px;padding:26px 30px;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  border:1px solid rgba(255,255,255,.13);border-radius:28px;padding:22px 26px;min-height:0;overflow:hidden;display:flex;flex-direction:column;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
-h2{font-size:16px;font-weight:600;color:var(--t2);margin-bottom:14px}
+h2{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:12px}
 
 /* Heure et salutation */
-#clockw{flex:0 0 auto;padding:22px 30px 20px}
-#clock{display:flex;align-items:baseline;font-size:108px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+#clockw{flex:0 0 auto;padding:20px 26px 18px}
+#clock{display:flex;align-items:baseline;font-size:92px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
 #clock .dg{display:inline-block;min-width:.58em;text-align:center}
 #clock .sep{color:var(--red);margin:0 .03em;transform:translateY(-.05em)}
 #clock .chg{animation:dgIn .7s var(--ease) both}
 #clock .chgH{animation:dgHour 1s var(--ease) both}
-#date{font-size:20px;font-weight:500;color:var(--t2);margin-top:8px;text-transform:capitalize}
-#hello{flex:0 0 auto;min-width:290px;padding:24px 30px;text-align:right}
-#hi{font-size:32px;font-weight:600;letter-spacing:-.02em}
-#wx{font-size:19px;font-weight:500;color:var(--t2);margin-top:8px}
+#date{font-size:17px;font-weight:500;color:var(--t2);margin-top:6px;text-transform:capitalize}
+#hello{flex:0 0 auto;min-width:250px;padding:20px 26px;text-align:right}
+#hi{font-size:26px;font-weight:600;letter-spacing:-.02em}
+#wx{font-size:16px;font-weight:500;color:var(--t2);margin-top:6px}
 
 /* Calendrier */
-#cal{grid-column:1;grid-row:2}
-#calBody{flex:1;min-height:0;overflow-y:auto}
-.ev{display:flex;gap:18px;padding:16px 0;border-top:1px solid var(--line);animation:in .6s var(--ease) both}
+#cal{grid-column:1;grid-row:2;max-height:100%;--k:1}
+#calBody{flex:0 1 auto;min-height:0;overflow:hidden}
+.ev{display:flex;gap:calc(16px*var(--k,1));padding:calc(13px*var(--k,1)) 0;border-top:1px solid var(--line);animation:in .6s var(--ease) both}
 .ev:first-child{border-top:0;padding-top:0}
 .ev .bar{width:4px;align-self:stretch;border-radius:2px;background:#fff;flex:none}
-.ev .t{font-size:16px;color:var(--t2);font-variant-numeric:tabular-nums}
-.ev .n{font-size:24px;font-weight:600;margin-top:2px;line-height:1.2;letter-spacing:-.02em}
+.ev .t{font-size:calc(14px*var(--k,1));color:var(--t2);font-variant-numeric:tabular-nums}
+.ev .n{font-size:calc(20px*var(--k,1));font-weight:600;margin-top:2px;line-height:1.2;letter-spacing:-.02em}
 .ev.past{opacity:.4}
-.dense .ev{padding:10px 0}.dense .ev .n{font-size:20px}.dense .ev .t{font-size:14px}
-.next-label{font-size:16px;font-weight:600;color:var(--orange);margin-bottom:14px}
-.empty{color:var(--t3);font-size:20px}
+.next-label{font-size:14px;font-weight:600;color:var(--orange);margin-bottom:14px}
+.empty{color:var(--t3);font-size:17px}
 
 /* Rappels */
-#rem{grid-column:2;grid-row:2}
-#remBody{flex:1;min-height:0;overflow:hidden}
-.rm{display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--line)}
+#rem{grid-column:2;grid-row:2;max-height:100%;--k:1}
+#remBody{flex:0 1 auto;min-height:0;overflow:hidden}
+#remBody.cols{display:grid;grid-template-columns:1fr 1fr;column-gap:26px;align-content:start}
+#remBody.cols .rm:nth-child(2){border-top:0;padding-top:0}
+.rm{display:flex;align-items:center;gap:calc(14px*var(--k,1));padding:calc(11px*var(--k,1)) 0;border-top:1px solid var(--line)}
 .rm:first-child{border-top:0;padding-top:0}
-.dot{width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,.7);flex:none}
-.rm .l{font-size:22px;font-weight:500;letter-spacing:-.02em;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{width:calc(20px*var(--k,1));height:calc(20px*var(--k,1));border-radius:50%;border:2px solid rgba(255,255,255,.7);flex:none}
+.rm .l{font-size:calc(19px*var(--k,1));font-weight:500;letter-spacing:-.02em;min-width:0;line-height:1.25;overflow-wrap:anywhere}
 
 /* Salle */
 #gym{grid-column:1;grid-row:3}
 #gymBody{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px 14px}
-#gym .gt{grid-column:1;grid-row:1;font-size:16px;font-weight:600;color:var(--t2)}
-#gym .gn{grid-column:2;grid-row:1;font-size:30px;font-weight:600;font-variant-numeric:tabular-nums}
+#gym .gt{grid-column:1;grid-row:1;font-size:14px;font-weight:600;color:var(--t2)}
+#gym .gn{grid-column:2;grid-row:1;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
 #gym .gbar{grid-column:1/-1;grid-row:2;display:flex;gap:10px}
-#gym .gbar i{flex:1;height:12px;border-radius:6px;background:rgba(255,255,255,.18);transition:background .7s var(--ease)}
+#gym .gbar i{flex:1;height:10px;border-radius:6px;background:rgba(255,255,255,.18);transition:background .7s var(--ease)}
 #gym .gbar i.on{background:var(--red)}
-#gym .gm{grid-column:1/-1;grid-row:3;font-size:19px}
-#gym .gs{grid-column:1/-1;grid-row:4;font-size:15px;color:var(--t2)}
+#gym .gm{grid-column:1/-1;grid-row:3;font-size:16px}
+#gym .gs{grid-column:1/-1;grid-row:4;font-size:13px;color:var(--t2)}
 
 /* Imprimante Bambu Lab */
-#bb{grid-column:2;grid-row:3;flex-direction:row;align-items:center;gap:26px}
-.ring{position:relative;width:160px;flex:none;display:flex;flex-direction:column;transition:--p 1s linear}
-.ring span{order:1;font-size:40px;font-weight:600;line-height:1;margin-bottom:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.ring::before,.ring::after{content:"";height:8px;border-radius:4px}
+#bb{grid-column:2;grid-row:3;flex-direction:row;align-items:center;gap:20px}
+.ring{position:relative;width:140px;flex:none;display:flex;flex-direction:column;transition:--p 1s linear}
+.ring span{order:1;font-size:32px;font-weight:600;line-height:1;margin-bottom:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ring::before,.ring::after{content:"";height:7px;border-radius:4px}
 .ring::before{order:2;background:rgba(255,255,255,.18)}
 .ring::after{position:absolute;left:0;bottom:0;width:calc(var(--p,0)*1%);background:var(--red)}
 #bb .info{flex:1;min-width:0}
-#bb h2{margin-bottom:4px;font-size:15px}
-#bb .tt{font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#bb .sub{font-size:16px;color:var(--t2);margin-top:2px}
+#bb h2{margin-bottom:4px;font-size:13px}
+#bb .tt{font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bb .sub{font-size:14px;color:var(--t2);margin-top:2px}
 .temps{display:flex;gap:10px;margin-top:10px}
-.temps div{background:rgba(255,255,255,.10);border-radius:14px;padding:6px 14px;font-size:13px;color:var(--t2)}
-.temps b{display:block;font-size:19px;color:var(--t1);font-weight:600}
+.temps div{background:rgba(255,255,255,.10);border-radius:14px;padding:5px 12px;font-size:12px;color:var(--t2)}
+.temps b{display:block;font-size:16px;color:var(--t1);font-weight:600}
 
 /* Île dynamique */
 #island{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:60;width:150px;height:46px;background:#000;border:1px solid rgba(255,255,255,.16);border-radius:999px;overflow:hidden;
   box-shadow:0 8px 30px rgba(0,0,0,.7);transition:width .55s cubic-bezier(.32,1.25,.4,1),height .55s cubic-bezier(.32,1.25,.4,1)}
-#island.music{width:300px;height:64px;cursor:pointer}
-#island.print{width:250px;height:56px}
+#island.music{width:280px;height:60px;cursor:pointer}
 #island>div{position:absolute;inset:0;display:flex;align-items:center;opacity:0;pointer-events:none;transition:opacity .25s}
-#island.idle .i-idle,#island.music .i-music,#island.print .i-print{opacity:1;transition-delay:.12s}
+#island.idle .i-idle,#island.music .i-music{opacity:1;transition-delay:.12s}
 .i-idle{justify-content:center}
 .i-idle i{width:10px;height:10px;border-radius:50%;background:var(--red)}
 .i-music{gap:12px;padding:0 14px}
@@ -107,11 +107,6 @@ h2{font-size:16px;font-weight:600;color:var(--t2);margin-bottom:14px}
 .ieq span{width:3px;background:var(--red);border-radius:2px;animation:eq 1s ease-in-out infinite}
 .ieq span:nth-child(2){animation-delay:.2s}.ieq span:nth-child(3){animation-delay:.4s}.ieq span:nth-child(4){animation-delay:.1s}
 #island.paused .ieq span{animation:none;height:5px}
-.i-print{gap:12px;padding:0 18px}
-#iPct{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
-.ibar{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}
-.ibar i{display:block;height:100%;width:0;border-radius:3px;background:var(--red);transition:width .8s var(--ease)}
-#iEta{font-size:14px;color:var(--t2);white-space:nowrap}
 
 /* Lecteur Spotify plein écran */
 #player{position:fixed;inset:0;z-index:100;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;
@@ -169,7 +164,6 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 <div id="island" class="idle">
   <div class="i-idle"><i></i></div>
   <div class="i-music"><div id="iArt"></div><div class="itx"><b id="iTitle"></b><span id="iArtist"></span></div><div class="ieq"><span></span><span></span><span></span><span></span></div></div>
-  <div class="i-print"><b id="iPct">0%</b><div class="ibar"><i id="iFill"></i></div><span id="iEta"></span></div>
 </div>
 <div id="player" aria-hidden="true">
   <div id="pbg"></div>
@@ -417,7 +411,7 @@ loadWx(); setInterval(loadWx, CONFIG.intervalle.meteo*1000);
 /* ── Spotify : île dynamique + lecteur plein écran (commande tous les appareils : iPhone, Echo…) ── */
 const WK = CONFIG.icsWorker ? CONFIG.icsWorker.replace(/\/?$/, "") : "";
 let sp = null, spVu = 0, spBase = null, spMode = "cover", spOuvert = false, spTick = 0, spSync = 0;
-let ytp = null, ytPour = "", ytIds = [], ytIdx = 0, ilePrint = null;
+let ytp = null, ytPour = "", ytIds = [], ytIdx = 0;
 const fmtT = ms => { const s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ":" + pad(s % 60); };
 const musiqueActive = () => !!(sp && sp.item && (sp.is_playing || Date.now() - spVu < 300000));
 const imgDe = it => (it && it.album && it.album.images && it.album.images[0] && it.album.images[0].url) || "";
@@ -425,14 +419,12 @@ const positionSpotify = () => spBase ? spBase.ms + (sp && sp.is_playing ? Date.n
 
 function majIle(){
   const el = $("island"), m = musiqueActive();
-  el.className = m ? "music" : ilePrint ? "print" : "idle";
+  el.className = m ? "music" : "idle";
   if (m){
     $("iTitle").textContent = sp.item.name;
     $("iArtist").textContent = sp.item.artists.map(a => a.name).join(", ");
     const u = imgDe(sp.item); $("iArt").style.backgroundImage = u ? `url(${u})` : "";
     el.classList.toggle("paused", !sp.is_playing);
-  } else if (ilePrint){
-    $("iPct").textContent = ilePrint.p + "%"; $("iFill").style.width = ilePrint.p + "%"; $("iEta").textContent = ilePrint.eta;
   }
 }
 function tickPlayer(){
@@ -529,15 +521,6 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") fermerPlayer
 setInterval(() => { if (spOuvert || ++spTick % 3 === 0) loadSpotify(); }, 2000);
 setInterval(() => { if (spOuvert) tickPlayer(); }, 500);
 
-/* L’imprimante alimente aussi l’île quand elle imprime */
-const _renderBambu = renderBambu;
-renderBambu = function(d){
-  _renderBambu(d);
-  const st = d && d.state ? String(d.state).toUpperCase() : "", m = d && d.remaining_min;
-  ilePrint = ["RUNNING", "PREPARE"].includes(st) && typeof d.progress === "number"
-    ? { p: Math.round(d.progress), eta: m > 0 ? (m >= 60 ? Math.floor(m / 60) + " h " + pad(m % 60) : m + " min") : "" } : null;
-  majIle();
-};
 majIle();
 
 /* ── Zone dynamique : Bambu & Spotify ── */
@@ -570,6 +553,21 @@ loadBambu(); loadSpotify();
 setInterval(loadBambu, CONFIG.intervalle.bambu*1000);
 
 addEventListener("hashchange", () => { loadBambu(); loadSpotify(); });
+
+/* Ajustement automatique : la taille du texte s’adapte pour que rien ne soit coupé */
+function ajuster(w, b, colonnes){
+  b.classList.remove("cols");
+  for (const cols of colonnes ? [false, true] : [false]){
+    if (cols) b.classList.add("cols");
+    let k = 1; w.style.setProperty("--k", k);
+    while (b.scrollHeight > b.clientHeight + 1 && k > .62){ k = Math.round((k - .04) * 100) / 100; w.style.setProperty("--k", k); }
+    if (b.scrollHeight <= b.clientHeight + 1) return;
+  }
+}
+function ajusterTout(){ ajuster($("cal"), $("calBody"), false); ajuster($("rem"), $("remBody"), true); }
+const _renderRem = renderRem; renderRem = function(){ _renderRem.apply(this, arguments); requestAnimationFrame(ajusterTout); };
+const _renderCal = renderCal; renderCal = function(){ _renderCal.apply(this, arguments); requestAnimationFrame(ajusterTout); };
+addEventListener("resize", ajusterTout); setTimeout(ajusterTout, 400); setTimeout(ajusterTout, 2500);
 
 /* Plein écran : au premier toucher dans Safari (inutile une fois ajouté à l’écran d’accueil) */
 document.addEventListener("pointerdown", () => {
