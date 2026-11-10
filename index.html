@@ -22,12 +22,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   font-weight:400;font-size:17px;letter-spacing:-.005em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;background:#000}
 
 /* Thème : noir 60 % · blanc 30 % · orange 10 % */
-.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:minmax(0,3fr) minmax(0,2fr) auto;gap:14px;padding:26px 28px}
+.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:minmax(0,3fr) minmax(0,2fr) auto;gap:14px;padding:26px 28px}
 .widget{background:#000;border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:16px 22px;min-height:0;overflow:hidden;display:flex;flex-direction:column}
 h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--t2);margin-bottom:12px}
 
 /* Heure + semaine */
-#clockw{grid-column:1/4;grid-row:1;justify-content:center;gap:26px;padding:24px 34px}
+#clockw{grid-column:1/7;grid-row:1;justify-content:center;gap:26px;padding:24px 34px}
 #clock{display:flex;align-items:baseline;font-size:128px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
 #clock .dg{display:inline-block;min-width:.58em;text-align:center}
 #clock .sep{color:var(--acc);margin:0 .03em;transform:translateY(-.05em)}
@@ -42,7 +42,7 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 #week .wd.now small{color:#000}
 
 /* Salutation + météo heure par heure */
-#hello{grid-column:4/7;grid-row:1;text-align:right;justify-content:space-between;padding:26px 30px}
+#hello{grid-column:7/13;grid-row:1;text-align:right;justify-content:space-between;padding:26px 30px}
 #hi{font-size:38px;font-weight:300;letter-spacing:-.01em}
 #wx{font-size:19px;font-weight:400;color:var(--t2);margin-top:6px}
 #wxh{display:flex;gap:8px;margin-top:auto}
@@ -52,15 +52,15 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 .hr b{font-size:18px;font-weight:500}
 
 /* Prévisions 5 jours + ciel */
-#fcw{grid-column:1/5;grid-row:2}
+#fcw{grid-column:1/6;grid-row:2}
 #fc{display:flex;gap:10px;flex:1;min-height:0}
 .fd{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid rgba(255,255,255,.14);border-radius:16px}
 .fd span{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--t2)}
 .fd.now span{color:var(--acc)}
 .fd i{font-style:normal;font-size:30px;line-height:1.1}
-.fd b{font-size:20px;font-weight:500}
+.fd b{font-size:18px;font-weight:500}
 .fd small{font-size:14px;color:var(--t2)}
-#sky{grid-column:5/7;grid-row:2}
+#sky{grid-column:6/9;grid-row:2}
 .skyb{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;flex:1;align-content:center}
 .sk{display:flex;flex-direction:column;gap:2px}
 .sk small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t2)}
@@ -70,8 +70,23 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 .mn b{display:block;font-size:16px;font-weight:500}
 .mn small{font-size:13px;color:var(--t2)}
 
+/* Lecteur Spotify (tuile) + visualiseur de basses */
+#spw{grid-column:9/13;grid-row:2;cursor:pointer;gap:10px}
+.sprow{display:flex;align-items:center;gap:12px}
+#sArt{width:56px;height:56px;border-radius:12px;flex:none;background:rgba(255,255,255,.08) center/cover}
+.stx{flex:1;min-width:0}
+#sTitle{display:block;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sArtist{display:block;font-size:13px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#vizMic{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:transparent;display:grid;place-items:center;cursor:pointer;-webkit-appearance:none;appearance:none}
+#vizMic svg{width:16px;height:16px;fill:var(--t2)}
+#vizMic.on{border-color:var(--acc)}
+#vizMic.on svg{fill:var(--acc)}
+#viz{width:100%;flex:1;min-height:56px;display:block}
+#vizHint{font-size:11px;color:var(--t3);min-height:13px;text-align:center}
+#spw.paused .stx{opacity:.6}
+
 /* Salle (tuile fine) */
-#gym{grid-column:1/4;grid-row:3;min-height:96px;padding:12px 26px;justify-content:center}
+#gym{grid-column:1/7;grid-row:3;min-height:96px;padding:12px 26px;justify-content:center}
 #gymBody{display:flex;align-items:center;gap:14px;width:100%}
 #gym .gt{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--t2);white-space:nowrap}
 #gym .gbar{display:flex;gap:8px}
@@ -82,7 +97,7 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 #gym .gs{display:none}
 
 /* Imprimante Bambu Lab (tuile fine) */
-#bb{grid-column:4/7;grid-row:3;min-height:96px;padding:12px 26px;flex-direction:row;align-items:center;gap:16px}
+#bb{grid-column:7/13;grid-row:3;min-height:96px;padding:12px 26px;flex-direction:row;align-items:center;gap:16px}
 .ring{position:relative;width:120px;flex:none;display:flex;flex-direction:column;transition:--p 1s linear}
 .ring span{order:1;font-size:24px;font-weight:300;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .ring::before,.ring::after{content:"";height:4px;border-radius:2px}
@@ -110,24 +125,6 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 #alarme b{display:block;font-size:56px;font-weight:200;letter-spacing:-.02em}
 #alarme span{display:block;margin-top:14px;font-size:18px;color:var(--t2)}
 @keyframes alarme{0%,100%{box-shadow:inset 0 0 0 0 rgba(255,138,31,0)}50%{box-shadow:inset 0 0 140px 10px rgba(255,138,31,.35)}}
-
-/* Île dynamique */
-#island{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:60;width:150px;height:46px;background:#000;border:1px solid rgba(255,255,255,.16);border-radius:999px;overflow:hidden;
-  box-shadow:0 8px 30px rgba(0,0,0,.7);transition:width .55s cubic-bezier(.32,1.25,.4,1),height .55s cubic-bezier(.32,1.25,.4,1)}
-#island.music{width:280px;height:60px;cursor:pointer}
-#island>div{position:absolute;inset:0;display:flex;align-items:center;opacity:0;pointer-events:none;transition:opacity .25s}
-#island.idle .i-idle,#island.music .i-music{opacity:1;transition-delay:.12s}
-.i-idle{justify-content:center}
-.i-idle i{width:10px;height:10px;border-radius:50%;background:var(--red)}
-.i-music{gap:12px;padding:0 14px}
-#iArt{width:44px;height:44px;border-radius:12px;flex:none;background:#222 center/cover}
-.itx{flex:1;min-width:0}
-#iTitle{display:block;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#iArtist{display:block;font-size:13px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ieq{display:flex;gap:3px;align-items:flex-end;height:22px}
-.ieq span{width:3px;background:var(--red);border-radius:2px;animation:eq 1s ease-in-out infinite}
-.ieq span:nth-child(2){animation-delay:.2s}.ieq span:nth-child(3){animation-delay:.4s}.ieq span:nth-child(4){animation-delay:.1s}
-#island.paused .ieq span{animation:none;height:5px}
 
 /* Lecteur Spotify plein écran */
 #player{position:fixed;inset:0;z-index:100;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;
@@ -176,7 +173,6 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
   #gym .gm{display:none}
   #bb .temps{display:none}
   #bb .info{flex-wrap:wrap}
-  #island.music{width:230px}
 }
 
 /* Effets occasionnels */
@@ -196,10 +192,6 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 <body>
 <div id="sweep"></div>
 <div id="alarme"><div><b id="alarmeTitre">Pièce refroidie</b><span>Appuie pour arrêter</span></div></div>
-<div id="island" class="idle">
-  <div class="i-idle"><i></i></div>
-  <div class="i-music"><div id="iArt"></div><div class="itx"><b id="iTitle"></b><span id="iArtist"></span></div><div class="ieq"><span></span><span></span><span></span><span></span></div></div>
-</div>
 <div id="player" aria-hidden="true">
   <div id="pbg"></div>
   <button id="pclose" aria-label="Fermer">✕</button>
@@ -227,6 +219,11 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
     <div class="sk"><small>Coucher</small><b id="suns">--:--</b></div>
     <div class="mn"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="36" fill="#000" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/><path id="moonlit" fill="#fff"/></svg><div><b id="moonname"></b><small id="moonpct"></small></div></div>
   </div></section>
+  <section class="widget" id="spw">
+    <div class="sprow"><div id="sArt"></div><div class="stx"><b id="sTitle">Spotify</b><span id="sArtist">Rien en lecture</span></div>
+      <button id="vizMic" aria-label="Activer le visualiseur (micro)"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V22h2v-3.08A7 7 0 0 0 19 12z"/></svg></button></div>
+    <canvas id="viz"></canvas><div id="vizHint"></div>
+  </section>
   <section class="widget" id="gym"><div id="gymBody"></div></section>
   <section class="widget" id="bb">
       <div class="ring" id="bbRing"><span id="bbPct">0%</span></div>
@@ -371,7 +368,71 @@ async function loadWx(){
 }
 loadWx(); setInterval(loadWx, CONFIG.intervalle.meteo*1000);
 
-/* ── Spotify : île dynamique + lecteur plein écran (commande tous les appareils : iPhone, Echo…) ── */
+/* ── Visualiseur : le micro de l’iPad écoute la pièce, les basses font monter la gauche de la barre ── */
+const viz = (() => {
+  const N = 32, FMIN = 40, FMAX = 12000, lisse = new Float32Array(N);
+  let ac = null, an = null, data = null, flux = null, raf = 0, actif = false, joue = false, pic = .25, dernier = 0, ctx2 = null, W = 0, H = 0;
+  function bandes(d, fe, fft){
+    const out = new Float32Array(N), bin = fe / fft;
+    for (let i = 0; i < N; i++){
+      const lo = Math.max(1, Math.floor(FMIN * Math.pow(FMAX / FMIN, i / N) / bin)), hi = Math.max(lo + 1, Math.ceil(FMIN * Math.pow(FMAX / FMIN, (i + 1) / N) / bin));
+      let m = 0; for (let k = lo; k < hi && k < d.length; k++) if (d[k] > m) m = d[k];
+      out[i] = m / 255;
+    }
+    return out;
+  }
+  function adoucir(v){
+    let max = 0; for (let i = 0; i < N; i++) if (v[i] > max) max = v[i];
+    pic = Math.max(pic * .995, max, .25);
+    for (let i = 0; i < N; i++){ const x = Math.min(1, v[i] / pic); lisse[i] = x > lisse[i] ? lisse[i] + (x - lisse[i]) * .6 : lisse[i] * .86; }
+  }
+  function taille(){
+    const c = $("viz"), r = c.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height; c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+    ctx2 = c.getContext("2d"); ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function dessiner(repos){
+    if (!ctx2) taille();
+    ctx2.clearRect(0, 0, W, H);
+    const gap = 3, w = (W - gap * (N - 1)) / N;
+    for (let i = 0; i < N; i++){
+      const h = repos ? 3 : Math.max(3, lisse[i] * H);
+      ctx2.fillStyle = repos ? "rgba(255,255,255,.22)" : (i < 8 ? "#ff8a1f" : "#fff");
+      ctx2.fillRect(i * (w + gap), H - h, w, h);
+    }
+  }
+  function boucle(t){
+    raf = 0; if (!actif || !joue) return;
+    raf = requestAnimationFrame(boucle);
+    if (t - dernier < 33) return; dernier = t;
+    an.getByteFrequencyData(data); adoucir(bandes(data, ac.sampleRate, an.fftSize)); dessiner(false);
+  }
+  function maj(){
+    $("vizMic").classList.toggle("on", actif);
+    $("vizHint").textContent = joue && !actif ? "Touche le micro pour animer" : "";
+    if (actif && joue){ if (!raf) raf = requestAnimationFrame(boucle); }
+    else { lisse.fill(0); dessiner(true); }
+  }
+  async function activer(){
+    try {
+      flux = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+      ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === "suspended") await ac.resume();
+      an = ac.createAnalyser(); an.fftSize = 2048; an.minDecibels = -90; an.maxDecibels = -20; an.smoothingTimeConstant = .5;
+      ac.createMediaStreamSource(flux).connect(an); data = new Uint8Array(an.frequencyBinCount); actif = true;
+      try { localStorage.setItem("vizMicro", "1"); } catch(_){}
+    } catch(e){ $("vizHint").textContent = "Micro refusé ou indisponible"; actif = false; return; }
+    maj();
+  }
+  function desactiver(){
+    try { flux && flux.getTracks().forEach(t => t.stop()); ac && ac.close(); } catch(_){}
+    flux = ac = an = null; actif = false; try { localStorage.removeItem("vizMicro"); } catch(_){} maj();
+  }
+  $("vizMic").onclick = e => { e.stopPropagation(); actif ? desactiver() : activer(); };
+  addEventListener("resize", () => { taille(); if (!(actif && joue)) dessiner(true); });
+  return { jouer(v){ joue = !!v; maj(); }, bandes, adoucir, lisse, N };
+})();
+
+/* ── Spotify : tuile + lecteur plein écran (commande tous les appareils : iPhone, Echo…) ── */
 const WK = CONFIG.icsWorker ? CONFIG.icsWorker.replace(/\/?$/, "") : "";
 let sp = null, spVu = 0, spBase = null, spMode = "cover", spOuvert = false, spTick = 0, spSync = 0;
 let ytp = null, ytPour = "", ytIds = [], ytIdx = 0;
@@ -381,14 +442,13 @@ const imgDe = it => (it && it.album && it.album.images && it.album.images[0] && 
 const positionSpotify = () => spBase ? spBase.ms + (sp && sp.is_playing ? Date.now() - spBase.t : 0) : 0;
 
 function majIle(){
-  const el = $("island"), m = musiqueActive();
-  el.className = m ? "music" : "idle";
+  const m = musiqueActive();
+  $("spw").classList.toggle("paused", !!(m && !sp.is_playing));
   if (m){
-    $("iTitle").textContent = sp.item.name;
-    $("iArtist").textContent = sp.item.artists.map(a => a.name).join(", ");
-    const u = imgDe(sp.item); $("iArt").style.backgroundImage = u ? `url(${u})` : "";
-    el.classList.toggle("paused", !sp.is_playing);
-  }
+    $("sTitle").textContent = sp.item.name; $("sArtist").textContent = sp.item.artists.map(a => a.name).join(", ");
+    const u = imgDe(sp.item); $("sArt").style.backgroundImage = u ? `url(${u})` : "";
+  } else { $("sTitle").textContent = "Spotify"; $("sArtist").textContent = "Rien en lecture"; $("sArt").style.backgroundImage = ""; }
+  viz.jouer(m && sp.is_playing);
 }
 function tickPlayer(){
   if (!sp || !spBase) return;
@@ -463,7 +523,7 @@ async function controle(action, extra){
   try { await fetch(WK + "/spotify/control", { method: "POST", body: JSON.stringify(Object.assign({ action }, extra || {})) }); } catch(_){}
   setTimeout(loadSpotify, 700);
 }
-$("island").onclick = () => { if (musiqueActive()) ouvrirPlayer(); };
+$("spw").onclick = () => { if (musiqueActive()) ouvrirPlayer(); };
 $("pclose").onclick = fermerPlayer;
 $("segCover").onclick = () => setMode("cover");
 $("segVideo").onclick = () => setMode("video");
