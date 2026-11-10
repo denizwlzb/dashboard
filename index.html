@@ -22,7 +22,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   font-weight:400;font-size:17px;letter-spacing:-.005em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;background:#000}
 
 /* Thème : noir 60 % · blanc 30 % · orange 10 % */
-.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:minmax(0,1fr) auto;gap:14px;padding:26px 28px}
+.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:minmax(0,3fr) minmax(0,2fr) auto;gap:14px;padding:26px 28px}
 .widget{background:#000;border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:16px 22px;min-height:0;overflow:hidden;display:flex;flex-direction:column}
 h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--t2);margin-bottom:12px}
 
@@ -51,8 +51,27 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 .hr i{font-style:normal;font-size:26px;line-height:1.2}
 .hr b{font-size:18px;font-weight:500}
 
+/* Prévisions 5 jours + ciel */
+#fcw{grid-column:1/5;grid-row:2}
+#fc{display:flex;gap:10px;flex:1;min-height:0}
+.fd{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid rgba(255,255,255,.14);border-radius:16px}
+.fd span{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--t2)}
+.fd.now span{color:var(--acc)}
+.fd i{font-style:normal;font-size:30px;line-height:1.1}
+.fd b{font-size:20px;font-weight:500}
+.fd small{font-size:14px;color:var(--t2)}
+#sky{grid-column:5/7;grid-row:2}
+.skyb{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;flex:1;align-content:center}
+.sk{display:flex;flex-direction:column;gap:2px}
+.sk small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t2)}
+.sk b{font-size:24px;font-weight:300;font-variant-numeric:tabular-nums}
+.mn{grid-column:1/-1;display:flex;align-items:center;gap:14px}
+.mn svg{width:56px;height:56px;flex:none}
+.mn b{display:block;font-size:16px;font-weight:500}
+.mn small{font-size:13px;color:var(--t2)}
+
 /* Salle (tuile fine) */
-#gym{grid-column:1/4;grid-row:2;min-height:96px;padding:12px 26px;justify-content:center}
+#gym{grid-column:1/4;grid-row:3;min-height:96px;padding:12px 26px;justify-content:center}
 #gymBody{display:flex;align-items:center;gap:14px;width:100%}
 #gym .gt{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--t2);white-space:nowrap}
 #gym .gbar{display:flex;gap:8px}
@@ -63,7 +82,7 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 #gym .gs{display:none}
 
 /* Imprimante Bambu Lab (tuile fine) */
-#bb{grid-column:4/7;grid-row:2;min-height:96px;padding:12px 26px;flex-direction:row;align-items:center;gap:16px}
+#bb{grid-column:4/7;grid-row:3;min-height:96px;padding:12px 26px;flex-direction:row;align-items:center;gap:16px}
 .ring{position:relative;width:120px;flex:none;display:flex;flex-direction:column;transition:--p 1s linear}
 .ring span{order:1;font-size:24px;font-weight:300;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .ring::before,.ring::after{content:"";height:4px;border-radius:2px}
@@ -186,6 +205,12 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 <div class="app">
   <div class="widget" id="clockw"><div id="clock"></div><div id="date"></div><div id="week"></div></div>
   <div class="widget" id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div><div id="wxh"></div></div>
+  <section class="widget" id="fcw"><h2>Prévisions</h2><div id="fc"></div></section>
+  <section class="widget" id="sky"><h2>Ciel</h2><div class="skyb">
+    <div class="sk"><small>Lever</small><b id="sunr">--:--</b></div>
+    <div class="sk"><small>Coucher</small><b id="suns">--:--</b></div>
+    <div class="mn"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="36" fill="#000" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/><path id="moonlit" fill="#fff"/></svg><div><b id="moonname"></b><small id="moonpct"></small></div></div>
+  </div></section>
   <section class="widget" id="gym"><div id="gymBody"></div></section>
   <section class="widget" id="bb">
       <div class="ring" id="bbRing"><span id="bbPct">0%</span></div>
@@ -283,6 +308,21 @@ async function loadGym(){
 }
 renderGym(null); loadGym(); setInterval(loadGym, 60000);
 
+/* ── Lune ── */
+function lune(t){
+  const ref = Date.UTC(2000, 0, 6, 18, 14), cycle = 29.530588853 * 864e5;
+  const p = (((t - ref) / cycle) % 1 + 1) % 1, illum = (1 - Math.cos(2 * Math.PI * p)) / 2;
+  const noms = ["Nouvelle lune", "Premier croissant", "Premier quartier", "Gibbeuse croissante", "Pleine lune", "Gibbeuse décroissante", "Dernier quartier", "Dernier croissant"];
+  return { p, illum, nom: noms[Math.floor(p * 8 + .5) % 8] };
+}
+function majLune(){
+  const L = lune(Date.now()), r = 36, c = 40, rx = Math.abs(Math.cos(2 * Math.PI * L.p)) * r;
+  const croit = L.p < .5, limbe = croit ? 1 : 0, term = croit ? (L.p < .25 ? 0 : 1) : (L.p < .75 ? 0 : 1);
+  $("moonlit").setAttribute("d", `M ${c} ${c - r} A ${r} ${r} 0 0 ${limbe} ${c} ${c + r} A ${rx.toFixed(2)} ${r} 0 0 ${term} ${c} ${c - r} Z`);
+  $("moonname").textContent = L.nom; $("moonpct").textContent = Math.round(L.illum * 100) + " % éclairée";
+}
+majLune(); setInterval(majLune, 3600000);
+
 /* ── Météo ── */
 const WX = {0:["☀️","Ensoleillé"],1:["🌤️","Plutôt dégagé"],2:["⛅","Partiellement nuageux"],3:["☁️","Couvert"],45:["🌫️","Brouillard"],48:["🌫️","Brouillard"],
   51:["🌦️","Bruine"],53:["🌦️","Bruine"],55:["🌦️","Bruine"],61:["🌧️","Pluie"],63:["🌧️","Pluie"],65:["🌧️","Forte pluie"],
@@ -295,11 +335,19 @@ function renderWx(r){
   let i = h.time.indexOf(cle); if (i < 0) i = 0; i += 1;
   $("wxh").innerHTML = Array.from({ length: 8 }, (_, k) => i + k).filter(k => k < h.time.length).map(k =>
     `<div class="hr"><span>${h.time[k].slice(11, 13)} h</span><i>${(WX[h.weather_code[k]] || ["·"])[0]}</i><b>${Math.round(h.temperature_2m[k])}°</b></div>`).join("");
+  const dj = r.daily;
+  if (dj){
+    $("fc").innerHTML = dj.time.slice(0, 5).map((t, i) => {
+      const jour = new Date(t + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "short" }).replace(".", "").toUpperCase();
+      return `<div class="fd${i === 0 ? " now" : ""}"><span>${i === 0 ? "AUJ." : jour}</span><i>${(WX[dj.weather_code[i]] || ["·"])[0]}</i><b>${Math.round(dj.temperature_2m_max[i])}°</b><small>${Math.round(dj.temperature_2m_min[i])}°</small></div>`;
+    }).join("");
+    $("sunr").textContent = dj.sunrise[0].slice(11, 16); $("suns").textContent = dj.sunset[0].slice(11, 16);
+  }
 }
 async function loadWx(){
   try {
     const { lat, lon } = CONFIG.meteo;
-    const r = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&hourly=temperature_2m,weather_code&forecast_days=2&timezone=auto`)).json();
+    const r = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&forecast_days=5&timezone=auto`)).json();
     renderWx(r);
   } catch(e){ console.warn("Météo indisponible :", e); }
 }
