@@ -173,6 +173,20 @@ h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:10px}
 .pseg button{border:0;background:transparent;color:var(--t2);font:inherit;font-size:16px;font-weight:600;padding:8px 22px;border-radius:99px;cursor:pointer}
 .pseg button.on{background:#fff;color:#000}
 
+/* Écran partagé : le dashboard occupe les 2/3 de l’iPad (Raccourcis sur le tiers restant) */
+@media (max-width:860px){
+  .app{padding:20px 20px;gap:12px}
+  #clock{font-size:64px}
+  #week .wd{width:32px;height:32px}
+  #week{gap:6px}
+  #hi{font-size:22px}
+  #gym .gm{display:none}
+  #bb .temps{display:none}
+  #bb .info{flex-wrap:wrap}
+  #island.music{width:230px}
+  .mtile{height:44px;padding:0 14px 0 10px}
+}
+
 /* Effets occasionnels */
 #sweep{position:fixed;top:0;bottom:0;left:0;width:34vw;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
 body.fx-sweep #sweep{animation:sweep 2.8s var(--ease)}
@@ -237,6 +251,7 @@ const CONFIG = {
   prenom: "Deniz",
   meteo: { lat: 45.19, lon: 5.72, ville: "Grenoble" },             // coordonnées (Open-Meteo, sans clé)
   icsWorker: "https://cal-k7x92mqp4v.deniz-walzberg.workers.dev/", // Worker Cloudflare qui lit tes calendriers iCloud
+  retourAuto: false,   // false = la page reste en place (utile avec Raccourcis en vue partagée) ; true = revient sur cette page après le raccourci
   maison: [   // Tuiles raccourcis Apple : { nom, icone, on, off }  (allumer / éteindre)   ou   { nom, icone, toggle }   ou   { nom, icone, run }  (scène)
     { nom: "Allumer", icone: "💡", run: "ON" },
     { nom: "Éteindre", icone: "🌑", run: "OFF" },
@@ -605,7 +620,9 @@ const RETOUR = location.href.split("#")[0].split("?")[0];
 function etatTuile(n){ try { return localStorage.getItem("maison:" + n) === "1"; } catch(_){ return false; } }
 function setEtatTuile(n, v){ try { localStorage.setItem("maison:" + n, v ? "1" : "0"); } catch(_){} }
 function lancerRaccourci(nom){
-  location.href = "shortcuts://x-callback-url/run-shortcut?name=" + encodeURIComponent(nom) + "&x-success=" + encodeURIComponent(RETOUR) + "&x-error=" + encodeURIComponent(RETOUR);
+  location.href = CONFIG.retourAuto
+    ? "shortcuts://x-callback-url/run-shortcut?name=" + encodeURIComponent(nom) + "&x-success=" + encodeURIComponent(RETOUR) + "&x-error=" + encodeURIComponent(RETOUR)
+    : "shortcuts://run-shortcut?name=" + encodeURIComponent(nom);
 }
 function rendreMaison(){
   const liste = CONFIG.maison || [], zone = $("maison");
