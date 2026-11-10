@@ -96,6 +96,21 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 .temps div{border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:3px 9px;font-size:10px;color:var(--t2)}
 .temps b{display:block;font-size:14px;color:var(--t1);font-weight:500}
 
+/* Minuteur de refroidissement (Bambu) */
+#bb .info{flex-wrap:wrap;row-gap:6px}
+#bb .tt{flex:1 1 100%}
+#bbTimer{flex:none;font:inherit;color:var(--t1);background:transparent;border:1px solid rgba(255,255,255,.3);border-radius:16px;padding:8px 14px;text-align:center;cursor:pointer;-webkit-appearance:none;appearance:none;line-height:1.15;min-width:112px}
+#bbTimer[hidden]{display:none}
+#bbTimer small{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t2)}
+#bbTimer b{display:block;font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}
+#bbTimer.on{border-color:var(--acc)}
+#bbTimer.on small{color:var(--acc)}
+#alarme{position:fixed;inset:0;z-index:200;background:#000;display:none;align-items:center;justify-content:center;text-align:center;cursor:pointer}
+#alarme.on{display:flex;animation:alarme 1.2s ease-in-out infinite}
+#alarme b{display:block;font-size:56px;font-weight:200;letter-spacing:-.02em}
+#alarme span{display:block;margin-top:14px;font-size:18px;color:var(--t2)}
+@keyframes alarme{0%,100%{box-shadow:inset 0 0 0 0 rgba(255,138,31,0)}50%{box-shadow:inset 0 0 140px 10px rgba(255,138,31,.35)}}
+
 /* Île dynamique */
 #island{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:60;width:150px;height:46px;background:#000;border:1px solid rgba(255,255,255,.16);border-radius:999px;overflow:hidden;
   box-shadow:0 8px 30px rgba(0,0,0,.7);transition:width .55s cubic-bezier(.32,1.25,.4,1),height .55s cubic-bezier(.32,1.25,.4,1)}
@@ -180,6 +195,7 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 </head>
 <body>
 <div id="sweep"></div>
+<div id="alarme"><div><b id="alarmeTitre">Pièce refroidie</b><span>Appuie pour arrêter</span></div></div>
 <div id="island" class="idle">
   <div class="i-idle"><i></i></div>
   <div class="i-music"><div id="iArt"></div><div class="itx"><b id="iTitle"></b><span id="iArtist"></span></div><div class="ieq"><span></span><span></span><span></span><span></span></div></div>
@@ -220,7 +236,9 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
         <div class="sub" id="bbEta">—</div>
         <div class="temps"><div><b id="bbNozzle">—</b>Buse</div><div><b id="bbBed">—</b>Plateau</div></div>
       </div>
-    </section>
+    
+    <button id="bbTimer" hidden></button>
+  </section>
 </div>
 <script>
 /* ═══════════════ CONFIGURATION ═══════════════
@@ -498,6 +516,65 @@ loadBambu(); loadSpotify();
 setInterval(loadBambu, CONFIG.intervalle.bambu*1000);
 
 addEventListener("hashchange", () => { loadBambu(); loadSpotify(); });
+
+/* ── Minuteur de refroidissement : fin d’impression + 15 min, avec sonnerie ── */
+const REFROID = 15;
+let bbDernier = null, minuteur = null, audioCtx = null, alarmeTimer = 0, armeAnnul = 0;
+try { minuteur = JSON.parse(localStorage.getItem("minuteurBambu") || "null"); } catch(_){}
+const sauveMinuteur = () => { try { minuteur ? localStorage.setItem("minuteurBambu", JSON.stringify(minuteur)) : localStorage.removeItem("minuteurBambu"); } catch(_){} };
+const fmtReste = ms => { const s = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + " h " + pad(m) + " min" : m + ":" + pad(s % 60); };
+function etatBambu(d){ const st = d && d.state ? String(d.state).toUpperCase() : ""; return { st, actif: ["RUNNING", "PREPARE", "PAUSE"].includes(st) && typeof d.progress === "number", fini: st === "FINISH" }; }
+function boutonMinuteur(){
+  const b = $("bbTimer"), { actif, fini } = etatBambu(bbDernier);
+  if (minuteur){
+    b.hidden = false; b.classList.add("on");
+    b.innerHTML = armeAnnul ? "<small>Annuler ?</small><b>Appuie encore</b>" : "<small>Sonne dans</small><b>" + fmtReste(minuteur.fin - Date.now()) + "</b>";
+    return;
+  }
+  b.classList.remove("on");
+  if (actif){ b.hidden = false; b.innerHTML = "<small>Minuteur</small><b>Fin + " + REFROID + " min</b>"; }
+  else if (fini){ b.hidden = false; b.innerHTML = "<small>Minuteur</small><b>" + REFROID + " min</b>"; }
+  else b.hidden = true;
+}
+function majMinuteur(d){
+  bbDernier = d; const { st, actif } = etatBambu(d);
+  if (minuteur && minuteur.suivi){
+    if (actif){ minuteur.fin = Date.now() + ((d.remaining_min || 0) + REFROID) * 60000; sauveMinuteur(); }
+    else if (["FINISH", "FAILED", "IDLE"].includes(st)){ minuteur.termine = Date.now(); minuteur.fin = Date.now() + REFROID * 60000; minuteur.suivi = false; sauveMinuteur(); }
+  }
+  boutonMinuteur();
+}
+function deverrouillerSon(){ try { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === "suspended") audioCtx.resume(); } catch(_){} }
+function bip(n){
+  if (!audioCtx) return;
+  const t0 = audioCtx.currentTime;
+  for (let i = 0; i < n; i++){
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t = t0 + i * .3;
+    o.type = "sine"; o.frequency.value = 880; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.4, t + .02); g.gain.linearRampToValueAtTime(0, t + .22);
+    o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t + .25);
+  }
+}
+function sonner(){
+  $("alarme").classList.add("on"); deverrouillerSon(); bip(3);
+  let n = 0; alarmeTimer = setInterval(() => { bip(3); if (++n > 50) arreterAlarme(); }, 1500);
+}
+function arreterAlarme(){ clearInterval(alarmeTimer); $("alarme").classList.remove("on"); minuteur = null; sauveMinuteur(); boutonMinuteur(); }
+$("alarme").onclick = arreterAlarme;
+$("bbTimer").onclick = () => {
+  if (minuteur){
+    if (armeAnnul){ clearTimeout(armeAnnul); armeAnnul = 0; minuteur = null; sauveMinuteur(); }
+    else armeAnnul = setTimeout(() => { armeAnnul = 0; boutonMinuteur(); }, 3000);
+    boutonMinuteur(); return;
+  }
+  const { actif, fini } = etatBambu(bbDernier); if (!actif && !fini) return;
+  deverrouillerSon();
+  minuteur = { fin: Date.now() + ((actif ? (bbDernier.remaining_min || 0) : 0) + REFROID) * 60000, suivi: actif, termine: fini ? Date.now() : 0 };
+  sauveMinuteur(); bip(1); boutonMinuteur();
+};
+setInterval(() => { if (!minuteur) return; if (Date.now() >= minuteur.fin && !$("alarme").classList.contains("on")) sonner(); else boutonMinuteur(); }, 1000);
+const _renderBambu = renderBambu;
+renderBambu = function(d){ _renderBambu(d); majMinuteur(d); };
+boutonMinuteur();
 
 /* Plein écran : au premier toucher dans Safari (inutile une fois ajouté à l’écran d’accueil) */
 document.addEventListener("pointerdown", () => {
