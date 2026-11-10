@@ -102,6 +102,16 @@ h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:10px}
 .temps div{background:rgba(255,255,255,.12);border-radius:12px;padding:3px 9px;font-size:10px;color:var(--t2)}
 .temps b{display:block;font-size:14px;color:var(--t1);font-weight:600}
 
+/* Tuiles raccourcis Apple (lumières, scènes) */
+.mtile{font:inherit;color:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;
+  flex-direction:column;justify-content:space-between;padding:12px 16px;transition:transform .2s var(--ease),background .4s var(--ease),color .4s var(--ease)}
+.mtile:active{transform:scale(.95)}
+.mtile .mi{font-size:24px;line-height:1}
+.mtile .mn{font-size:15px;font-weight:600;line-height:1.15}
+.mtile .ms{font-size:12px;color:var(--t2)}
+.mtile.on{background:rgba(255,255,255,.92);color:#14183c;border-color:rgba(255,255,255,.95)}
+.mtile.on .ms{color:rgba(20,24,60,.62)}
+
 /* Île dynamique */
 #island{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:60;width:150px;height:46px;background:#000;border:1px solid rgba(255,255,255,.16);border-radius:999px;overflow:hidden;
   box-shadow:0 8px 30px rgba(0,0,0,.7);transition:width .55s cubic-bezier(.32,1.25,.4,1),height .55s cubic-bezier(.32,1.25,.4,1)}
@@ -220,6 +230,8 @@ const CONFIG = {
   prenom: "Deniz",
   meteo: { lat: 45.19, lon: 5.72, ville: "Grenoble" },             // coordonnées (Open-Meteo, sans clé)
   icsWorker: "https://cal-k7x92mqp4v.deniz-walzberg.workers.dev/", // Worker Cloudflare qui lit tes calendriers iCloud
+  maison: [   // Tuiles raccourcis Apple : { nom, icone, on, off }  (allumer / éteindre)   ou   { nom, icone, toggle }   ou   { nom, icone, run }  (scène)
+  ],
   bambuUrl: "",     // JSON local : {state,progress,remaining_min,nozzle,bed,name} (pont MQTT → HTTP)
   spotifyToken: "", // jeton OAuth Spotify (scope user-read-currently-playing)
   intervalle: { meteo: 600, calendrier: 300, bambu: 10, spotify: 5 } // secondes
@@ -576,6 +588,37 @@ loadBambu(); loadSpotify();
 setInterval(loadBambu, CONFIG.intervalle.bambu*1000);
 
 addEventListener("hashchange", () => { loadBambu(); loadSpotify(); });
+
+/* ── Tuiles raccourcis Apple : un appui lance le raccourci (l’app Raccourcis s’ouvre puis te ramène ici) ── */
+const RETOUR = location.href.split("#")[0].split("?")[0];
+function etatTuile(n){ try { return localStorage.getItem("maison:" + n) === "1"; } catch(_){ return false; } }
+function setEtatTuile(n, v){ try { localStorage.setItem("maison:" + n, v ? "1" : "0"); } catch(_){} }
+function lancerRaccourci(nom){
+  location.href = "shortcuts://x-callback-url/run-shortcut?name=" + encodeURIComponent(nom) + "&x-success=" + encodeURIComponent(RETOUR) + "&x-error=" + encodeURIComponent(RETOUR);
+}
+function rendreMaison(){
+  const liste = CONFIG.maison || [], app = document.querySelector(".app");
+  document.querySelectorAll(".mtile").forEach(e => e.remove());
+  const lignes = Math.ceil(liste.length / 6);
+  $("cal").style.gridRow = $("rem").style.gridRow = "3 / " + (8 - lignes);
+  liste.forEach((t, i) => {
+    const bascule = !!(t.on || t.toggle), on = bascule && etatTuile(t.nom);
+    const el = document.createElement("button");
+    el.className = "widget mtile" + (on ? " on" : "");
+    el.style.gridRow = String(8 - lignes + Math.floor(i / 6)); el.style.gridColumn = String(i % 6 + 1);
+    el.innerHTML = `<span class="mi">${t.icone || "•"}</span><span class="mn">${esc(t.nom)}</span><span class="ms">${bascule ? (on ? "Allumée" : "Éteinte") : "Lancer"}</span>`;
+    el.onclick = () => {
+      if (bascule){
+        const v = !etatTuile(t.nom); setEtatTuile(t.nom, v);
+        el.classList.toggle("on", v); el.querySelector(".ms").textContent = v ? "Allumée" : "Éteinte";
+        lancerRaccourci(t.toggle || (v ? t.on : t.off));
+      } else lancerRaccourci(t.run);
+    };
+    app.appendChild(el);
+  });
+  if (typeof ajusterTout === "function") requestAnimationFrame(ajusterTout);
+}
+rendreMaison();
 
 /* Ajustement automatique : la taille du texte s’adapte pour que rien ne soit coupé */
 function ajuster(w, b, colonnes){
