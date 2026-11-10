@@ -238,6 +238,10 @@ const CONFIG = {
   meteo: { lat: 45.19, lon: 5.72, ville: "Grenoble" },             // coordonnées (Open-Meteo, sans clé)
   icsWorker: "https://cal-k7x92mqp4v.deniz-walzberg.workers.dev/", // Worker Cloudflare qui lit tes calendriers iCloud
   maison: [   // Tuiles raccourcis Apple : { nom, icone, on, off }  (allumer / éteindre)   ou   { nom, icone, toggle }   ou   { nom, icone, run }  (scène)
+    { nom: "Bureau", icone: "💡", toggle: "Bureau" },
+    { nom: "Chevet", icone: "🛏️", toggle: "Chevet" },
+    { nom: "Lampe", icone: "🔆", toggle: "Lampe" },
+    { nom: "Bande LED", icone: "✨", toggle: "Bande LED" },
   ],
   bambuUrl: "",     // JSON local : {state,progress,remaining_min,nozzle,bed,name} (pont MQTT → HTTP)
   spotifyToken: "", // jeton OAuth Spotify (scope user-read-currently-playing)
