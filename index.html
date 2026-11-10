@@ -9,16 +9,20 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Dashboard Deniz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>:root{
   --t1:#fff; --t2:rgba(255,255,255,.62); --t3:rgba(255,255,255,.38); --line:rgba(255,255,255,.14);
   --acc:#ff8a1f; --red:#ff8a1f; --orange:#ff8a1f; --green:#ff8a1f;
   --ease:cubic-bezier(.32,.72,0,1);
+  --disp:"Cormorant Garamond","Playfair Display",Georgia,serif;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
 html,body{height:100%;overflow:hidden;background:#000}
-body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",system-ui,sans-serif;
+body{font-family:"Jost",-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;
   font-weight:400;font-size:17px;letter-spacing:-.005em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;background:#000}
 
 /* Thème : noir 60 % · blanc 30 % · orange 10 % */
@@ -162,6 +166,21 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 .pseg{display:flex;gap:6px;background:rgba(255,255,255,.14);border-radius:99px;padding:5px;width:max-content;margin:28px auto 0}
 .pseg button{border:0;background:transparent;color:var(--t2);font:inherit;font-size:16px;font-weight:600;padding:8px 22px;border-radius:99px;cursor:pointer}
 .pseg button.on{background:#fff;color:#000}
+
+/* Typographie élégante : Cormorant Garamond (chiffres et titres) + Jost (textes) */
+#clock,#hi,.hr b,.fd b,.sk b,.mn b,#gym .gn,.ring span,#week .wd b,#pTitle,#alarme b{font-family:var(--disp);font-feature-settings:"lnum" 1}
+#clock{font-size:150px;font-weight:300;letter-spacing:-.02em}
+#hi{font-size:46px;font-weight:300;letter-spacing:0}
+.hr b{font-size:22px;font-weight:500}
+.fd b{font-size:24px;font-weight:500}
+.sk b{font-size:30px;font-weight:400}
+.mn b{font-size:20px;font-weight:500}
+#gym .gn{font-size:26px;font-weight:400}
+.ring span{font-size:30px;font-weight:400}
+#week .wd b{font-size:20px;font-weight:500}
+#pTitle{font-weight:500;letter-spacing:0}
+#alarme b{font-weight:300}
+h2,#date,.next-label{font-weight:500}
 
 /* Écran partagé : le dashboard occupe les 2/3 de l’iPad (Raccourcis sur le tiers restant) */
 @media (max-width:860px){
