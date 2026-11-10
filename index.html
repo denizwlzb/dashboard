@@ -182,16 +182,62 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 #alarme b{font-weight:300}
 h2,#date,.next-label{font-weight:500}
 
-/* Écran partagé : le dashboard occupe les 2/3 de l’iPad (Raccourcis sur le tiers restant) */
-@media (max-width:860px){
-  .app{padding:20px 20px;gap:12px}
-  #clock{font-size:64px}
-  #week .wd{width:32px;height:32px}
-  #week{gap:6px}
-  #hi{font-size:22px}
-  #gym .gm{display:none}
-  #bb .temps{display:none}
-  #bb .info{flex-wrap:wrap}
+/* Adaptation automatique à la place disponible : tailles liées à la largeur de chaque tuile, rien n'est coupé */
+.app{overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;grid-template-rows:minmax(min-content,3fr) minmax(min-content,2fr) auto}
+.app::-webkit-scrollbar{display:none}
+.widget{container-type:inline-size}
+.app #clock{font-size:clamp(54px,34cqw,150px)}
+.app #date{font-size:clamp(10px,3.2cqw,14px);letter-spacing:.14em}
+.app #week{gap:clamp(3px,1.5cqw,12px);width:100%}
+.app #week .wd{flex:1;width:auto;height:auto;max-width:50px;aspect-ratio:1}
+.app #week .wd small{font-size:clamp(8px,2.4cqw,11px)}
+.app #week .wd b{font-size:clamp(12px,4cqw,20px)}
+.app #hi{font-size:clamp(24px,9cqw,46px)}
+.app #wx{font-size:clamp(13px,3.6cqw,19px)}
+.app .hr{min-width:0;padding:clamp(6px,2cqw,10px) 0}
+.app .hr span{font-size:clamp(10px,2.6cqw,13px)}
+.app .hr i{font-size:clamp(18px,5cqw,26px)}
+.app .hr b{font-size:clamp(15px,4.2cqw,22px)}
+.app #fc{gap:clamp(4px,1.6cqw,10px)}
+.app .fd{min-width:0}
+.app .fd span{font-size:clamp(8px,2.6cqw,11px);letter-spacing:.1em}
+.app .fd i{font-size:clamp(18px,7cqw,30px)}
+.app .fd b{font-size:clamp(15px,5.4cqw,24px)}
+.app .fd small{font-size:clamp(11px,3.6cqw,14px)}
+.app .sk b{font-size:clamp(20px,9cqw,30px)}
+.app .mn svg{width:clamp(40px,12cqw,56px);height:clamp(40px,12cqw,56px)}
+.app .mn b{font-size:clamp(15px,5cqw,20px)}
+.app .mn small{font-size:clamp(11px,3.4cqw,13px)}
+@container (max-width:230px){ .skyb{grid-template-columns:1fr} }
+.app #sTitle,.app #sArtist{white-space:normal;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.app #sArt{width:clamp(44px,14cqw,56px);height:clamp(44px,14cqw,56px)}
+.app .ring{width:clamp(100px,34cqw,150px)}
+.app .ring span{font-size:clamp(16px,5.2cqw,30px)}
+.app #bb .info{flex-wrap:wrap}
+.app #bb .tt{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.app #gym .gn{font-size:clamp(20px,5.4cqw,26px)}
+.app #gym .gbar i{width:clamp(22px,7cqw,34px)}
+#alarme b{font-size:clamp(34px,8vw,56px)}
+
+/* Largeur moyenne (par exemple écran partagé 2/3) : on réorganise les tuiles */
+@media (max-width:999px){
+  .app{grid-template-rows:minmax(min-content,1.4fr) minmax(min-content,1fr) minmax(min-content,1.1fr) auto;gap:12px;padding:18px}
+  #clockw{grid-column:1/7;grid-row:1} #hello{grid-column:7/13;grid-row:1}
+  #fcw{grid-column:1/13;grid-row:2}
+  #sky{grid-column:1/6;grid-row:3} #spw{grid-column:6/13;grid-row:3}
+  #gym{grid-column:1/7;grid-row:4} #bb{grid-column:7/13;grid-row:4}
+  #player{overflow-y:auto}
+  .pmain{flex-direction:column;gap:22px;padding:70px 24px 24px;max-height:100%}
+  .pmedia{width:min(56vw,320px);height:min(56vw,320px)}
+  #player.vid .pmedia{width:min(88vw,520px);height:calc(min(88vw,520px)*9/16)}
+  .pinfo{width:100%}
+  #pTitle{font-size:28px} #pArtist{font-size:18px}
+  .pprog{margin-top:18px} .pctl{margin-top:14px;gap:26px} .pseg{margin-top:14px}
+}
+/* Petite largeur : tout en une colonne, la page défile */
+@media (max-width:639px){
+  .app{grid-template-rows:none;grid-auto-rows:auto}
+  #clockw,#hello,#fcw,#sky,#spw,#gym,#bb{grid-column:1/13;grid-row:auto}
 }
 
 /* Effets occasionnels */
@@ -361,14 +407,21 @@ majLune(); setInterval(majLune, 3600000);
 const WX = {0:["☀️","Ensoleillé"],1:["🌤️","Plutôt dégagé"],2:["⛅","Partiellement nuageux"],3:["☁️","Couvert"],45:["🌫️","Brouillard"],48:["🌫️","Brouillard"],
   51:["🌦️","Bruine"],53:["🌦️","Bruine"],55:["🌦️","Bruine"],61:["🌧️","Pluie"],63:["🌧️","Pluie"],65:["🌧️","Forte pluie"],
   71:["🌨️","Neige"],73:["🌨️","Neige"],75:["❄️","Forte neige"],80:["🌦️","Averses"],81:["🌦️","Averses"],82:["⛈️","Fortes averses"],95:["⛈️","Orage"],96:["⛈️","Orage"],99:["⛈️","Orage"]};
+var wxHeures = null;
+function rendreHeures(){
+  if (!wxHeures) return;
+  const { h, i } = wxHeures, w = $("wxh").clientWidth || 480, n = Math.max(3, Math.min(8, Math.floor((w + 8) / 60)));
+  $("wxh").innerHTML = Array.from({ length: n }, (_, k) => i + k).filter(k => k < h.time.length).map(k =>
+    `<div class="hr"><span>${h.time[k].slice(11, 13)} h</span><i>${(WX[h.weather_code[k]] || ["·"])[0]}</i><b>${Math.round(h.temperature_2m[k])}°</b></div>`).join("");
+}
+addEventListener("resize", rendreHeures);
 function renderWx(r){
   const txt = (WX[r.current.weather_code] || ["", "—"])[1];
   $("wx").textContent = Math.round(r.current.temperature_2m) + "° · " + txt + " · " + CONFIG.meteo.ville;
   const h = r.hourly, now = new Date();
   const cle = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) + "T" + pad(now.getHours()) + ":00";
   let i = h.time.indexOf(cle); if (i < 0) i = 0; i += 1;
-  $("wxh").innerHTML = Array.from({ length: 8 }, (_, k) => i + k).filter(k => k < h.time.length).map(k =>
-    `<div class="hr"><span>${h.time[k].slice(11, 13)} h</span><i>${(WX[h.weather_code[k]] || ["·"])[0]}</i><b>${Math.round(h.temperature_2m[k])}°</b></div>`).join("");
+  wxHeures = { h, i }; rendreHeures();
   const dj = r.daily;
   if (dj){
     $("fc").innerHTML = dj.time.slice(0, 5).map((t, i) => {
