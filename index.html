@@ -9,86 +9,98 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Dashboard Deniz</title>
-<style>
-:root{
-  --t1:#fff; --t2:rgba(255,255,255,.68); --t3:rgba(255,255,255,.44); --line:rgba(255,255,255,.14);
-  --red:#ff453a; --orange:#ff9f0a; --green:#30d158;
+<style>:root{
+  --t1:#fff; --t2:rgba(255,255,255,.74); --t3:rgba(255,255,255,.48); --line:rgba(255,255,255,.14);
+  --red:#ff453a; --orange:#ff9f0a; --green:#30d158; --tile:rgba(18,24,66,.60);
   --ease:cubic-bezier(.32,.72,0,1);
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0}
-html,body{height:100%;overflow:hidden;background:#000}
+html,body{height:100%;overflow:hidden;background:#2b2c6e}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",system-ui,sans-serif;
-  font-weight:500;font-size:18px;letter-spacing:-.012em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
+  font-weight:500;font-size:17px;letter-spacing:-.012em;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;
+  background:radial-gradient(720px 520px at 0% 100%,rgba(170,60,170,.55),transparent 60%),radial-gradient(620px 440px at 100% 0%,rgba(140,215,245,.50),transparent 62%),
+             linear-gradient(120deg,#2b2c6e 0%,#3b4aa6 42%,#5a94d6 78%,#8fd0f0 100%)}
 
-/* Disposition : en-tête, calendrier | rappels, salle | imprimante */
-.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:1.15fr 1fr;grid-template-rows:auto minmax(0,1fr) auto;gap:20px;padding:24px 28px;align-items:start}
-header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
-.widget{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.03)),rgba(18,20,28,.80);
-  border:1px solid rgba(255,255,255,.13);border-radius:28px;padding:22px 26px;min-height:0;overflow:hidden;display:flex;flex-direction:column;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
-h2{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:12px}
+/* Tuiles sur une grille de 6 colonnes x 8 lignes */
+.app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));gap:14px;padding:26px 28px}
+.widget{background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03)),var(--tile);border:1px solid rgba(255,255,255,.14);border-radius:24px;
+  padding:16px 22px;min-height:0;overflow:hidden;display:flex;flex-direction:column;box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
+h2{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:10px}
 
-/* Heure et salutation */
-#clockw{flex:0 0 auto;padding:20px 26px 18px}
-#clock{display:flex;align-items:baseline;font-size:92px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+/* Heure + semaine */
+#clockw{grid-column:1/4;grid-row:1/3;justify-content:space-between}
+#clock{display:flex;align-items:baseline;font-size:76px;font-weight:200;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
 #clock .dg{display:inline-block;min-width:.58em;text-align:center}
 #clock .sep{color:var(--red);margin:0 .03em;transform:translateY(-.05em)}
 #clock .chg{animation:dgIn .7s var(--ease) both}
 #clock .chgH{animation:dgHour 1s var(--ease) both}
-#date{font-size:17px;font-weight:500;color:var(--t2);margin-top:6px;text-transform:capitalize}
-#hello{flex:0 0 auto;min-width:250px;padding:20px 26px;text-align:right}
+#date{font-size:15px;font-weight:500;color:var(--t2);text-transform:capitalize}
+#week{display:flex;gap:8px}
+#week .wd{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);display:grid;place-items:center;align-content:center;line-height:1}
+#week .wd small{font-size:9px;color:var(--t2)}
+#week .wd b{font-size:14px;font-weight:600}
+#week .wd.now{background:var(--red)}
+#week .wd.now small{color:#fff}
+
+/* Salutation + météo heure par heure */
+#hello{grid-column:4/7;grid-row:1/3;text-align:right}
 #hi{font-size:26px;font-weight:600;letter-spacing:-.02em}
-#wx{font-size:16px;font-weight:500;color:var(--t2);margin-top:6px}
+#wx{font-size:15px;font-weight:500;color:var(--t2);margin-top:4px}
+#wxh{display:flex;gap:6px;margin-top:auto}
+.hr{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(255,255,255,.09);border-radius:14px;padding:6px 0}
+.hr span{font-size:11px;color:var(--t2)}
+.hr i{font-style:normal;font-size:18px;line-height:1.2}
+.hr b{font-size:14px;font-weight:600}
 
 /* Calendrier */
-#cal{grid-column:1;grid-row:2;max-height:100%;--k:1}
-#calBody{flex:0 1 auto;min-height:0;overflow:hidden}
-.ev{display:flex;gap:calc(16px*var(--k,1));padding:calc(13px*var(--k,1)) 0;border-top:1px solid var(--line);animation:in .6s var(--ease) both}
+#cal{grid-column:1/4;grid-row:3/8;--k:1}
+#calBody{flex:1;min-height:0;overflow:hidden}
+.ev{display:flex;gap:calc(14px*var(--k,1));padding:calc(11px*var(--k,1)) 0;border-top:1px solid var(--line);animation:in .6s var(--ease) both}
 .ev:first-child{border-top:0;padding-top:0}
-.ev .bar{width:4px;align-self:stretch;border-radius:2px;background:#fff;flex:none}
-.ev .t{font-size:calc(14px*var(--k,1));color:var(--t2);font-variant-numeric:tabular-nums}
-.ev .n{font-size:calc(20px*var(--k,1));font-weight:600;margin-top:2px;line-height:1.2;letter-spacing:-.02em}
+.ev .bar{width:4px;align-self:stretch;border-radius:2px;background:var(--orange);flex:none}
+.ev .t{font-size:calc(13px*var(--k,1));color:var(--t2);font-variant-numeric:tabular-nums}
+.ev .n{font-size:calc(18px*var(--k,1));font-weight:600;margin-top:2px;line-height:1.2;letter-spacing:-.02em}
 .ev.past{opacity:.4}
-.next-label{font-size:14px;font-weight:600;color:var(--orange);margin-bottom:14px}
-.empty{color:var(--t3);font-size:17px}
+.next-label{font-size:13px;font-weight:600;color:var(--orange);margin-bottom:12px}
+.empty{color:var(--t3);font-size:16px}
 
 /* Rappels */
-#rem{grid-column:2;grid-row:2;max-height:100%;--k:1}
-#remBody{flex:0 1 auto;min-height:0;overflow:hidden}
-#remBody.cols{display:grid;grid-template-columns:1fr 1fr;column-gap:26px;align-content:start}
+#rem{grid-column:4/7;grid-row:3/8;--k:1}
+#remBody{flex:1;min-height:0;overflow:hidden}
+#remBody.cols{display:grid;grid-template-columns:1fr 1fr;column-gap:22px;align-content:start}
 #remBody.cols .rm:nth-child(2){border-top:0;padding-top:0}
 .rm{display:flex;align-items:center;gap:calc(14px*var(--k,1));padding:calc(11px*var(--k,1)) 0;border-top:1px solid var(--line)}
 .rm:first-child{border-top:0;padding-top:0}
-.dot{width:calc(20px*var(--k,1));height:calc(20px*var(--k,1));border-radius:50%;border:2px solid rgba(255,255,255,.7);flex:none}
-.rm .l{font-size:calc(19px*var(--k,1));font-weight:500;letter-spacing:-.02em;min-width:0;line-height:1.25;overflow-wrap:anywhere}
+.dot{width:calc(20px*var(--k,1));height:calc(20px*var(--k,1));border-radius:50%;border:2px solid var(--red);flex:none}
+.rm .l{font-size:calc(18px*var(--k,1));font-weight:500;letter-spacing:-.02em;min-width:0;line-height:1.25;overflow-wrap:anywhere}
 
-/* Salle */
-#gym{grid-column:1;grid-row:3}
-#gymBody{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px 14px}
-#gym .gt{grid-column:1;grid-row:1;font-size:14px;font-weight:600;color:var(--t2)}
-#gym .gn{grid-column:2;grid-row:1;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
-#gym .gbar{grid-column:1/-1;grid-row:2;display:flex;gap:10px}
-#gym .gbar i{flex:1;height:10px;border-radius:6px;background:rgba(255,255,255,.18);transition:background .7s var(--ease)}
+/* Salle (tuile fine) */
+#gym{grid-column:1/4;grid-row:8;padding:10px 22px;justify-content:center}
+#gymBody{display:flex;align-items:center;gap:14px;width:100%}
+#gym .gt{font-size:13px;font-weight:600;color:var(--t2);white-space:nowrap}
+#gym .gbar{display:flex;gap:8px}
+#gym .gbar i{width:34px;height:9px;border-radius:5px;background:rgba(255,255,255,.2);transition:background .7s var(--ease)}
 #gym .gbar i.on{background:var(--red)}
-#gym .gm{grid-column:1/-1;grid-row:3;font-size:16px}
-#gym .gs{grid-column:1/-1;grid-row:4;font-size:13px;color:var(--t2)}
+#gym .gn{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+#gym .gm{font-size:14px;flex:1;min-width:0;line-height:1.2}
+#gym .gs{display:none}
 
-/* Imprimante Bambu Lab */
-#bb{grid-column:2;grid-row:3;flex-direction:row;align-items:center;gap:20px}
-.ring{position:relative;width:140px;flex:none;display:flex;flex-direction:column;transition:--p 1s linear}
-.ring span{order:1;font-size:32px;font-weight:600;line-height:1;margin-bottom:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.ring::before,.ring::after{content:"";height:7px;border-radius:4px}
-.ring::before{order:2;background:rgba(255,255,255,.18)}
+/* Imprimante Bambu Lab (tuile fine) */
+#bb{grid-column:4/7;grid-row:8;padding:10px 22px;flex-direction:row;align-items:center;gap:16px}
+.ring{position:relative;width:120px;flex:none;display:flex;flex-direction:column;transition:--p 1s linear}
+.ring span{order:1;font-size:24px;font-weight:600;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ring::before,.ring::after{content:"";height:6px;border-radius:3px}
+.ring::before{order:2;background:rgba(255,255,255,.2)}
 .ring::after{position:absolute;left:0;bottom:0;width:calc(var(--p,0)*1%);background:var(--red)}
-#bb .info{flex:1;min-width:0}
-#bb h2{margin-bottom:4px;font-size:13px}
-#bb .tt{font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#bb .sub{font-size:14px;color:var(--t2);margin-top:2px}
-.temps{display:flex;gap:10px;margin-top:10px}
-.temps div{background:rgba(255,255,255,.10);border-radius:14px;padding:5px 12px;font-size:12px;color:var(--t2)}
-.temps b{display:block;font-size:16px;color:var(--t1);font-weight:600}
+#bb .info{flex:1;min-width:0;display:flex;align-items:center;gap:12px}
+#bb h2{display:none}
+#bb .tt{flex:1;min-width:0;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bb .sub{font-size:13px;color:var(--t2);white-space:nowrap}
+.temps{display:flex;gap:6px;margin:0}
+.temps div{background:rgba(255,255,255,.12);border-radius:12px;padding:3px 9px;font-size:10px;color:var(--t2)}
+.temps b{display:block;font-size:14px;color:var(--t1);font-weight:600}
 
 /* Île dynamique */
 #island{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:60;width:150px;height:46px;background:#000;border:1px solid rgba(255,255,255,.16);border-radius:999px;overflow:hidden;
@@ -184,10 +196,8 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
   </div>
 </div>
 <div class="app">
-  <header>
-    <div class="widget" id="clockw"><div id="clock"></div><div id="date"></div></div>
-    <div class="widget" id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div></div>
-  </header>
+  <div class="widget" id="clockw"><div id="clock"></div><div id="date"></div><div id="week"></div></div>
+  <div class="widget" id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div><div id="wxh"></div></div>
   <section class="widget" id="cal"><h2>Calendrier</h2><div id="calBody"></div></section>
   <section class="widget" id="rem"><h2>Rappels</h2><div id="remBody"></div></section>
   <section class="widget" id="gym"><div id="gymBody"></div></section>
@@ -219,6 +229,13 @@ const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2,"0");
 
 /* ── Horloge ── */
+var semaineJour = "";
+function majSemaine(d){
+  const j = d.toDateString(); if (j === semaineJour) return; semaineJour = j;
+  const lundi = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+  $("week").innerHTML = Array.from({ length: 7 }, (_, i) => { const x = new Date(lundi.getFullYear(), lundi.getMonth(), lundi.getDate() + i);
+    return `<span class="wd${x.toDateString() === j ? " now" : ""}"><small>${"LMMJVSD"[i]}</small><b>${x.getDate()}</b></span>`; }).join("");
+}
 /* ── Horloge : chaque chiffre s’anime quand il change ── */
 function tick(){
   const d = new Date(), t = pad(d.getHours()) + ":" + pad(d.getMinutes()), el = $("clock");
@@ -230,6 +247,7 @@ function tick(){
     if (!premier){ s.classList.remove("chg", "chgH"); void s.offsetWidth; s.classList.add(i < 2 ? "chgH" : "chg"); }
   });
   $("date").textContent = d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+  majSemaine(d);
 }
 tick(); setInterval(tick, 1000);
 
@@ -395,15 +413,20 @@ renderGym(null); loadGym(); setInterval(loadGym, 60000);
 const WX = {0:["☀️","Ensoleillé"],1:["🌤️","Plutôt dégagé"],2:["⛅","Partiellement nuageux"],3:["☁️","Couvert"],45:["🌫️","Brouillard"],48:["🌫️","Brouillard"],
   51:["🌦️","Bruine"],53:["🌦️","Bruine"],55:["🌦️","Bruine"],61:["🌧️","Pluie"],63:["🌧️","Pluie"],65:["🌧️","Forte pluie"],
   71:["🌨️","Neige"],73:["🌨️","Neige"],75:["❄️","Forte neige"],80:["🌦️","Averses"],81:["🌦️","Averses"],82:["⛈️","Fortes averses"],95:["⛈️","Orage"],96:["⛈️","Orage"],99:["⛈️","Orage"]};
-function renderWx(t, code){
-  const [ic, txt] = WX[code] || ["🌡️", "—"];
-  $("wx").textContent = Math.round(t) + "° · " + txt + " · " + CONFIG.meteo.ville;
+function renderWx(r){
+  const txt = (WX[r.current.weather_code] || ["", "—"])[1];
+  $("wx").textContent = Math.round(r.current.temperature_2m) + "° · " + txt + " · " + CONFIG.meteo.ville;
+  const h = r.hourly, now = new Date();
+  const cle = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) + "T" + pad(now.getHours()) + ":00";
+  let i = h.time.indexOf(cle); if (i < 0) i = 0; i += 1;
+  $("wxh").innerHTML = Array.from({ length: 6 }, (_, k) => i + k).filter(k => k < h.time.length).map(k =>
+    `<div class="hr"><span>${h.time[k].slice(11, 13)} h</span><i>${(WX[h.weather_code[k]] || ["·"])[0]}</i><b>${Math.round(h.temperature_2m[k])}°</b></div>`).join("");
 }
 async function loadWx(){
   try {
-    const {lat,lon} = CONFIG.meteo;
-    const r = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto`)).json();
-    renderWx(r.current.temperature_2m, r.current.weather_code);
+    const { lat, lon } = CONFIG.meteo;
+    const r = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&hourly=temperature_2m,weather_code&forecast_days=2&timezone=auto`)).json();
+    renderWx(r);
   } catch(e){ console.warn("Météo indisponible :", e); }
 }
 loadWx(); setInterval(loadWx, CONFIG.intervalle.meteo*1000);
