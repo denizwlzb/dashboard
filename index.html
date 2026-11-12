@@ -880,7 +880,7 @@ document.addEventListener("pointerdown", () => {
 }, { once: true });
 
 /* Garde l’écran allumé quand c’est possible */
-try { navigator.wakeLock && navigator.wakeLock.request("screen"); } catch(_){}
+try { navigator.wakeLock && navigator.wakeLock.request("screen").catch(() => {}); } catch(_){}
 </script>
 </body>
 </html>
