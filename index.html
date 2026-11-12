@@ -167,6 +167,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 #alarme span{display:block;margin-top:14px;font-size:18px;color:var(--t2)}
 @keyframes alarme{0%,100%{box-shadow:inset 0 0 0 0 rgba(255,159,10,0)}50%{box-shadow:inset 0 0 140px 10px rgba(255,159,10,.35)}}
 
+/* Santé */
+#sw{grid-column:span 6}
+.swrow{display:flex;gap:30px}
+#anneaux{grid-column:span 5} #spas{grid-column:span 7} #sact{grid-column:span 6} #seau{grid-column:span 6} #smaj{grid-column:span 12;font-size:13px;color:var(--t3);text-align:center}
+.rw{display:flex;align-items:center;gap:22px}
+#rings{width:180px;height:180px;flex:none}
+#rings circle{fill:none;stroke-width:15;stroke-linecap:round;transform:rotate(-90deg);transform-origin:100px 100px}
+#rings .rt{stroke:rgba(255,255,255,.12)}
+#rings .rf{stroke-dasharray:0 1000;transition:stroke-dasharray 1s var(--ease)}
+.rleg{display:flex;flex-direction:column;gap:14px;min-width:0}
+.lg{display:grid;grid-template-columns:10px 1fr;column-gap:10px;align-items:center}
+.lg i{width:10px;height:10px;border-radius:50%}
+.lg span{font-size:13px;color:var(--t2)}
+.lg b{grid-column:2;font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.two{display:flex;gap:34px}
+.hist{display:flex;align-items:flex-end;gap:7px;height:64px;margin-top:14px}
+.hist div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.hist i{display:block;width:100%;border-radius:5px;min-height:3px}
+.hist small{font-size:10px;color:var(--t3)}
+
 /* Barre d'onglets façon Raccourcis, en verre */
 #tabbar{--tbw:112px;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:50;display:flex;gap:4px;padding:6px;border-radius:36px;background:rgba(44,44,48,.5);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);
   border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 30px rgba(0,0,0,.5)}
@@ -188,6 +208,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   #top{padding:12px 18px 0}
   #weekw{grid-column:span 7} #mw{grid-column:span 5} #gym{grid-column:span 5} #spw{grid-column:span 7} #bb{grid-column:span 5}
   #mnow{grid-column:span 12} #mhour{grid-column:span 12} #fcw{grid-column:span 12} #sky{grid-column:span 12}
+  #sw,#anneaux,#spas,#sact,#seau{grid-column:span 12}
   .pmain{grid-template-columns:1fr}
   .page#pgMusique .pmain{height:auto}
   #lyrw{height:380px}
@@ -221,6 +242,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
       <div class="tt" id="bbName">—</div><div class="sub" id="bbEta">—</div>
       <div class="temps"><div><b id="bbNozzle">—</b>Buse</div><div><b id="bbBed">—</b>Plateau</div></div>
       <button id="bbTimer" hidden></button></div>
+    <div class="g tap" id="sw"><div class="gl">Santé</div><div class="swrow"><div><div id="swPas" class="big">--</div><div class="sub">pas</div></div><div><div id="swEau" class="big">--</div><div class="sub">eau</div></div></div></div>
   </div></section>
   <section class="page" id="pgMeteo"><div class="grid">
     <div class="g" id="mnow"><div class="gl">Maintenant</div><div id="wxBigT" class="huge">--°</div><div id="wxBigC" class="cond"></div><div id="wxBigV" class="sub"></div></div>
@@ -251,11 +273,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
       <div class="g" id="lyrw"><div id="lyr"><div class="lmsg">Les paroles apparaîtront ici</div></div></div>
     </div>
   </div></section>
+  <section class="page" id="pgSante"><div class="grid">
+    <div class="g" id="anneaux"><div class="gl">Aujourd’hui</div><div class="rw">
+      <svg id="rings" viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="rt" cx="100" cy="100" r="86"/><circle class="rf" id="rK" cx="100" cy="100" r="86" stroke="#ff375f"/>
+        <circle class="rt" cx="100" cy="100" r="64"/><circle class="rf" id="rM" cx="100" cy="100" r="64" stroke="#30d158"/>
+        <circle class="rt" cx="100" cy="100" r="42"/><circle class="rf" id="rP" cx="100" cy="100" r="42" stroke="#0a84ff"/>
+      </svg>
+      <div class="rleg">
+        <div class="lg"><i style="background:#ff375f"></i><span>Calories actives</span><b id="lgK">--</b></div>
+        <div class="lg"><i style="background:#30d158"></i><span>Minutes d’exercice</span><b id="lgM">--</b></div>
+        <div class="lg"><i style="background:#0a84ff"></i><span>Pas</span><b id="lgP">--</b></div>
+      </div></div></div>
+    <div class="g" id="spas"><div class="gl">Pas et distance</div><div id="pasV" class="big">--</div><div id="pasD" class="sub"></div><div class="hist" id="pasH"></div></div>
+    <div class="g" id="sact"><div class="gl">Activité</div><div class="two"><div><div id="kcV" class="big">--</div><div class="sub">kcal actives</div></div><div><div id="miV" class="big">--</div><div class="sub">min d’exercice</div></div></div><div class="bar"><i id="miBar"></i></div></div>
+    <div class="g" id="seau"><div class="gl">Eau</div><div id="euV" class="big">--</div><div id="euD" class="sub"></div><div class="bar"><i id="euBar" style="background:#64d2ff"></i></div><div class="hist" id="euH"></div></div>
+    <div id="smaj">Santé non connectée</div>
+  </div></section>
 </div></main>
 <nav id="tabbar"><i id="tabhl"></i>
   <button class="tb on" data-page="accueil"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Accueil</button>
   <button class="tb" data-page="meteo"><svg viewBox="0 0 24 24"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z"/></svg>Météo</button>
   <button class="tb" data-page="musique"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>Musique</button>
+  <button class="tb" data-page="sante"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Santé</button>
 </nav>
 <script>
 /* ═══════════════ CONFIGURATION ═══════════════
@@ -553,6 +593,7 @@ async function controle(action, extra){
 }
 $("spw").onclick = () => allerPage("musique");
 $("mw").onclick = () => allerPage("meteo");
+$("sw").onclick = () => allerPage("sante");
 $("segCover").onclick = () => setMode("cover");
 $("segVideo").onclick = () => setMode("video");
 $("pPrev").onclick = () => controle("previous");
@@ -698,9 +739,37 @@ $("bbTimer").onclick = () => {
 setInterval(() => { if (!minuteur) return; if (Date.now() >= minuteur.fin && !$("alarme").classList.contains("on")) sonner(); else boutonMinuteur(); }, 1000);
 boutonMinuteur();
 
+/* ── Santé (Raccourci iPhone → Worker) ── */
+const fmtN = (n, d = 0) => Number(n).toLocaleString("fr-FR", { maximumFractionDigits: d });
+function anneau(id, p){ const c = $(id), C = 2 * Math.PI * Number(c.getAttribute("r")); c.style.strokeDasharray = (Math.max(0, Math.min(1, p)) * C) + " " + C; }
+function histo(el, jours, cle, objectif, couleur){
+  el.innerHTML = jours.map((j, i) => {
+    const h = Math.max(4, Math.min(100, objectif ? j[cle] / objectif * 100 : 0)), t = i === jours.length - 1;
+    const L = new Date(j.date + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "narrow" }).toUpperCase();
+    return `<div><i style="height:${h}%;background:${t ? couleur : "rgba(255,255,255,.22)"}"></i><small>${L}</small></div>`;
+  }).join("");
+}
+function renderSante(s){
+  if (!s || !s.aujourdhui){ $("smaj").textContent = "Santé non connectée"; return; }
+  const a = s.aujourdhui, o = s.objectifs;
+  anneau("rK", a.kcal / o.kcal); anneau("rM", a.minutes / o.minutes); anneau("rP", a.pas / o.pas);
+  $("lgK").textContent = fmtN(a.kcal) + " / " + fmtN(o.kcal) + " kcal";
+  $("lgM").textContent = fmtN(a.minutes) + " / " + fmtN(o.minutes) + " min";
+  $("lgP").textContent = fmtN(a.pas) + " / " + fmtN(o.pas);
+  $("pasV").textContent = fmtN(a.pas); $("pasD").textContent = fmtN(a.distance, 1) + " km · objectif " + fmtN(o.pas) + " pas";
+  $("kcV").textContent = fmtN(a.kcal); $("miV").textContent = fmtN(a.minutes); $("miBar").style.width = Math.min(100, a.minutes / o.minutes * 100) + "%";
+  $("euV").textContent = fmtN(a.eau / 1000, 2) + " L"; $("euD").textContent = "objectif " + fmtN(o.eau / 1000, 1) + " L"; $("euBar").style.width = Math.min(100, a.eau / o.eau * 100) + "%";
+  histo($("pasH"), s.jours, "pas", o.pas, "#0a84ff"); histo($("euH"), s.jours, "eau", o.eau, "#64d2ff");
+  $("swPas").textContent = fmtN(a.pas); $("swEau").textContent = fmtN(a.eau / 1000, 1) + " L";
+  const min = s.maj ? Math.round((Date.now() - s.maj) / 60000) : null;
+  $("smaj").textContent = min === null ? "Aucune donnée envoyée aujourd’hui" : "Mis à jour " + (min < 1 ? "à l’instant" : min < 60 ? "il y a " + min + " min" : "il y a " + Math.floor(min / 60) + " h");
+}
+async function loadSante(){ if (!WK) return renderSante(null); try { renderSante(await (await fetch(WK + "/sante")).json()); } catch(e){} }
+loadSante(); setInterval(loadSante, 60000);
+
 /* ── Pages : on les fait glisser de gauche à droite, comme sur iOS ── */
-const ORDRE = ["accueil", "meteo", "musique"];
-const PAGES = { accueil: "pgHome", meteo: "pgMeteo", musique: "pgMusique" };
+const ORDRE = ["accueil", "meteo", "musique", "sante"];
+const PAGES = { accueil: "pgHome", meteo: "pgMeteo", musique: "pgMusique", sante: "pgSante" };
 const TB = [...document.querySelectorAll(".tb")];
 var pageCourante = "accueil", dernierToucher = Date.now(), idx = 0, drag = null, clicBloque = false;
 const largeur = () => $("pager").clientWidth || window.innerWidth || 1;
