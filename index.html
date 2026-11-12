@@ -47,15 +47,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .bar i{display:block;height:100%;width:0;border-radius:3px;background:var(--green);transition:width .8s var(--ease)}
 
 /* Accueil */
-#gridHome{align-content:start}
+#gridHome{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.rowh{display:flex;flex-wrap:wrap;gap:14px;align-items:stretch;max-width:100%}
+.rowh>.g{flex:0 0 auto;max-width:100%}
+#mw{min-width:150px}
+#spw{width:250px}
+#bb{width:290px}
 #gridMeteo{align-content:start}
-#weekw{grid-column:span 5} #mw{grid-column:span 3} #spw{grid-column:span 4}
-#bb{grid-column:span 4;grid-row:2} #gym{grid-column:span 8;grid-row:3}
+
+#weekw{width:432px}
+.wk-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.wk-h b{font-size:17px;font-weight:700;letter-spacing:-.02em;text-transform:capitalize}
+.wk-h span{font-size:12px;font-weight:600;color:var(--t2)}
 #week{display:flex;gap:6px}
-#week .wd{flex:1;max-width:54px;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;align-content:center;line-height:1}
-#week .wd small{font-size:11px;color:var(--t2)}
-#week .wd b{font-size:18px;font-weight:600}
-#week .wd.now{background:var(--blue)}
+#week .wd{flex:1;min-width:0;height:72px;border-radius:20px;background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;line-height:1;transition:transform .3s var(--ease)}
+#week .wd small{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--t2)}
+#week .wd b{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+#week .wd .dot{width:6px;height:6px;border-radius:50%;background:transparent}
+#week .wd .dot.on{background:var(--orange);box-shadow:0 0 8px rgba(255,159,10,.8)}
+#week .wd.past{opacity:.55}
+#week .wd.we small{color:#ff9f6b}
+#week .wd.now{background:linear-gradient(160deg,#3d9bff,#0a6cff);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px rgba(10,132,255,.45);transform:translateY(-2px) scale(1.04);opacity:1}
+#week .wd.now small{color:rgba(255,255,255,.85)}
+#week .wd.now .dot.on{background:#fff;box-shadow:none}
 #gymBody{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px 10px}
 #gym .gt{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2)}
 #gym .gn{grid-column:2;grid-row:1;font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
@@ -183,7 +197,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 #bb #bbTimer b{color:#fff;font-weight:600;margin-left:4px}
 
 /* Salle : trois barres qui sortent du sol · jauges en demi-cercle · pas en empreintes · eau en gourdes */
-#gym{padding:0;display:grid;grid-template-columns:minmax(140px,.75fr) auto minmax(0,1.35fr);column-gap:24px;align-items:stretch}
+#gym{padding:0;display:grid;grid-template-columns:150px auto auto;column-gap:22px;align-items:stretch}
 #gymBody{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;gap:0;padding:12px 0 0 16px;height:100%;min-height:0}
 #gym .gt{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2);align-self:start}
 #gym .gn{grid-column:2;grid-row:1;font-size:clamp(16px,3vh,20px);font-weight:600;font-variant-numeric:tabular-nums;align-self:start}
@@ -192,7 +206,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 #gym .gbar i.on{height:100%;background:var(--orange)}
 #gym .gm,#gym .gs{display:none}
 .gauge{align-self:center;padding:10px 0}
-#rings{width:clamp(130px,22vw,240px);height:auto;display:block}
+#rings{width:clamp(120px,15vw,170px);height:auto;display:block}
 #rings path{fill:none;stroke-width:16;stroke-linecap:round}
 #rings .rt{stroke:rgba(255,255,255,.12)}
 #rings .rf{stroke-dasharray:0 100;opacity:0;transition:stroke-dasharray 1s var(--ease),opacity .3s}
@@ -235,7 +249,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 @media (max-width:1000px){
   #pages{padding:8px 18px 118px}
   #top{padding:12px 18px 0}
-  #weekw{grid-column:span 12;grid-row:1} #mw{grid-column:span 4;grid-row:2} #spw{grid-column:span 8;grid-row:2} #bb{grid-column:span 8;grid-row:3} #gym{grid-column:span 12;grid-row:4}
+  #gridHome{flex-direction:row;flex-wrap:wrap;align-content:flex-start}
+  .rowh{display:contents}
   #pgMusique{--dispo:calc(100vh - 540px)}
   #tabbar{--tbw:96px}
 }
@@ -255,14 +270,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   <div id="hi">Bonjour Deniz</div>
 </header>
 <main id="pager"><div id="track">
-  <section class="page on" id="pgHome"><div class="grid" id="gridHome">
-    <div class="g" id="weekw"><div class="gl">Cette semaine</div><div id="week"></div></div>
+  <section class="page on" id="pgHome"><div id="gridHome"><div class="rowh">
+    <div class="g" id="weekw"><div class="wk-h"><b id="wkMois"></b><span id="wkNum"></span></div><div id="week"></div></div>
     <div class="g tap" id="mw"><div class="gl">Météo</div><div id="wxT" class="big">--°</div><div id="wx" class="sub"></div></div>
     <div class="g tap" id="spw"><div class="sprow"><div id="sArt"></div><div class="stx"><div class="mq"><span id="sTitle">Spotify</span></div><div class="mq"><span id="sArtist">Rien en lecture</span></div></div></div></div>
+  </div>
+  <div class="rowh">
     <div class="g" id="bb">
       <div class="ringc" id="bbRing"><div class="rtx"><b id="bbPct">…</b><span id="bbEta"></span></div></div>
       <div class="bbinfo"><div class="gl">Bambu Lab A1</div><div class="mq"><span id="bbName">Connexion…</span></div><button id="bbTimer" hidden></button></div>
     </div>
+  </div>
+  <div class="rowh">
     <div class="g" id="gym">
       <div id="gymBody"></div>
       <div class="gauge"><svg id="rings" viewBox="0 0 200 108" aria-hidden="true">
@@ -275,7 +294,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
         <div class="vrow" style="--c:#64d2ff"><div class="vtxt"><b id="swEau">--</b><span>eau bue</span></div><div class="icons" id="icEau"></div></div>
       </div>
     </div>
-  </div></section>
+  </div></div></section>
   <section class="page" id="pgMeteo"><div class="grid" id="gridMeteo">
     <div class="g" id="mnow"><div class="gl">Maintenant</div><div id="wxBigT" class="huge">--°</div><div id="wxBigC" class="cond"></div><div id="wxBigV" class="sub"></div></div>
     <div class="g" id="mhour"><div class="gl">Heure par heure</div><div id="wxh"></div></div>
@@ -339,11 +358,18 @@ const pad = n => String(n).padStart(2,"0");
 
 /* ── Horloge ── */
 var semaineJour = "";
+var salleJours = [];
+function numSemaine(d){ const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7)); const a = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t - a) / 864e5 + 1) / 7); }
 function majSemaine(d){
   const j = d.toDateString(); if (j === semaineJour) return; semaineJour = j;
-  const lundi = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
-  $("week").innerHTML = Array.from({ length: 7 }, (_, i) => { const x = new Date(lundi.getFullYear(), lundi.getMonth(), lundi.getDate() + i);
-    return `<span class="wd${x.toDateString() === j ? " now" : ""}"><small>${"LMMJVSD"[i]}</small><b>${x.getDate()}</b></span>`; }).join("");
+  const lundi = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)), auj0 = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const NOMS = ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"];
+  $("wkMois").textContent = d.toLocaleDateString("fr-FR", { month: "long" }) + " " + d.getFullYear();
+  $("wkNum").textContent = "Semaine " + numSemaine(d);
+  $("week").innerHTML = Array.from({ length: 7 }, (_, i) => {
+    const x = new Date(lundi.getFullYear(), lundi.getMonth(), lundi.getDate() + i), auj = x.toDateString() === j;
+    return `<span class="wd${auj ? " now" : ""}${x < auj0 ? " past" : ""}${i > 4 ? " we" : ""}"><small>${NOMS[i]}</small><b>${x.getDate()}</b><i class="dot${salleJours[i] ? " on" : ""}"></i></span>`;
+  }).join("");
 }
 /* ── Horloge : chaque chiffre s’anime quand il change ── */
 function tick(){
@@ -371,6 +397,7 @@ majSalut(); setInterval(majSalut, 60000);
 /* ── Salle (séances envoyées par le Raccourci iPhone → Worker) ── */
 function renderGym(g){
   if (!g){ $("gymBody").innerHTML = `<span class="gt">Salle</span><span class="gm">Salle non connectée</span>`; return; }
+  salleJours = g.jours || []; semaineJour = ""; majSemaine(new Date());
   const reste = g.objectif - g.count, dispo = 6 - g.today + (g.jours[g.today] ? 0 : 1);
   const s = n => n > 1 ? "s" : "";
   const msg = reste <= 0 ? "Objectif atteint"
