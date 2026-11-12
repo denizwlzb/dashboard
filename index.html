@@ -40,8 +40,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   box-shadow:inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(255,255,255,.05),0 8px 28px rgba(0,0,0,.35);padding:13px 16px;overflow:hidden}
 .g::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.20),rgba(255,255,255,0) 38%,rgba(255,255,255,0) 72%,rgba(255,255,255,.05));pointer-events:none}
 .g>*{position:relative}
-.gl{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:8px}
-.big{font-size:clamp(26px,5.4vh,40px);font-weight:600;letter-spacing:-.03em;line-height:1.05}
+.gl{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px}
+.big{font-size:clamp(22px,4.2vh,32px);font-weight:600;letter-spacing:-.03em;line-height:1.05}
 .sub{font-size:14px;color:var(--t2);margin-top:4px}
 .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden;margin:10px 0 6px}
 .bar i{display:block;height:100%;width:0;border-radius:3px;background:var(--green);transition:width .8s var(--ease)}
@@ -49,12 +49,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 /* Accueil */
 #gridHome{align-content:start}
 #gridMeteo{align-content:start}
-#weekw{grid-column:span 4} #mw{grid-column:span 3} #spw{grid-column:span 6}
-#bb{grid-column:span 6} #gym{grid-column:span 12}
+#weekw{grid-column:span 4} #mw{grid-column:span 3} #spw{grid-column:span 3}
+#bb{grid-column:span 5} #gym{grid-column:span 8}
 #week{display:flex;gap:8px}
-#week .wd{flex:1;max-width:46px;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;align-content:center;line-height:1}
-#week .wd small{font-size:10px;color:var(--t2)}
-#week .wd b{font-size:16px;font-weight:600}
+#week .wd{flex:1;max-width:38px;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;align-content:center;line-height:1}
+#week .wd small{font-size:9px;color:var(--t2)}
+#week .wd b{font-size:14px;font-weight:600}
 #week .wd.now{background:var(--blue)}
 #gymBody{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px 10px}
 #gym .gt{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2)}
@@ -64,45 +64,44 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 #gym .gbar i.on{background:var(--orange)}
 #gym .gm{grid-column:1/-1;grid-row:3;font-size:14px}
 #gym .gs{display:none}
-#spw{cursor:pointer;display:flex;flex-direction:column;gap:8px}
-.sprow{display:flex;align-items:center;gap:12px}
-#sArt{width:54px;height:54px;border-radius:12px;flex:none;background:rgba(255,255,255,.12) center/cover}
+#spw{cursor:pointer;display:flex;align-items:center}
+.sprow{display:flex;align-items:center;gap:12px;min-width:0;width:100%}
+#sArt{width:48px;height:48px;border-radius:12px;flex:none;background:rgba(255,255,255,.12) center/cover}
 .stx{flex:1;min-width:0}
-#sTitle{display:block;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#sArtist{display:block;font-size:13px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#vizMic{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:transparent;display:grid;place-items:center;cursor:pointer;-webkit-appearance:none;appearance:none}
-#vizMic svg{width:16px;height:16px;fill:var(--t2)}
-#vizMic.on{border-color:var(--green)}
-#vizMic.on svg{fill:var(--green)}
-#viz{width:100%;height:44px;flex:none;display:block}
-#vizHint{font-size:11px;color:var(--t3);min-height:13px;text-align:center}
+.mq{overflow:hidden;white-space:nowrap}
+.mq>span{display:inline-block;will-change:transform}
+#sTitle{font-size:15px;font-weight:600}
+#sArtist{font-size:12px;color:var(--t2)}
+.mq>span.defile{animation:defile var(--t,6s) linear infinite alternate}
+@keyframes defile{0%,14%{transform:translateX(0)}86%,100%{transform:translateX(var(--d))}}
 #spw.paused .stx{opacity:.6}
+#spw.paused .mq>span{animation-play-state:paused}
 
 /* Météo */
 #mnow{grid-column:span 5} #mhour{grid-column:span 7} #fcw{grid-column:span 7} #sky{grid-column:span 5}
-.huge{font-size:clamp(52px,11vh,84px);font-weight:300;letter-spacing:-.04em;line-height:1}
-.cond{font-size:20px;font-weight:500;margin-top:6px}
+.huge{font-size:clamp(44px,8.5vh,64px);font-weight:300;letter-spacing:-.04em;line-height:1}
+.cond{font-size:17px;font-weight:500;margin-top:6px}
 #wxh{display:flex;gap:8px}
 .hr{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(255,255,255,.08);border-radius:16px;padding:10px 0}
 .hr span{font-size:12px;color:var(--t2)}
-.hr i{font-style:normal;font-size:24px;line-height:1.2}
-.hr b{font-size:17px;font-weight:600}
+.hr i{font-style:normal;font-size:20px;line-height:1.2}
+.hr b{font-size:15px;font-weight:600}
 #fc{display:flex;gap:10px}
 .fd{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.08);border-radius:18px;padding:12px 0}
 .fd span{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--t2)}
 .fd.now span{color:var(--blue)}
-.fd i{font-style:normal;font-size:28px;line-height:1.1}
-.fd b{font-size:20px;font-weight:600}
+.fd i{font-style:normal;font-size:24px;line-height:1.1}
+.fd b{font-size:17px;font-weight:600}
 .fd small{font-size:14px;color:var(--t2)}
 .fog{display:inline-block;width:1em;height:1em;vertical-align:-.12em}
 .skyb{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;align-content:center}
 .sk{display:flex;flex-direction:column;gap:2px}
 .sk small{font-size:13px;color:var(--t2)}
-.sk b{font-size:28px;font-weight:500;font-variant-numeric:tabular-nums}
+.sk b{font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
 .mn{grid-column:1/-1;display:flex;align-items:center;gap:14px}
 .mn svg{width:52px;height:52px;flex:none}
 .mn svg circle{fill:rgba(255,255,255,.06);stroke:rgba(255,255,255,.5)}
-.mn b{display:block;font-size:18px;font-weight:600}
+.mn b{display:block;font-size:16px;font-weight:600}
 .mn small{font-size:13px;color:var(--t2)}
 
 /* Musique : clip ou pochette + paroles */
@@ -149,19 +148,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 
 /* Imprimante : caméra (seulement quand cette page est ouverte) + état */
 .ring{position:relative;display:flex;flex-direction:column;transition:--p 1s linear;margin:4px 0 12px}
-.ring span{order:1;font-size:34px;font-weight:600;line-height:1;margin-bottom:10px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ring span{order:1;font-size:26px;font-weight:600;line-height:1;margin-bottom:10px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .ring::before,.ring::after{content:"";height:6px;border-radius:3px}
 .ring::before{order:2;background:rgba(255,255,255,.16)}
 .ring::after{position:absolute;left:0;bottom:0;width:calc(var(--p,0)*1%);background:var(--green)}
-#bb .tt{font-size:17px;font-weight:600;overflow-wrap:anywhere}
+#bb .tt{font-size:15px;font-weight:600;overflow-wrap:anywhere}
 #bb .sub{font-size:14px;color:var(--t2);margin-top:2px}
 .temps{display:flex;gap:8px;margin-top:12px}
-.temps div{flex:1;background:rgba(255,255,255,.1);border-radius:14px;padding:8px 12px;font-size:12px;color:var(--t2)}
-.temps b{display:block;font-size:18px;color:#fff;font-weight:600}
-#bbTimer{margin-top:14px;width:100%;font:inherit;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:10px 14px;text-align:center;cursor:pointer;-webkit-appearance:none;appearance:none;line-height:1.2}
+.temps div{flex:1;background:rgba(255,255,255,.1);border-radius:14px;padding:6px 10px;font-size:11px;color:var(--t2)}
+.temps b{display:block;font-size:15px;color:#fff;font-weight:600}
+#bbTimer{margin-top:14px;width:100%;font:inherit;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:7px 12px;text-align:center;cursor:pointer;-webkit-appearance:none;appearance:none;line-height:1.2}
 #bbTimer[hidden]{display:none}
 #bbTimer small{display:block;font-size:11px;color:var(--t2)}
-#bbTimer b{display:block;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+#bbTimer b{display:block;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
 #bbTimer.on{border-color:var(--orange)}
 #alarme{position:fixed;inset:0;z-index:200;background:#000;display:none;align-items:center;justify-content:center;text-align:center;cursor:pointer}
 #alarme.on{display:flex;animation:alarme 1.2s ease-in-out infinite}
@@ -180,7 +179,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 #gym{padding:0;display:grid;grid-template-columns:minmax(140px,.75fr) auto minmax(0,1.35fr);column-gap:24px;align-items:stretch}
 #gymBody{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;gap:0;padding:12px 0 0 16px;height:100%;min-height:0}
 #gym .gt{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2);align-self:start}
-#gym .gn{grid-column:2;grid-row:1;font-size:clamp(18px,3.4vh,24px);font-weight:600;font-variant-numeric:tabular-nums;align-self:start}
+#gym .gn{grid-column:2;grid-row:1;font-size:clamp(16px,3vh,20px);font-weight:600;font-variant-numeric:tabular-nums;align-self:start}
 #gym .gbar{grid-column:1/-1;grid-row:2;display:flex;gap:9px;align-items:flex-end;height:clamp(58px,10vh,86px);min-height:0;margin-top:8px}
 #gym .gbar i{flex:1;max-width:60px;height:26%;border-radius:12px 12px 0 0;background:rgba(255,255,255,.16);transition:height .9s cubic-bezier(.34,1.35,.64,1),background .6s}
 #gym .gbar i.on{height:100%;background:var(--orange)}
@@ -193,8 +192,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .vis{align-self:center;padding:10px 16px 10px 0;display:flex;flex-direction:column;gap:10px;min-width:0}
 .vrow{display:flex;align-items:center;gap:14px;min-width:0}
 .vtxt{flex:none;min-width:86px}
-.vtxt b{display:block;font-size:clamp(20px,3.8vh,28px);font-weight:600;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
-.vtxt span{font-size:12px;color:var(--t2)}
+.vtxt b{display:block;font-size:clamp(16px,3vh,22px);font-weight:600;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
+.vtxt span{font-size:11px;color:var(--t2)}
 .icons{display:flex;gap:5px;align-items:flex-end;flex-wrap:nowrap;min-width:0}
 .ic{--w:clamp(11px,2.4vh,18px);--h:clamp(14px,3.1vh,22px);position:relative;flex:none;width:var(--w);height:var(--h)}
 .ic.v{--w:clamp(12px,2.3vh,17px);--h:clamp(26px,4.8vh,38px)}
@@ -229,7 +228,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 @media (max-width:1000px){
   #pages{padding:8px 18px 118px}
   #top{padding:12px 18px 0}
-  #weekw{grid-column:span 6} #mw{grid-column:span 3} #spw{grid-column:span 6} #bb{grid-column:span 6}
+  #weekw{grid-column:span 5} #mw{grid-column:span 3} #spw{grid-column:span 4} #bb{grid-column:span 7} #gym{grid-column:span 12}
   #pgMusique{--dispo:calc(100vh - 540px)}
   #tabbar{--tbw:96px}
 }
@@ -252,11 +251,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   <section class="page on" id="pgHome"><div class="grid" id="gridHome">
     <div class="g" id="weekw"><div class="gl">Cette semaine</div><div id="week"></div></div>
     <div class="g tap" id="mw"><div class="gl">Météo</div><div id="wxT" class="big">--°</div><div id="wx" class="sub"></div></div>
-    <div class="g tap" id="spw">
-      <div class="sprow"><div id="sArt"></div><div class="stx"><b id="sTitle">Spotify</b><span id="sArtist">Rien en lecture</span></div>
-        <button id="vizMic" aria-label="Activer le visualiseur (micro)"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V22h2v-3.08A7 7 0 0 0 19 12z"/></svg></button></div>
-      <canvas id="viz"></canvas><div id="vizHint"></div>
-    </div>
+    <div class="g tap" id="spw"><div class="sprow"><div id="sArt"></div><div class="stx"><div class="mq"><span id="sTitle">Spotify</span></div><div class="mq"><span id="sArtist">Rien en lecture</span></div></div></div></div>
     <div class="g" id="bb">
       <div class="bbl"><div class="gl">Bambu Lab A1</div><div class="ring" id="bbRing"><span id="bbPct">…</span></div></div>
       <div class="bbinfo"><div class="tt" id="bbName">—</div><div class="sub" id="bbEta">Connexion…</div></div>
@@ -451,70 +446,6 @@ async function loadWx(){
 }
 loadWx(); setInterval(loadWx, CONFIG.intervalle.meteo*1000);
 
-/* ── Visualiseur : le micro de l’iPad écoute la pièce, les basses font monter la gauche de la barre ── */
-const viz = (() => {
-  const N = 32, FMIN = 40, FMAX = 12000, lisse = new Float32Array(N);
-  let ac = null, an = null, data = null, flux = null, raf = 0, actif = false, joue = false, pic = .25, dernier = 0, ctx2 = null, W = 0, H = 0;
-  function bandes(d, fe, fft){
-    const out = new Float32Array(N), bin = fe / fft;
-    for (let i = 0; i < N; i++){
-      const lo = Math.max(1, Math.floor(FMIN * Math.pow(FMAX / FMIN, i / N) / bin)), hi = Math.max(lo + 1, Math.ceil(FMIN * Math.pow(FMAX / FMIN, (i + 1) / N) / bin));
-      let m = 0; for (let k = lo; k < hi && k < d.length; k++) if (d[k] > m) m = d[k];
-      out[i] = m / 255;
-    }
-    return out;
-  }
-  function adoucir(v){
-    let max = 0; for (let i = 0; i < N; i++) if (v[i] > max) max = v[i];
-    pic = Math.max(pic * .995, max, .25);
-    for (let i = 0; i < N; i++){ const x = Math.min(1, v[i] / pic); lisse[i] = x > lisse[i] ? lisse[i] + (x - lisse[i]) * .6 : lisse[i] * .86; }
-  }
-  function taille(){
-    const c = $("viz"), r = c.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = r.width; H = r.height; c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
-    ctx2 = c.getContext("2d"); ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  function dessiner(repos){
-    if (!ctx2) taille();
-    ctx2.clearRect(0, 0, W, H);
-    const gap = 3, w = (W - gap * (N - 1)) / N;
-    for (let i = 0; i < N; i++){
-      const h = repos ? 3 : Math.max(3, lisse[i] * H);
-      ctx2.fillStyle = repos ? "rgba(255,255,255,.35)" : (i < 8 ? "#fff" : "rgba(255,255,255,.62)");
-      ctx2.fillRect(i * (w + gap), H - h, w, h);
-    }
-  }
-  function boucle(t){
-    raf = 0; if (!actif || !joue) return;
-    raf = requestAnimationFrame(boucle);
-    if (t - dernier < 33) return; dernier = t;
-    an.getByteFrequencyData(data); adoucir(bandes(data, ac.sampleRate, an.fftSize)); dessiner(false);
-  }
-  function maj(){
-    $("vizMic").classList.toggle("on", actif);
-    $("vizHint").textContent = joue && !actif ? "Touche le micro pour animer" : "";
-    if (actif && joue){ if (!raf) raf = requestAnimationFrame(boucle); }
-    else { lisse.fill(0); dessiner(true); }
-  }
-  async function activer(){
-    try {
-      flux = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
-      ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === "suspended") await ac.resume();
-      an = ac.createAnalyser(); an.fftSize = 2048; an.minDecibels = -90; an.maxDecibels = -20; an.smoothingTimeConstant = .5;
-      ac.createMediaStreamSource(flux).connect(an); data = new Uint8Array(an.frequencyBinCount); actif = true;
-      try { localStorage.setItem("vizMicro", "1"); } catch(_){}
-    } catch(e){ $("vizHint").textContent = "Micro refusé ou indisponible"; actif = false; return; }
-    maj();
-  }
-  function desactiver(){
-    try { flux && flux.getTracks().forEach(t => t.stop()); ac && ac.close(); } catch(_){}
-    flux = ac = an = null; actif = false; try { localStorage.removeItem("vizMicro"); } catch(_){} maj();
-  }
-  $("vizMic").onclick = e => { e.stopPropagation(); actif ? desactiver() : activer(); };
-  addEventListener("resize", () => { taille(); if (!(actif && joue)) dessiner(true); });
-  return { jouer(v){ joue = !!v; maj(); }, bandes, adoucir, lisse, N };
-})();
-
 /* ── Spotify : tuile + lecteur plein écran (commande tous les appareils : iPhone, Echo…) ── */
 const WK = CONFIG.icsWorker ? CONFIG.icsWorker.replace(/\/?$/, "") : "";
 let sp = null, spVu = 0, spBase = null, spMode = "cover", spOuvert = false, spTick = 0, spSync = 0;
@@ -524,15 +455,22 @@ const musiqueActive = () => !!(sp && sp.item && (sp.is_playing || Date.now() - s
 const imgDe = it => (it && it.album && it.album.images && it.album.images[0] && it.album.images[0].url) || "";
 const positionSpotify = () => spBase ? spBase.ms + (sp && sp.is_playing ? Date.now() - spBase.t : 0) : 0;
 
+function marquee(el){
+  const c = el.parentNode; if (!c) return;
+  el.classList.remove("defile");
+  const trop = el.scrollWidth - c.clientWidth;
+  if (trop > 2){ el.style.setProperty("--d", -trop + "px"); el.style.setProperty("--t", (trop / 28 + 3).toFixed(1) + "s"); void el.offsetWidth; el.classList.add("defile"); }
+}
+function texteDefilant(id, txt){ const el = $(id); if (el.dataset.t === txt) return; el.textContent = txt; el.dataset.t = txt; marquee(el); }
 function majIle(){
   const m = musiqueActive();
   $("spw").classList.toggle("paused", !!(m && !sp.is_playing));
   if (m){
-    $("sTitle").textContent = sp.item.name; $("sArtist").textContent = sp.item.artists.map(a => a.name).join(", ");
+    texteDefilant("sTitle", sp.item.name); texteDefilant("sArtist", sp.item.artists.map(a => a.name).join(", "));
     const u = imgDe(sp.item); $("sArt").style.backgroundImage = u ? `url(${u})` : "";
-  } else { $("sTitle").textContent = "Spotify"; $("sArtist").textContent = "Rien en lecture"; $("sArt").style.backgroundImage = ""; }
-  viz.jouer(m && sp.is_playing);
+  } else { texteDefilant("sTitle", "Spotify"); texteDefilant("sArtist", "Rien en lecture"); $("sArt").style.backgroundImage = ""; }
 }
+addEventListener("resize", () => { marquee($("sTitle")); marquee($("sArtist")); });
 function tickPlayer(){
   if (!sp || !spBase) return;
   const dur = sp.item.duration_ms, cur = Math.min(dur, positionSpotify());
