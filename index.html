@@ -6,12 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Dashboard">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#1c1c1e">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Dashboard Deniz</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>:root{
   --t1:#fff; --t2:rgba(255,255,255,.62); --t3:rgba(255,255,255,.38); --line:rgba(255,255,255,.14);
   --acc:#ff8a1f; --red:#ff8a1f; --orange:#ff8a1f; --green:#ff8a1f;
@@ -56,7 +53,6 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 .hr b{font-size:18px;font-weight:500}
 
 /* Prévisions 5 jours + ciel */
-#fcw{grid-column:1/6;grid-row:2}
 #fc{display:flex;gap:10px;flex:1;min-height:0}
 .fd{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid rgba(255,255,255,.14);border-radius:16px}
 .fd span{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--t2)}
@@ -64,7 +60,7 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 .fd i{font-style:normal;font-size:30px;line-height:1.1}
 .fd b{font-size:18px;font-weight:500}
 .fd small{font-size:14px;color:var(--t2)}
-#sky{grid-column:6/9;grid-row:2}
+#sky{grid-column:1/7;grid-row:2}
 .skyb{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;flex:1;align-content:center}
 .sk{display:flex;flex-direction:column;gap:2px}
 .sk small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t2)}
@@ -75,7 +71,7 @@ h2{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
 .mn small{font-size:13px;color:var(--t2)}
 
 /* Lecteur Spotify (tuile) + visualiseur de basses */
-#spw{grid-column:9/13;grid-row:2;cursor:pointer;gap:10px}
+#spw{grid-column:7/13;grid-row:2;cursor:pointer;gap:10px}
 .sprow{display:flex;align-items:center;gap:12px}
 #sArt{width:56px;height:56px;border-radius:12px;flex:none;background:rgba(255,255,255,.08) center/cover}
 .stx{flex:1;min-width:0}
@@ -221,11 +217,10 @@ h2,#date,.next-label{font-weight:500}
 
 /* Largeur moyenne (par exemple écran partagé 2/3) : on réorganise les tuiles */
 @media (max-width:999px){
-  .app{grid-template-rows:minmax(min-content,1.4fr) minmax(min-content,1fr) minmax(min-content,1.1fr) auto;gap:12px;padding:18px}
+  .app{grid-template-rows:minmax(min-content,1.4fr) minmax(min-content,1.1fr) auto;gap:12px;padding:18px}
   #clockw{grid-column:1/7;grid-row:1} #hello{grid-column:7/13;grid-row:1}
-  #fcw{grid-column:1/13;grid-row:2}
-  #sky{grid-column:1/6;grid-row:3} #spw{grid-column:6/13;grid-row:3}
-  #gym{grid-column:1/7;grid-row:4} #bb{grid-column:7/13;grid-row:4}
+  #sky{grid-column:1/7;grid-row:2} #spw{grid-column:7/13;grid-row:2}
+  #gym{grid-column:1/7;grid-row:3} #bb{grid-column:7/13;grid-row:3}
   #player{overflow-y:auto}
   .pmain{flex-direction:column;gap:22px;padding:70px 24px 24px;max-height:100%}
   .pmedia{width:min(56vw,320px);height:min(56vw,320px)}
@@ -237,10 +232,44 @@ h2,#date,.next-label{font-weight:500}
 /* Petite largeur : tout en une colonne, la page défile */
 @media (max-width:639px){
   .app{grid-template-rows:none;grid-auto-rows:auto}
-  #clockw,#hello,#fcw,#sky,#spw,#gym,#bb{grid-column:1/13;grid-row:auto}
+  #clockw,#hello,#sky,#spw,#gym,#bb{grid-column:1/13;grid-row:auto}
 }
 
 .fog{display:inline-block;width:1em;height:1em;vertical-align:-.12em}
+/* Thème « Raccourcis » : fond gris foncé, grandes tuiles colorées en dégradé, texte blanc, police système */
+:root{--disp:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;--acc:#fff;--red:#fff;--orange:#fff;--green:#fff;--t2:rgba(255,255,255,.84);--t3:rgba(255,255,255,.6);--line:rgba(255,255,255,.24)}
+html,body{background:#1c1c1e}
+body{background:#1c1c1e;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",system-ui,sans-serif;font-weight:500;letter-spacing:-.011em}
+.app .widget{border:0;border-radius:30px;background:#2c2c2e;box-shadow:inset 0 1px 0 rgba(255,255,255,.30),inset 0 -1px 0 rgba(0,0,0,.08)}
+.app #clockw{background:linear-gradient(145deg,#9068c9,#6c44ac)}
+.app #hello{background:linear-gradient(145deg,#f4b866,#e3993f)}
+.app #sky{background:linear-gradient(145deg,#5a9cf5,#3b6fd4)}
+.app #spw{background:linear-gradient(145deg,#3fd069,#26a64a)}
+.app #gym{background:linear-gradient(145deg,#f3dc4f,#d6b72b)}
+.app #bb{background:linear-gradient(145deg,#a3abb5,#7d8590)}
+.app h2{font-size:17px;font-weight:600;letter-spacing:-.01em;text-transform:none;color:#fff;margin-bottom:12px}
+.app #date{text-transform:capitalize;letter-spacing:0;font-weight:500;font-size:clamp(13px,3.6cqw,17px)}
+.app #hi{font-weight:600;letter-spacing:-.02em}
+.app #wx{font-weight:500}
+.app #gym .gt,.app .sk small,.app #bbTimer small{text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;color:#fff}
+.app .sk b,.app .mn b,.app #gym .gn,.app .ring span,.app .hr b,.app #week .wd b{font-weight:600}
+.app .hr{border:0;background:rgba(255,255,255,.22)}
+.app #week .wd{border:0;background:rgba(255,255,255,.22)}
+.app #week .wd.now{background:#fff;color:#6c44ac}
+.app #week .wd.now small{color:#6c44ac}
+.app .mn svg circle{fill:rgba(20,30,100,.4);stroke:rgba(255,255,255,.7)}
+.app #sArt{background:rgba(255,255,255,.22) center/cover}
+.app #vizMic{border-color:rgba(255,255,255,.55)}
+.app #vizMic svg{fill:#fff}
+.app #gym .gbar i{background:rgba(255,255,255,.38)}
+.app #gym .gbar i.on{background:#fff}
+.app .ring::before{background:rgba(255,255,255,.35)}
+.app .ring::after{background:#fff}
+.app .temps div{border:0;background:rgba(255,255,255,.22);color:#fff}
+.app #bb .tt,.app #bb .sub{color:#fff}
+.app #bbTimer{border:1px solid rgba(255,255,255,.55)}
+.app #bbTimer.on{border-color:#fff}
+
 /* Effets occasionnels */
 #sweep{position:fixed;top:0;bottom:0;left:0;width:34vw;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
 body.fx-sweep #sweep{animation:sweep 2.8s var(--ease)}
@@ -279,7 +308,6 @@ body.fx-lift .widget{animation:lift 1.6s var(--ease)}
 <div class="app">
   <div class="widget" id="clockw"><div id="clock"></div><div id="date"></div><div id="week"></div></div>
   <div class="widget" id="hello"><div id="hi">Bonjour Deniz</div><div id="wx"></div><div id="wxh"></div></div>
-  <section class="widget" id="fcw"><h2>Prévisions</h2><div id="fc"></div></section>
   <section class="widget" id="sky"><h2>Ciel</h2><div class="skyb">
     <div class="sk"><small>Lever</small><b id="sunr">--:--</b></div>
     <div class="sk"><small>Coucher</small><b id="suns">--:--</b></div>
@@ -426,10 +454,6 @@ function renderWx(r){
   wxHeures = { h, i }; rendreHeures();
   const dj = r.daily;
   if (dj){
-    $("fc").innerHTML = dj.time.slice(0, 5).map((t, i) => {
-      const jour = new Date(t + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "short" }).replace(".", "").toUpperCase();
-      return `<div class="fd${i === 0 ? " now" : ""}"><span>${i === 0 ? "AUJ." : jour}</span><i>${(WX[dj.weather_code[i]] || ["·"])[0]}</i><b>${Math.round(dj.temperature_2m_max[i])}°</b><small>${Math.round(dj.temperature_2m_min[i])}°</small></div>`;
-    }).join("");
     $("sunr").textContent = dj.sunrise[0].slice(11, 16); $("suns").textContent = dj.sunset[0].slice(11, 16);
   }
 }
@@ -471,7 +495,7 @@ const viz = (() => {
     const gap = 3, w = (W - gap * (N - 1)) / N;
     for (let i = 0; i < N; i++){
       const h = repos ? 3 : Math.max(3, lisse[i] * H);
-      ctx2.fillStyle = repos ? "rgba(255,255,255,.22)" : (i < 8 ? "#ff8a1f" : "#fff");
+      ctx2.fillStyle = repos ? "rgba(255,255,255,.35)" : (i < 8 ? "#fff" : "rgba(255,255,255,.62)");
       ctx2.fillRect(i * (w + gap), H - h, w, h);
     }
   }
