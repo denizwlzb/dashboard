@@ -47,10 +47,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .bar i{display:block;height:100%;width:0;border-radius:3px;background:var(--green);transition:width .8s var(--ease)}
 
 /* Accueil */
-#gridHome{height:100%;grid-template-rows:minmax(0,.8fr) minmax(0,1fr)}
+#gridHome{height:100%;grid-template-rows:minmax(0,.9fr) minmax(0,.62fr) minmax(0,.9fr)}
 #gridMeteo{height:100%;grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
-#weekw{grid-column:span 5} #mw{grid-column:span 3} #spw{grid-column:span 4}
-#gym{grid-column:span 7} #bb{grid-column:span 5}
+#weekw{grid-column:span 4} #mw{grid-column:span 3} #spw{grid-column:span 5}
+#bb{grid-column:span 12} #gym{grid-column:span 12}
 #week{display:flex;gap:8px}
 #week .wd{flex:1;max-width:46px;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;align-content:center;line-height:1}
 #week .wd small{font-size:10px;color:var(--t2)}
@@ -169,14 +169,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 #alarme span{display:block;margin-top:14px;font-size:18px;color:var(--t2)}
 @keyframes alarme{0%,100%{box-shadow:inset 0 0 0 0 rgba(255,159,10,0)}50%{box-shadow:inset 0 0 140px 10px rgba(255,159,10,.35)}}
 
+/* Imprimante en bandeau */
+#bb{display:flex;flex-direction:row;align-items:center;gap:26px}
+.bbl{flex:0 0 190px}
+.bbinfo{flex:1;min-width:0}
+#bb .temps{margin:0;flex:none}
+#bb #bbTimer{margin:0;width:auto;flex:none;min-width:150px}
 /* Forme : anneaux d'activité + pas + eau, dans la tuile de la salle */
-#gym{display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:center}
+#gym{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:30px;align-items:center}
 .forme{display:flex;align-items:center;gap:16px;min-width:0}
-#rings{height:clamp(84px,17vh,150px);aspect-ratio:1;width:auto;flex:none}
+#rings{height:clamp(70px,14vh,128px);aspect-ratio:1;width:auto;flex:none}
 #rings circle{fill:none;stroke-width:16;stroke-linecap:round;transform:rotate(-90deg);transform-origin:100px 100px}
 #rings .rt{stroke:rgba(255,255,255,.12)}
 #rings .rf{stroke-dasharray:0 1000;transition:stroke-dasharray 1s var(--ease)}
-.fstats{display:flex;flex-direction:column;gap:10px;min-width:0}
+.fstats{display:flex;flex-direction:column;gap:8px;min-width:0;min-width:96px}
 .fstats b{display:block;font-size:clamp(22px,4.2vh,32px);font-weight:600;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
 .fstats span{font-size:13px;color:var(--t2)}
 
@@ -185,7 +191,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 30px rgba(0,0,0,.5)}
 .tb{position:relative;width:var(--tbw);height:58px;border:0;border-radius:30px;background:transparent;color:var(--t2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:inherit;font-size:11px;font-weight:600;letter-spacing:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .3s var(--ease),color .3s var(--ease)}
 .tb svg{width:24px;height:24px;fill:currentColor}
-#tabhl{position:absolute;top:6px;left:6px;width:var(--tbw);height:58px;border-radius:30px;background:rgba(255,255,255,.17);box-shadow:inset 0 1px 0 rgba(255,255,255,.25);pointer-events:none;will-change:transform}
+#tabbar{touch-action:none}
+#tabhl{position:absolute;top:6px;left:6px;width:var(--tbw);height:58px;pointer-events:none;will-change:transform}
+#tabhl>i{display:block;width:100%;height:100%;border-radius:30px;background:rgba(255,255,255,.17);box-shadow:inset 0 1px 0 rgba(255,255,255,.25);transition:transform .4s cubic-bezier(.34,1.56,.64,1),background .3s,box-shadow .3s}
+#tabhl.lift>i{transform:scale(1.14,1.2);background:rgba(255,255,255,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 22px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.25)}
 .tb.on{color:var(--blue)}
 .tb:active{transform:scale(.94)}
 
@@ -199,8 +208,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 @media (max-width:1000px){
   #pages{padding:8px 18px 118px}
   #top{padding:12px 18px 0}
-  #gridHome{grid-template-rows:repeat(3,minmax(0,1fr))}
-  #weekw{grid-column:span 7} #mw{grid-column:span 5} #spw{grid-column:span 7} #bb{grid-column:span 5} #gym{grid-column:span 12}
+  #gridHome{grid-template-rows:repeat(4,minmax(0,1fr))}
+  #weekw{grid-column:span 7} #mw{grid-column:span 5} #spw{grid-column:span 12}
   #pgMusique{--dispo:calc(100vh - 540px)}
   #tabbar{--tbw:96px}
 }
@@ -228,6 +237,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
         <button id="vizMic" aria-label="Activer le visualiseur (micro)"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V22h2v-3.08A7 7 0 0 0 19 12z"/></svg></button></div>
       <canvas id="viz"></canvas><div id="vizHint"></div>
     </div>
+    <div class="g" id="bb">
+      <div class="bbl"><div class="gl">Bambu Lab A1</div><div class="ring" id="bbRing"><span id="bbPct">0%</span></div></div>
+      <div class="bbinfo"><div class="tt" id="bbName">—</div><div class="sub" id="bbEta">—</div></div>
+      <div class="temps"><div><b id="bbNozzle">—</b>Buse</div><div><b id="bbBed">—</b>Plateau</div></div>
+      <button id="bbTimer" hidden></button>
+    </div>
     <div class="g" id="gym">
       <div id="gymBody"></div>
       <div class="forme">
@@ -239,11 +254,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
         <div class="fstats"><div><b id="swPas">--</b><span>pas</span></div><div><b id="swEau">--</b><span>eau bue</span></div></div>
       </div>
     </div>
-    <div class="g" id="bb"><div class="gl">Bambu Lab A1</div>
-      <div class="ring" id="bbRing"><span id="bbPct">0%</span></div>
-      <div class="tt" id="bbName">—</div><div class="sub" id="bbEta">—</div>
-      <div class="temps"><div><b id="bbNozzle">—</b>Buse</div><div><b id="bbBed">—</b>Plateau</div></div>
-      <button id="bbTimer" hidden></button></div>
   </div></section>
   <section class="page" id="pgMeteo"><div class="grid" id="gridMeteo">
     <div class="g" id="mnow"><div class="gl">Maintenant</div><div id="wxBigT" class="huge">--°</div><div id="wxBigC" class="cond"></div><div id="wxBigV" class="sub"></div></div>
@@ -275,7 +285,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
     </div>
   </div></section>
 </div></main>
-<nav id="tabbar"><i id="tabhl"></i>
+<nav id="tabbar"><div id="tabhl"><i></i></div>
   <button class="tb on" data-page="accueil"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Accueil</button>
   <button class="tb" data-page="meteo"><svg viewBox="0 0 24 24"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z"/></svg>Météo</button>
   <button class="tb" data-page="musique"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>Musique</button>
@@ -747,7 +757,7 @@ function poser(x, animer){
   const t = $("track");
   t.style.transition = animer ? "transform .5s cubic-bezier(.32,.72,0,1)" : "none";
   t.style.transform = "translate3d(" + x + "px,0,0)";
-  const tl = $("tabhl"); tl.style.transition = animer ? "transform .5s cubic-bezier(.32,.72,0,1)" : "none";
+  const tl = $("tabhl"); tl.style.transition = animer ? "transform .55s cubic-bezier(.34,1.3,.64,1)" : "none";
   surbrillance(-x / largeur());
 }
 function allerPage(nom){
@@ -788,6 +798,32 @@ const finDrag = e => {
 };
 ["pointerup", "pointercancel"].forEach(n => pager.addEventListener(n, finDrag));
 document.addEventListener("click", e => { if (clicBloque){ e.stopPropagation(); e.preventDefault(); } }, true);
+/* La capsule de l’onglet se saisit et se glisse comme sur iOS : les pages suivent le doigt en direct */
+const barre = $("tabbar");
+var drag2 = null;
+const geom = () => { const r0 = TB[0].getBoundingClientRect(), r1 = TB[1].getBoundingClientRect(); return { base: r0.left, pas: (r1.left - r0.left) || (TB[0].offsetWidth + 4), bw: r0.width || TB[0].offsetWidth }; };
+const posCapsule = (x) => { const g = geom(); return Math.max(0, Math.min(ORDRE.length - 1, (x - g.base - g.bw / 2) / g.pas)); };
+barre.addEventListener("pointerdown", e => { drag2 = { x: e.clientX, id: e.pointerId, actif: false }; });
+barre.addEventListener("pointermove", e => {
+  if (!drag2 || e.pointerId !== drag2.id) return;
+  if (!drag2.actif){
+    if (Math.abs(e.clientX - drag2.x) < 8) return;
+    drag2.actif = true; try { barre.setPointerCapture(e.pointerId); } catch(_){}
+    $("tabhl").classList.add("lift");
+  }
+  const p = posCapsule(e.clientX);
+  poser(-p * largeur(), false);
+  TB.forEach((b, k) => b.classList.toggle("on", k === Math.round(p)));
+});
+const finDrag2 = e => {
+  if (!drag2) return; const d = drag2; drag2 = null;
+  $("tabhl").classList.remove("lift");
+  if (!d.actif) return;
+  clicBloque = true; setTimeout(() => { clicBloque = false; }, 60);
+  allerPage(ORDRE[Math.round(posCapsule(e.clientX))]);
+};
+["pointerup", "pointercancel"].forEach(n => barre.addEventListener(n, finDrag2));
+
 addEventListener("resize", () => poser(-idx * largeur(), false));
 ["pointerdown", "keydown"].forEach(e => addEventListener(e, () => { dernierToucher = Date.now(); }));
 setInterval(() => { if (pageCourante !== "accueil" && Date.now() - dernierToucher > 180000) allerPage("accueil"); }, 15000);
