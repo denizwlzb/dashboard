@@ -37,7 +37,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 
 /* Liquid glass */
 .g{position:relative;background:rgba(255,255,255,.075);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);border:1px solid rgba(255,255,255,.13);border-radius:26px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(255,255,255,.05),0 8px 28px rgba(0,0,0,.35);padding:16px 18px;overflow:hidden}
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(255,255,255,.05),0 8px 28px rgba(0,0,0,.35);padding:13px 16px;overflow:hidden}
 .g::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.20),rgba(255,255,255,0) 38%,rgba(255,255,255,0) 72%,rgba(255,255,255,.05));pointer-events:none}
 .g>*{position:relative}
 .gl{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:8px}
@@ -47,8 +47,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .bar i{display:block;height:100%;width:0;border-radius:3px;background:var(--green);transition:width .8s var(--ease)}
 
 /* Accueil */
-#gridHome{height:100%;grid-template-rows:minmax(0,.7fr) minmax(0,1fr) minmax(0,.9fr)}
-#gridMeteo{height:100%;grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+#gridHome{align-content:start}
+#gridMeteo{align-content:start}
 #weekw{grid-column:span 4} #mw{grid-column:span 3} #spw{grid-column:span 6}
 #bb{grid-column:span 6} #gym{grid-column:span 12}
 #week{display:flex;gap:8px}
@@ -74,7 +74,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 #vizMic svg{width:16px;height:16px;fill:var(--t2)}
 #vizMic.on{border-color:var(--green)}
 #vizMic.on svg{fill:var(--green)}
-#viz{width:100%;flex:1;min-height:28px;display:block}
+#viz{width:100%;height:44px;flex:none;display:block}
 #vizHint{font-size:11px;color:var(--t3);min-height:13px;text-align:center}
 #spw.paused .stx{opacity:.6}
 
@@ -153,7 +153,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .ring::before,.ring::after{content:"";height:6px;border-radius:3px}
 .ring::before{order:2;background:rgba(255,255,255,.16)}
 .ring::after{position:absolute;left:0;bottom:0;width:calc(var(--p,0)*1%);background:var(--green)}
-#bb .tt{font-size:17px;font-weight:600}
+#bb .tt{font-size:17px;font-weight:600;overflow-wrap:anywhere}
 #bb .sub{font-size:14px;color:var(--t2);margin-top:2px}
 .temps{display:flex;gap:8px;margin-top:12px}
 .temps div{flex:1;background:rgba(255,255,255,.1);border-radius:14px;padding:8px 12px;font-size:12px;color:var(--t2)}
@@ -178,19 +178,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 
 /* Salle : trois barres qui sortent du sol · jauges en demi-cercle · pas en empreintes · eau en gourdes */
 #gym{padding:0;display:grid;grid-template-columns:minmax(140px,.75fr) auto minmax(0,1.35fr);column-gap:24px;align-items:stretch}
-#gymBody{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;gap:0;padding:16px 0 0 20px;height:100%;min-height:0}
+#gymBody{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;gap:0;padding:12px 0 0 16px;height:100%;min-height:0}
 #gym .gt{grid-column:1;grid-row:1;font-size:13px;font-weight:600;color:var(--t2);align-self:start}
 #gym .gn{grid-column:2;grid-row:1;font-size:clamp(18px,3.4vh,24px);font-weight:600;font-variant-numeric:tabular-nums;align-self:start}
-#gym .gbar{grid-column:1/-1;grid-row:2;display:flex;gap:9px;align-items:flex-end;height:100%;min-height:0;margin-top:8px}
+#gym .gbar{grid-column:1/-1;grid-row:2;display:flex;gap:9px;align-items:flex-end;height:clamp(58px,10vh,86px);min-height:0;margin-top:8px}
 #gym .gbar i{flex:1;max-width:60px;height:26%;border-radius:12px 12px 0 0;background:rgba(255,255,255,.16);transition:height .9s cubic-bezier(.34,1.35,.64,1),background .6s}
 #gym .gbar i.on{height:100%;background:var(--orange)}
 #gym .gm,#gym .gs{display:none}
-.gauge{align-self:center;padding:14px 0}
+.gauge{align-self:center;padding:10px 0}
 #rings{width:clamp(130px,22vw,240px);height:auto;display:block}
 #rings path{fill:none;stroke-width:16;stroke-linecap:round}
 #rings .rt{stroke:rgba(255,255,255,.12)}
 #rings .rf{stroke-dasharray:0 100;opacity:0;transition:stroke-dasharray 1s var(--ease),opacity .3s}
-.vis{align-self:center;padding:14px 20px 14px 0;display:flex;flex-direction:column;gap:12px;min-width:0}
+.vis{align-self:center;padding:10px 16px 10px 0;display:flex;flex-direction:column;gap:10px;min-width:0}
 .vrow{display:flex;align-items:center;gap:14px;min-width:0}
 .vtxt{flex:none;min-width:86px}
 .vtxt b{display:block;font-size:clamp(20px,3.8vh,28px);font-weight:600;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
@@ -229,7 +229,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 @media (max-width:1000px){
   #pages{padding:8px 18px 118px}
   #top{padding:12px 18px 0}
-  #gridHome{grid-template-rows:repeat(3,minmax(0,1fr))}
   #weekw{grid-column:span 6} #mw{grid-column:span 3} #spw{grid-column:span 6} #bb{grid-column:span 6}
   #pgMusique{--dispo:calc(100vh - 540px)}
   #tabbar{--tbw:96px}
