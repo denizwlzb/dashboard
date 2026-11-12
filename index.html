@@ -205,6 +205,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .ic.v .if{top:auto;bottom:0;width:100%}
 .ic.v .if svg{position:absolute;left:0;bottom:0}
 
+#erreur{position:fixed;left:50%;top:96px;transform:translateX(-50%);z-index:300;max-width:80vw;background:rgba(255,69,58,.92);color:#fff;padding:10px 16px;border-radius:14px;font-size:13px;line-height:1.35;cursor:pointer}
+
 /* Barre d'onglets façon Raccourcis, en verre */
 #tabbar{--tbw:112px;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:50;display:flex;gap:4px;padding:6px;border-radius:36px;background:rgba(44,44,48,.5);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);
   border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 30px rgba(0,0,0,.5)}
@@ -257,8 +259,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
       <canvas id="viz"></canvas><div id="vizHint"></div>
     </div>
     <div class="g" id="bb">
-      <div class="bbl"><div class="gl">Bambu Lab A1</div><div class="ring" id="bbRing"><span id="bbPct">0%</span></div></div>
-      <div class="bbinfo"><div class="tt" id="bbName">—</div><div class="sub" id="bbEta">—</div></div>
+      <div class="bbl"><div class="gl">Bambu Lab A1</div><div class="ring" id="bbRing"><span id="bbPct">…</span></div></div>
+      <div class="bbinfo"><div class="tt" id="bbName">—</div><div class="sub" id="bbEta">Connexion…</div></div>
       <div class="temps"><div><b id="bbNozzle">—</b>Buse</div><div><b id="bbBed">—</b>Plateau</div></div>
       <button id="bbTimer" hidden></button>
     </div>
@@ -311,6 +313,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   <button class="tb" data-page="musique"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>Musique</button>
 </nav>
 <script>
+/* Si une erreur survient, elle s'affiche à l'écran (touche pour fermer) : plus facile à diagnostiquer */
+function afficherErreur(m){
+  let b = document.getElementById("erreur");
+  if (!b){ b = document.createElement("div"); b.id = "erreur"; b.onclick = () => { b.remove(); }; document.body.appendChild(b); }
+  b.textContent = "Erreur : " + m + " (touche pour fermer)";
+}
+addEventListener("error", e => afficherErreur(e.message || "inconnue"));
+addEventListener("unhandledrejection", e => afficherErreur((e.reason && e.reason.message) || e.reason || "inconnue"));
+
 /* ═══════════════ CONFIGURATION ═══════════════
    Les intégrations externes (réseau) fonctionnent quand ce fichier est ouvert
    depuis votre propre serveur / appareil. Sans configuration, le mode démo s’affiche.
