@@ -15,23 +15,25 @@
 html,body{height:100%;overflow:hidden;background:#000;cursor:none}
 body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;animation:ouverture 1.6s ease both}
 @keyframes ouverture{from{opacity:0}to{opacity:1}}
-#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:var(--bg)}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;--W:1920}
 #stage>*{position:absolute}
 .mono{font-family:var(--mono);font-size:20px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:400;white-space:nowrap}
 
-/* ───── Fond : noir, lueurs qui dérivent, teinte de la pochette, grain de pellicule ───── */
-#wall{left:0;top:0;width:1920px;height:1080px;overflow:hidden}
+/* ───── Fond : noir, lueurs qui dérivent, teinte de la pochette, grain de pellicule. Il couvre TOUT l'écran, quelle que soit sa forme ───── */
+#bgfull{position:fixed;left:0;top:0;width:100vw;height:100vh;overflow:hidden;background:#000}
+#bgfull>*{position:absolute}
+#wall{left:0;top:0;width:100%;height:100%;overflow:hidden}
 #wall i{position:absolute;display:block;border-radius:50%;will-change:transform}
-#wall .b1{left:-420px;top:-380px;width:1500px;height:1300px;background:radial-gradient(closest-side,rgba(45,98,255,.17),rgba(45,98,255,0));animation:d1 96s ease-in-out infinite alternate}
-#wall .b2{left:980px;top:420px;width:1400px;height:1100px;background:radial-gradient(closest-side,rgba(20,50,170,.22),rgba(20,50,170,0));animation:d2 124s ease-in-out infinite alternate}
-#wall .b3{left:560px;top:-260px;width:1500px;height:900px;background:radial-gradient(closest-side,rgba(241,239,232,.06),rgba(241,239,232,0));animation:d3 150s ease-in-out infinite alternate}
-@keyframes d1{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(560px,300px,0) scale(1.3)}}
-@keyframes d2{0%{transform:translate3d(0,0,0) scale(1.1)}100%{transform:translate3d(-700px,-260px,0) scale(.85)}}
-@keyframes d3{0%{transform:translate3d(0,0,0) scale(.9)}100%{transform:translate3d(-420px,420px,0) scale(1.25)}}
-#amb{left:0;top:0;width:1920px;height:1080px;opacity:0;transition:opacity 2s ease;image-rendering:auto}
-#grain{left:-160px;top:-160px;width:2240px;height:1400px;opacity:.05;animation:gr 1.2s steps(1,end) infinite}
+#wall .b1{left:-22vw;top:-36vh;width:78vw;height:120vh;background:radial-gradient(closest-side,rgba(45,98,255,.17),rgba(45,98,255,0));animation:d1 96s ease-in-out infinite alternate}
+#wall .b2{left:51vw;top:39vh;width:73vw;height:102vh;background:radial-gradient(closest-side,rgba(20,50,170,.22),rgba(20,50,170,0));animation:d2 124s ease-in-out infinite alternate}
+#wall .b3{left:29vw;top:-24vh;width:78vw;height:84vh;background:radial-gradient(closest-side,rgba(241,239,232,.06),rgba(241,239,232,0));animation:d3 150s ease-in-out infinite alternate}
+@keyframes d1{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(29vw,28vh,0) scale(1.3)}}
+@keyframes d2{0%{transform:translate3d(0,0,0) scale(1.1)}100%{transform:translate3d(-36vw,-24vh,0) scale(.85)}}
+@keyframes d3{0%{transform:translate3d(0,0,0) scale(.9)}100%{transform:translate3d(-22vw,39vh,0) scale(1.25)}}
+#amb{left:0;top:0;width:100%;height:100%;opacity:0;transition:opacity 2s ease}
+#grain{left:-160px;top:-160px;width:calc(100% + 320px);height:calc(100% + 320px);opacity:.05;animation:gr 1.2s steps(1,end) infinite}
 @keyframes gr{0%{transform:translate(0,0)}20%{transform:translate(-37px,23px)}40%{transform:translate(19px,-41px)}60%{transform:translate(-63px,-12px)}80%{transform:translate(44px,35px)}100%{transform:translate(0,0)}}
-#vg{left:0;top:0;width:1920px;height:1080px;background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(0,0,0,0) 45%,rgba(0,0,0,.65) 100%)}
+#vg{left:0;top:0;width:100%;height:100%;background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(0,0,0,0) 45%,rgba(0,0,0,.65) 100%)}
 
 /* ───── Quadrillage : traits fins et croix de repérage ───── */
 .hl{height:1px;background:var(--line)}
@@ -89,10 +91,10 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
 #wxHL{left:784px;top:342px}
 #wxSun{left:784px;top:368px}
 #wxHL,#wxSun{font-size:18px;letter-spacing:.1em}
-#hrs{left:1232px;top:64px;width:624px;height:320px}
+#hrs{left:1232px;top:64px;width:calc(var(--W)*1px - 1296px);height:320px}
 .hi{position:absolute;top:0;width:34px;height:34px;margin-left:-17px}
 .wi{display:block;width:100%;height:100%}
-#hrs svg.ch{position:absolute;left:0;top:58px;width:624px;height:240px;overflow:visible}
+#hrs svg.ch{position:absolute;left:0;top:58px;width:100%;height:240px;overflow:visible}
 
 /* ───── Lecture en cours ───── */
 #cov{left:784px;top:416px;width:296px;height:296px;background:rgba(241,239,232,.05)}
@@ -110,22 +112,22 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
 #npL i{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--acc);margin-right:12px;box-shadow:0 0 14px rgba(45,98,255,.95);animation:batt 1.8s ease-in-out infinite}
 @keyframes batt{50%{opacity:.35}}
 .paused #npL i{animation:none;background:var(--dim);box-shadow:none}
-#tW{left:1124px;top:446px;width:732px;height:104px;overflow:hidden;white-space:nowrap}
+#tW{left:1124px;top:446px;width:calc(var(--W)*1px - 1188px);height:104px;overflow:hidden;white-space:nowrap}
 #tT{display:inline-block;font-family:var(--disp);font-weight:800;font-size:98px;line-height:1.06;text-transform:uppercase;letter-spacing:-.005em}
-#aW{left:1124px;top:552px;width:732px;height:48px;overflow:hidden;white-space:nowrap}
+#aW{left:1124px;top:552px;width:calc(var(--W)*1px - 1188px);height:48px;overflow:hidden;white-space:nowrap}
 #aT{display:inline-block;font-weight:500;font-size:35px;line-height:1.35;color:var(--dim)}
 .defile{animation:defile var(--t,8s) linear infinite alternate}
 @keyframes defile{0%,12%{transform:translateX(0)}88%,100%{transform:translateX(var(--d))}}
 .paused #tT,.paused #aT{animation-play-state:paused}
-#ly1{left:1124px;top:622px;width:732px;height:116px;overflow:hidden;font-weight:600;font-size:50px;line-height:1.14;letter-spacing:-.02em}
-#ly2{left:1124px;top:744px;width:732px;height:38px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:500;font-size:30px;line-height:1.25;color:rgba(241,239,232,.34)}
+#ly1{left:1124px;top:622px;width:calc(var(--W)*1px - 1188px);height:116px;overflow:hidden;font-weight:600;font-size:50px;line-height:1.14;letter-spacing:-.02em}
+#ly2{left:1124px;top:744px;width:calc(var(--W)*1px - 1188px);height:38px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:500;font-size:30px;line-height:1.25;color:rgba(241,239,232,.34)}
 #ly1.in{animation:sub .55s cubic-bezier(.2,.8,.2,1) both}
 @keyframes sub{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 #lyS{left:1124px;top:626px}
 /* Veille (aucune musique) : la lune dans le cadre, une onde qui respire à la place des paroles */
 #moon{display:none;position:absolute;left:0;top:0;width:100%;height:100%;padding:30px;filter:drop-shadow(0 0 40px rgba(45,98,255,.5))}
 .idle #moon{display:block}
-#wave{display:none;left:1124px;top:668px;width:732px;height:108px;align-items:center}
+#wave{display:none;left:1124px;top:668px;width:calc(var(--W)*1px - 1188px);height:108px;align-items:center}
 .idle #wave{display:flex}
 #wave i{flex:none;display:block;width:5px;height:100%;margin-right:7.2px;background:rgba(45,98,255,.75);transform:scaleY(.08);animation:eq 3s ease-in-out infinite alternate}
 @keyframes eq{from{transform:scaleY(.06)}to{transform:scaleY(var(--m,.8))}}
@@ -133,17 +135,17 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
 
 /* ───── Salle : trois barres qui sortent du sol ───── */
 #gLbl{left:784px;top:818px}
-#gymN{left:776px;top:846px;font-family:var(--disp);font-weight:800;font-size:170px;line-height:.8;letter-spacing:-.02em;white-space:nowrap}
-#gymB{left:1060px;top:830px;width:330px;height:186px;display:flex;align-items:flex-end}
-#gymB i{display:block;width:96px;margin-right:21px;height:18%;background:rgba(241,239,232,.14);transition:height 1.2s cubic-bezier(.2,1.3,.4,1),background .6s}
+#gymN{left:776px;top:852px;font-family:var(--disp);font-weight:800;font-size:150px;line-height:.8;letter-spacing:-.02em;white-space:nowrap}
+#gymB{left:1010px;top:830px;width:248px;height:186px;display:flex;align-items:flex-end}
+#gymB i{display:block;width:72px;margin-right:16px;height:18%;background:rgba(241,239,232,.14);transition:height 1.2s cubic-bezier(.2,1.3,.4,1),background .6s}
 #gymB i.on{height:100%;background:var(--acc);box-shadow:0 0 40px rgba(45,98,255,.6)}
-#gymM{left:1438px;top:834px;width:418px}
+#gymM{left:calc(var(--W)*1px - 394px);top:834px;width:330px}
 #gymM div{margin-bottom:16px;white-space:normal}
-#gymM .a1{font-family:var(--txt);font-weight:600;font-size:36px;line-height:1.15;color:var(--ink);text-transform:none;letter-spacing:-.015em}
-#gymM .mono{font-size:19px;line-height:1.5}
+#gymM .a1{font-family:var(--txt);font-weight:600;font-size:30px;line-height:1.15;color:var(--ink);text-transform:none;letter-spacing:-.015em}
+#gymM .mono{font-size:17px;line-height:1.5}
 
 /* ───── Alarme de refroidissement ───── */
-#alarme{left:0;top:0;width:1920px;height:1080px;z-index:50;background:#000;display:none;align-items:center;justify-content:center;text-align:center}
+#alarme{left:0;top:0;width:calc(var(--W)*1px);height:1080px;z-index:50;background:#000;display:none;align-items:center;justify-content:center;text-align:center}
 #alarme.on{display:flex}
 #alarme b{display:block;font-family:var(--disp);font-weight:900;font-size:330px;line-height:.85;color:var(--acc);animation:batt 1.4s ease-in-out infinite;text-transform:uppercase}
 #alarme span{display:block;margin-top:30px}
@@ -151,19 +153,21 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
 </style>
 </head>
 <body>
-<div id="stage" class="idle">
+<div id="bgfull">
   <div id="wall"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
   <canvas id="amb" width="32" height="18"></canvas>
   <div id="grain"></div>
   <div id="vg"></div>
+</div>
+<div id="stage" class="idle">
   <canvas id="gr" width="160" height="160" style="display:none"></canvas>
 
   <!-- quadrillage -->
   <div class="vl" style="left:752px;top:64px;height:952px"></div>
-  <div class="hl" style="left:784px;top:400px;width:1072px"></div>
-  <div class="hl" style="left:784px;top:792px;width:1072px"></div>
+  <div class="hl" style="left:784px;top:400px;width:calc(var(--W)*1px - 848px)"></div>
+  <div class="hl" style="left:784px;top:792px;width:calc(var(--W)*1px - 848px)"></div>
   <div class="vl" style="left:1208px;top:84px;height:292px"></div>
-  <div class="pl" style="left:744px;top:392px"></div><div class="pl" style="left:744px;top:784px"></div><div class="pl" style="left:1848px;top:392px"></div><div class="pl" style="left:1848px;top:784px"></div>
+  <div class="pl" style="left:744px;top:392px"></div><div class="pl" style="left:744px;top:784px"></div><div class="pl" style="left:calc(var(--W)*1px - 72px);top:392px"></div><div class="pl" style="left:calc(var(--W)*1px - 72px);top:784px"></div>
 
   <!-- gauche : heure -->
   <div id="hello" class="mono">Bonjour, Deniz</div><div id="dateTxt" class="mono"></div>
@@ -190,7 +194,7 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
   <div id="wave"></div><div id="ly1"></div><div id="ly2"></div><div id="lyS" class="mono"></div>
 
   <!-- droite : salle -->
-  <div class="hl" style="left:784px;top:1016px;width:1072px"></div>
+  <div class="hl" style="left:784px;top:1016px;width:calc(var(--W)*1px - 848px)"></div>
   <div id="gLbl" class="mono">Salle</div><div id="gymN">-/-</div><div id="gymB"></div><div id="gymM"></div>
 
   <div id="alarme"><div><b>Pièce<br>refroidie</b><span class="mono">Tu peux la retirer du plateau</span></div></div>
@@ -207,8 +211,16 @@ const fmtN = (n, d = 0) => Number(n).toLocaleString("fr-FR", { maximumFractionDi
 const fmtT = ms => { const s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ":" + pad(s % 60); };
 const fmtReste = ms => { const s = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + "H" + pad(m) : m + ":" + pad(s % 60); };
 
-/* Scène fixe 1920×1080, mise à l'échelle : les positions ne bougent jamais */
-function ajuster(){ const s = Math.min(innerWidth / 1920, innerHeight / 1080); $("stage").style.transform = "translate(" + ((innerWidth - 1920 * s) / 2) + "px," + ((innerHeight - 1080 * s) / 2) + "px) scale(" + s + ")"; }
+/* Scène de 1080 px de haut dont la largeur s'adapte à l'écran (1728 à 2600 px) : plus de barres noires, et le fond couvre tout l'écran */
+var lastWx = null;
+function ajuster(){
+  const W = Math.max(1728, Math.min(2600, Math.round(innerWidth / innerHeight * 1080)));
+  const s = Math.min(innerWidth / W, innerHeight / 1080), st = $("stage");
+  st.style.width = W + "px"; st.style.setProperty("--W", W);
+  st.style.transform = "translate(" + ((innerWidth - W * s) / 2) + "px," + ((innerHeight - 1080 * s) / 2) + "px) scale(" + s + ")";
+  if (lastWx) renderWx(lastWx);
+  construireOnde();
+}
 addEventListener("resize", ajuster); ajuster();
 
 /* Grain de pellicule (généré une fois, puis déplacé par saccades) */
@@ -282,15 +294,17 @@ function courbe(vals, W, H){
   return { d, pts };
 }
 function renderWx(r){
+  lastWx = r;
   const c = r.current.weather_code, t = Math.round(r.current.temperature_2m);
   $("wxLbl").textContent = CFG.ville + " · maintenant";
   $("wxT").textContent = t + "°"; $("wxC").textContent = WXL[c] || "—";
   const h = r.hourly, now = new Date();
   const cle = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) + "T" + pad(now.getHours()) + ":00";
   let i = h.time.indexOf(cle); if (i < 0) i = 0; i += 1;
-  const n = Math.min(12, h.time.length - i);
+  const W = Math.max(360, ($("hrs").clientWidth || 624) - 24), H = 240;
+  const n = Math.min(h.time.length - i, Math.max(6, Math.floor(W / 50)));
   if (n >= 3){
-    const vals = h.temperature_2m.slice(i, i + n), W = 600, H = 240, cb = courbe(vals, W, H);
+    const vals = h.temperature_2m.slice(i, i + n), cb = courbe(vals, W, H);
     let svg = '<svg class="ch" viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true"><defs><linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d62ff" stop-opacity=".28"/><stop offset="1" stop-color="#2d62ff" stop-opacity="0"/></linearGradient></defs>';
     svg += '<path d="' + cb.d + ' L' + W + ' ' + H + ' L0 ' + H + ' Z" fill="url(#gA)"/><path d="' + cb.d + '" fill="none" stroke="#2d62ff" stroke-width="3.5" stroke-linejoin="round"/>';
     cb.pts.forEach((p, k) => {
@@ -372,8 +386,13 @@ function majLune(){
   $("moonlit").setAttribute("d", "M " + c + " " + (c - r) + " A " + r + " " + r + " 0 0 " + limbe + " " + c + " " + (c + r) + " A " + rx.toFixed(2) + " " + r + " 0 0 " + term + " " + c + " " + (c - r) + " Z");
   return L;
 }
-/* Onde de veille : 60 barres qui respirent (animation CSS uniquement) */
-$("wave").innerHTML = Array.from({ length: 60 }, (_, k) => '<i style="--m:' + (.22 + .72 * Math.abs(Math.sin(k * .29) * Math.cos(k * .11))).toFixed(2) + ';animation-duration:' + (2.2 + (k * .53) % 2.4).toFixed(2) + 's;animation-delay:-' + ((k * .37) % 5).toFixed(2) + 's"></i>').join("");
+/* Onde de veille : des barres qui respirent (animation CSS uniquement), leur nombre suit la largeur */
+function construireOnde(){
+  const w = $("wave").clientWidth || 732, n = Math.max(24, Math.floor(w / 12.2));
+  if ($("wave").dataset.n === String(n)) return; $("wave").dataset.n = String(n);
+  $("wave").innerHTML = Array.from({ length: n }, (_, k) => '<i style="--m:' + (.22 + .72 * Math.abs(Math.sin(k * .29) * Math.cos(k * .11))).toFixed(2) + ';animation-duration:' + (2.2 + (k * .53) % 2.4).toFixed(2) + 's;animation-delay:-' + ((k * .37) % 5).toFixed(2) + 's"></i>').join("");
+}
+construireOnde();
 
 function majMusique(){
   const m = musiqueActive(), st = $("stage");
