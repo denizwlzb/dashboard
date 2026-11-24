@@ -50,6 +50,7 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
 #hh span,#mm span{display:inline-block}
 .roll{animation:roll .9s cubic-bezier(.2,.8,.2,1) both}
 @keyframes roll{from{opacity:0;transform:translateY(.1em)}to{opacity:1;transform:none}}
+#secs{left:560px;top:724px;width:160px;text-align:right;font-size:26px;letter-spacing:.12em;color:var(--ink)}
 #ruler{left:560px;top:96px;width:160px;height:620px}
 #ruler i{position:absolute;right:0;height:2px;width:34px;background:rgba(241,239,232,.22)}
 #ruler i.m{width:58px;background:rgba(241,239,232,.45)}
@@ -158,7 +159,7 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
 
   <!-- gauche : heure -->
   <div id="hello" class="mono">Bonjour, Deniz</div><div id="dateTxt" class="mono"></div>
-  <div id="hh"></div><div id="mm"></div><div id="ruler"></div>
+  <div id="hh"></div><div id="mm"></div><div id="ruler"></div><div id="secs" class="mono"></div>
   <div id="wkLbl" class="mono"></div><div id="week"></div>
 
   <!-- gauche : imprimante -->
@@ -241,6 +242,7 @@ function majSemaine(d){
 function tick(){
   const d = new Date(), s = d.getSeconds();
   chiffres("hh", pad(d.getHours())); chiffres("mm", pad(d.getMinutes()));
+  $("secs").textContent = ":" + pad(s);
   const t = $("ruler").children; for (let k = 0; k < 60; k++) t[k].className = (k % 5 === 0 ? "m " : "") + (k === s ? "now" : k < s ? "past" : "");
   $("dateTxt").textContent = JOURS[d.getDay()] + " " + d.getDate() + " " + MOIS[d.getMonth()] + " · SEM. " + numSemaine(d);
   majSemaine(d);
