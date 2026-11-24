@@ -122,6 +122,14 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
 #ly1.in{animation:sub .55s cubic-bezier(.2,.8,.2,1) both}
 @keyframes sub{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 #lyS{left:1124px;top:626px}
+/* Veille (aucune musique) : la lune dans le cadre, une onde qui respire à la place des paroles */
+#moon{display:none;position:absolute;left:0;top:0;width:100%;height:100%;padding:30px;filter:drop-shadow(0 0 40px rgba(45,98,255,.5))}
+.idle #moon{display:block}
+#wave{display:none;left:1124px;top:668px;width:732px;height:108px;align-items:center}
+.idle #wave{display:flex}
+#wave i{flex:none;display:block;width:5px;height:100%;margin-right:7.2px;background:rgba(45,98,255,.75);transform:scaleY(.08);animation:eq 3s ease-in-out infinite alternate}
+@keyframes eq{from{transform:scaleY(.06)}to{transform:scaleY(var(--m,.8))}}
+
 
 /* ───── Salle : trois barres qui sortent du sol ───── */
 #gLbl{left:784px;top:818px}
@@ -143,7 +151,7 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
 </style>
 </head>
 <body>
-<div id="stage">
+<div id="stage" class="idle">
   <div id="wall"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
   <canvas id="amb" width="32" height="18"></canvas>
   <div id="grain"></div>
@@ -174,12 +182,12 @@ body{font-family:var(--txt);color:var(--ink);-webkit-font-smoothing:antialiased;
   <div id="hrs"></div>
 
   <!-- droite : lecture en cours -->
-  <div id="cov"><div id="cv"></div><i class="k k1"></i><i class="k k2"></i><i class="k k3"></i><i class="k k4"></i></div>
+  <div id="cov"><div id="cv"></div><svg id="moon" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="36" fill="rgba(241,239,232,.06)" stroke="rgba(241,239,232,.3)" stroke-width=".5"/><path id="moonlit" fill="#f1efe8"/></svg><i class="k k1"></i><i class="k k2"></i><i class="k k3"></i><i class="k k4"></i></div>
   <div id="pT"><div id="pF"></div></div><div id="pC" class="mono">0:00</div><div id="pD" class="mono">0:00</div>
   <div id="npL" class="mono"><i></i><span id="npDev">Rien en lecture</span></div>
   <div id="tW"><span id="tT">Rien en lecture</span></div>
   <div id="aW"><span id="aT"></span></div>
-  <div id="ly1"></div><div id="ly2"></div><div id="lyS" class="mono"></div>
+  <div id="wave"></div><div id="ly1"></div><div id="ly2"></div><div id="lyS" class="mono"></div>
 
   <!-- droite : salle -->
   <div class="hl" style="left:784px;top:1016px;width:1072px"></div>
@@ -352,9 +360,24 @@ function majParoles(){
   const a = $("ly1"); a.textContent = i >= 0 ? lyr.lignes[i].texte : "♪"; $("ly2").textContent = lyr.lignes[i + 1] ? lyr.lignes[i + 1].texte : "";
   a.classList.remove("in"); void a.offsetWidth; a.classList.add("in");
 }
+function lune(t){
+  const ref = Date.UTC(2000, 0, 6, 18, 14), cycle = 29.530588853 * 864e5;
+  const p = (((t - ref) / cycle) % 1 + 1) % 1, illum = (1 - Math.cos(2 * Math.PI * p)) / 2;
+  const noms = ["Nouvelle lune", "Premier croissant", "Premier quartier", "Gibbeuse croissante", "Pleine lune", "Gibbeuse décroissante", "Dernier quartier", "Dernier croissant"];
+  return { p, illum, nom: noms[Math.floor(p * 8 + .5) % 8] };
+}
+function majLune(){
+  const L = lune(Date.now()), r = 36, c = 40, rx = Math.abs(Math.cos(2 * Math.PI * L.p)) * r;
+  const croit = L.p < .5, limbe = croit ? 1 : 0, term = croit ? (L.p < .25 ? 0 : 1) : (L.p < .75 ? 0 : 1);
+  $("moonlit").setAttribute("d", "M " + c + " " + (c - r) + " A " + r + " " + r + " 0 0 " + limbe + " " + c + " " + (c + r) + " A " + rx.toFixed(2) + " " + r + " 0 0 " + term + " " + c + " " + (c - r) + " Z");
+  return L;
+}
+/* Onde de veille : 60 barres qui respirent (animation CSS uniquement) */
+$("wave").innerHTML = Array.from({ length: 60 }, (_, k) => '<i style="--m:' + (.22 + .72 * Math.abs(Math.sin(k * .29) * Math.cos(k * .11))).toFixed(2) + ';animation-duration:' + (2.2 + (k * .53) % 2.4).toFixed(2) + 's;animation-delay:-' + ((k * .37) % 5).toFixed(2) + 's"></i>').join("");
+
 function majMusique(){
   const m = musiqueActive(), st = $("stage");
-  st.classList.toggle("paused", !!(m && !sp.is_playing));
+  st.classList.toggle("paused", !!(m && !sp.is_playing)); st.classList.toggle("idle", !m);
   if (m){
     const u = imgDe(sp.item);
     texteDefilant("tT", sp.item.name); texteDefilant("aT", sp.item.artists.map(a => a.name).join(", "));
@@ -362,9 +385,11 @@ function majMusique(){
     $("npDev").textContent = (sp.is_playing ? "En lecture" : "En pause") + (sp.device ? " · " + sp.device.name : "");
     chargerParoles();
   } else {
-    texteDefilant("tT", "Rien en lecture"); texteDefilant("aT", ""); $("cv").style.backgroundImage = ""; ambiance("");
-    $("npDev").textContent = "Rien en lecture"; $("pF").style.width = "0%"; $("pC").textContent = "0:00"; $("pD").textContent = "0:00";
-    lyr = { cle: "", lignes: [], sync: false, idx: -2 }; $("ly1").textContent = ""; $("ly2").textContent = ""; $("lyS").textContent = "";
+    const L = majLune();
+    texteDefilant("tT", L.nom); texteDefilant("aT", Math.round(L.illum * 100) + " % éclairée · jour " + (Math.floor(L.p * 29.53) + 1) + " du cycle");
+    $("cv").style.backgroundImage = ""; ambiance("");
+    $("npDev").textContent = "Spotify · en attente"; $("pF").style.width = (L.p * 100) + "%"; $("pC").textContent = "J" + (Math.floor(L.p * 29.53) + 1); $("pD").textContent = "Cycle 29,5 J";
+    lyr = { cle: "", lignes: [], sync: false, idx: -2 }; $("ly1").textContent = ""; $("ly2").textContent = ""; $("lyS").textContent = "En attente de musique — lance un titre sur Spotify";
   }
 }
 function renderSpotify(d){
@@ -378,7 +403,7 @@ function tickMusique(){
   $("pF").style.width = (dur ? cur / dur * 100 : 0) + "%"; $("pC").textContent = fmtT(cur); $("pD").textContent = fmtT(dur);
   majParoles();
 }
-loadSpotify(); setInterval(loadSpotify, 3000); setInterval(tickMusique, 500);
+majMusique(); loadSpotify(); setInterval(loadSpotify, 3000); setInterval(tickMusique, 500);
 
 /* ───── Imprimante + minuteur de refroidissement (armé tout seul, 15 min après la fin) ───── */
 const REFROID = 15;
