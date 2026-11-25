@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Test pastille d'activité</title>
+<style>
+:root{--t2:rgba(255,255,255,.68)}
+*{box-sizing:border-box;margin:0}html,body{height:100%;background:#000;color:#fff;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;letter-spacing:-.022em}
+#bg{position:fixed;inset:0;background:radial-gradient(60% 50% at 10% 6%,rgba(10,132,255,.30),transparent 70%),radial-gradient(50% 45% at 94% 10%,rgba(191,90,242,.24),transparent 70%),radial-gradient(60% 50% at 82% 100%,rgba(48,209,88,.14),transparent 70%)}
+main{position:relative;padding:40px 30px;max-width:640px}
+h1{font-size:34px;font-weight:600;letter-spacing:-.03em}p{color:var(--t2);margin:8px 0 22px;font-size:15px}
+button.t{display:block;width:100%;text-align:left;margin-bottom:12px;padding:14px 18px;border-radius:22px;color:#fff;font:600 16px inherit;font-family:inherit;cursor:pointer;
+background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.34)}
+button.t small{display:block;font-weight:400;color:var(--t2);font-size:13px;margin-top:3px}
+</style></head><body>
+<div id="bg"></div>
+<main>
+<h1>Test de la pastille</h1>
+<p>Ceci simule ton dashboard. Appuie sur un bouton pour voir ce que tes tâches afficheront.</p>
+<button class="t" onclick="activite.pousser({titre:'Nouveau devoir de maths',resume:'Exercices 4 à 9 page 112, pour vendredi.',pdf:'test/devoir-test.pdf'})">Simuler un changement avec PDF<small>Le panneau s'ouvre tout seul, 30 min</small></button>
+<button class="t" onclick="activite.pousser({titre:'Sauvegarde terminée',resume:'3 fichiers copiés vers le disque externe.'})">Simuler un changement sans PDF<small>Juste un résumé</small></button>
+<button class="t" onclick="activite.montrer(30)">« Montre-moi »<small>Ouvre la vue pendant 30 min</small></button>
+<button class="t" onclick="activite.vider()">Tout effacer<small>Revient à « rien à signaler » : la pastille disparaît</small></button>
+</main>
+<script>window.ACT_DEMO = true;</script>
+<script src="activity.js"></script>
+</body></html>
